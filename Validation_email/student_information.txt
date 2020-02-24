@@ -1,0 +1,1 @@
+["Андрей", "Ельцов", "18-ИСбо-2б", "08", [["https://www.draw.io/#G1u2wTwjbTJHQQe1qTiWlYytpz_a8huL9I", "https://tproger.ru/translations/regular-expression-python/"]]]
