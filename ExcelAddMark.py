@@ -1,6 +1,6 @@
 # coding: utf-8
 
-def AddMarkInTable(table, cell):
+def AddMarkInTable(table, cell, mark):
     import httplib2 
     import apiclient.discovery
     from oauth2client.service_account import ServiceAccountCredentials	
@@ -26,7 +26,7 @@ def AddMarkInTable(table, cell):
             "data": [
                 {"range": rangeTab,
                  "majorDimension": "ROWS",     
-                 "values": [ ["1"] ]
+                 "values": [ [mark] ]
                 }
             ]
         }).execute()
