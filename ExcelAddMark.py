@@ -1,10 +1,17 @@
 # coding: utf-8
+import logging
+import logging.config
+
+logging.config.fileConfig('logging_config.conf')
+logger = logging.getLogger(__name__)
 
 def AddMarkInTable(table, cell, mark):
     import httplib2 
     import apiclient.discovery
     from oauth2client.service_account import ServiceAccountCredentials	
 
+    logger.info('Got into the AddMarkInTable method')
+    logger.debug(f'table - {table}, cell - {cell}, mark - {mark}')
     try:
         #Ключ API для работы
         CREDENTIALS_FILE = 'GoogleApiKey.json' 
@@ -30,6 +37,7 @@ def AddMarkInTable(table, cell, mark):
                 }
             ]
         }).execute()
-    except e: 
-        print("Error Function AddMarkInTable!" + e)
+        logger.info('The AddMarkInTable method has completed its execution')
+    except Exception as ex: 
+        logger.exception(ex)
 
