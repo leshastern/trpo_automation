@@ -9,11 +9,12 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE,
 httpAuth = credentials.authorize(httplib2.Http())
 service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
 spreadsheetId = 'ссылка на нашу таблицу'
-range_name = 'Лист1!B:B100'
+range_name = 'Лист1!B1:B1000'
 table = service.spreadsheets().values().get(spreadsheetId=spreadsheetId, range=range_name).execute()
 print(table)
-#a='почта пользователя'
-#if re.search(r'\bmilan070699@gmail.com\b', table):
- # print("Есть")
-#else:
-   #print("Нет")
+a='почта пользователя'
+result=re.search(a, str(table))
+if result != None:
+  print('Почта найдена')
+else:
+ print('Почты нет в списке')
