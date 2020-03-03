@@ -1,17 +1,22 @@
+# coding=utf-8
 import User
-"""Класс Letter-письмо, содержит данные о студенте, при помощи класса User,
-Тему письма, его содержание и Статусы"""
 
 
 class Letter:
-    Student = User.User() #Экземпляр класса User
-    ThemeOfLetter = "" #Тема письма
-    Body = object() #Содержание письма
+    """Класс Letter-письмо, содержит данные:
+    Студент-Student, при помощи класса User,
+    Тема письма-ThemeOfLetter
+    Его содержание-Body
+    Статусы-CodeStatus, CodeStatusComment"""
+    Student = User.User()
+    ThemeOfLetter = ""
+    Body = object()
     CodeStatus = 0
     CodeStatusComment = ""
 
-    # Конструктор, все входные данные не обязательны для того, чтобы была возможность сделать пустой экземпляр класса
     def __init__(self, student=None, themeOfLetter=None, body=None, codeStatus=None, codeStatusComment=None):
+        """Конструктор, все входные данные не обязательны для того,
+         чтобы была возможность сделать пустой экземпляр класса"""
         self.Student = student
         self.ThemeOfLetter = themeOfLetter
         self.Body = body
