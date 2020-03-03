@@ -1,7 +1,11 @@
-class AnswersForUsers:
-    Who = ""
-    What = ""
+"""класс AnswersForUsers-ответы пользователям, содержит данные: кому написано, что написано"""
 
+
+class AnswersForUsers:
+    Who = "" #Кому написано
+    What = "" #Что написано
+
+    # Конструктор, все входные данные не обязательны для того, чтобы была возможность сделать пустой экземпляр класса
     def __init__(self, who=None, what=None):
         self.Who = who
         self.What = what
