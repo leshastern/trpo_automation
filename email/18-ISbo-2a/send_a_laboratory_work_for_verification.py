@@ -21,10 +21,10 @@ def send_a_laboratory_work_for_verification(labNumber, **kwargs):
     sock.send(jsn) #Отправка
     response = sock.recv(1024) #Получение ответа
     while response:
-        if (response["Answer"]==1):
+        if (response["labStatus"]==1):
             sock.close()
             return 1
-        elif (response["Answer"]==0):
+        elif (response["labStatus"]==0):
             sock.close()
             return 0
         response = sock.recv(1024)
