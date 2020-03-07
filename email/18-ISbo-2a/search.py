@@ -17,11 +17,20 @@ def cleaning_email(email):
  q=y.group(0)
  z=q.replace('<','').replace('>','')
  return z
+ def nameSurname(email):
+ """
+ Метод для выделения и передачи имени и фамилии.
+ """
+ comp = re.compile('(\S*?) '+'(\S*?) ')
+ y=comp.search(email)
+ q=y.group(0)
+ return q
 def Search_email(email):
   """
-   Метод для поиска в таблице.
-   email - передаваемая строка с почтой
+  Метод для поиска в таблице.
+  email - передаваемая строка с почтой
   """
+  a=email
   email=cleaning_email(email) # вызываю метод очистки строки в нужный формат
   CREDENTIALS_FILE = 'json файл'  #  ← имя скаченного файла с закрытым ключом
   credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets',                                                                               'https://www.googleapis.com/auth/drive'])
@@ -33,8 +42,8 @@ def Search_email(email):
   # table- выводит нам словарь всех значение в ячейках B1:B1000
   result=re.search(email, str(table)) # поиск почты 
   if result != None:
-   b=1
+   b=poisk(a)
   else:
-   b=0
+   b=None
   return b
 
