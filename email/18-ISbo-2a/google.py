@@ -10,7 +10,12 @@ import email
 import base64
 import logging
 import logging.config
-
+from datetime import datetime
+from pprint import pprint
+import httplib2
+import apiclient.discovery
+import re;
+from oauth2client.service_account import ServiceAccountCredentials
 
 logging.config.fileConfig('logging_config.conf')
 logger = logging.getLogger(__name__)
@@ -154,4 +159,44 @@ def add_mark_in_table(table, cell, mark):
         logger.info('The AddMarkInTable method has completed its execution')
     except Exception as ex: 
         logger.exception(ex)
-
+def cleaning_email(email):
+    """
+    Метод для выделения почты из передаваемой строки email.
+    email - передаваемая строка с почтой
+    Name Surname <1234@gmail.com> ← пример email который мне передают
+    1234@gmail.com это будет запоминаться после метода очистки
+    """
+    comp = re.compile(r'<(\S*?)>')
+    y=comp.search(email)
+    q=y.group(0)
+    z=q.replace('<','').replace('>','')
+    return z
+def name_Surname(email):
+    """
+    Метод для выделения и передачи имени и фамилии.
+    """
+    comp = re.compile('(\S*?) '+'(\S*?) ')
+    y=comp.search(email)
+    q=y.group(0)
+    return q
+def search_email(email):
+    """
+    Метод для поиска в таблице.
+    email - передаваемая строка с почтой
+    """
+    a=email
+    email=cleaning_email(email) # вызываю метод очистки строки в нужный формат
+    CREDENTIALS_FILE = 'json файл'  #  ← имя скаченного файла с закрытым ключом
+    credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets',                                                                               'https://www.googleapis.com/auth/drive'])
+    httpAuth = credentials.authorize(httplib2.Http())
+    service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
+    spreadsheetId = 'ссылка на таблицу'
+    range_name = 'Лист1!B1:B1000'
+    table = service.spreadsheets().values().get(spreadsheetId=spreadsheetId, range=range_name).execute() 
+    # table- выводит нам словарь всех значение в ячейках B1:B1000
+    result=re.search(email, str(table)) # поиск почты 
+    if result != None:
+     b=poisk(a)
+    else:
+     b=None
+    return b
