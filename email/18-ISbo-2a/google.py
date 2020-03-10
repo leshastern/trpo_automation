@@ -39,12 +39,12 @@ def search_email(email):
     spreadsheetId = 'ссылка на таблицу'
     range_name = 'Лист1!B1:B1000'
     table = service.spreadsheets().values().get(spreadsheetId=spreadsheetId, range=range_name).execute() 
-    # table- выводит нам словарь всех значение в ячейках B1:B1000
+    #table- выводит нам словарь всех значение в ячейках B1:B1000
     result=re.search(email, str(table)) # поиск почты 
     if result != None:
-     b=poisk(a)
+    b=poisk(a)
     else:
-     b=None
+    b=None
     return b
     
 
