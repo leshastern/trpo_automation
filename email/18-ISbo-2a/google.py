@@ -164,7 +164,7 @@ def cleaning_email(email):
     q=y.group(0)
     z=q.replace('<','').replace('>','')
     return z
-def name_Surname(email):
+def name_surname(email):
     """
     Метод для выделения и передачи имени и фамилии.
     """
