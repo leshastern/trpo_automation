@@ -188,8 +188,8 @@ def search_email(email):
     table = service.spreadsheets().values().get(spreadsheetId=spreadsheetId, range=range_name).execute() 
     result=re.search(email, str(table)) # поиск почты 
     if result != None:
-    b=poisk(a)
+        b=poisk(a)
     else:
-    b=None
+        b=None
     return b
 
