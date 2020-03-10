@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "trpo-bot",
+  "private_key_id": "e25d7c8c50a02fd0697f6103c0e8b5b5cb1c872e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDNDYHwhURKioOj\nUHAdGbn46Clcn0YfArhWyvzXhDdl2/JfY2c+i5BySkqk1EClr0OxKiunviXHlIgY\nNtTYs5kftioOrVmAkAIWUI9NEL64G8FO1Pwn2z/6ksG63ZXFi67oEzkq8uA9arfe\npHediFOzBU/v04ILK9Et4Ka1X7ER5jpqPS0/2M3fL10V57SDOBYacYg85EEH/GWW\nFRvSfij5cVZHWrWY9B3mLtiydjXvZJiWeCXXfADhE6gUs4irWlucmIoanEFHIf3x\nHmbEfNCuVo7BEc4N4OhdrktutYboLzYYNIvCa8bG/Eel/haW7hSSeYZDqaTHb4ye\nlRHLn2HXAgMBAAECggEATKF7qhNjzietwl7RR07R/X9l1cOARR6THXyGuVQkD+D+\n1z8i2nD17oBtHORltIWnWpJT9kBNhiSwJ7x2FvYnh35ggVOvWyh2XziEFVzoqY1V\n1Mwr4AlEA7TMybT9v/HPz9M/ThmuS8WSKZZ1TV4hSYn2sb3tn5ckeWy3YJj+Z51j\nfLzT9IqwrygTfk4JY7Je6f1f5D/59Y/+dv+dHoC5+j4WvHX6xZEPKDghNzhBt2CU\nFKoch6Om4N+G/z7WQuZYOTbYD01lr0N+Mzxg/7ulxVezzomN9uyce1yhtBReBj6N\nBOAdxjzgh0FqE1NckB3AuUpYel/Oko/wT9Uy5X4ywQKBgQDnw2g4xbmlKT9rMzOo\nv7tPxJ8e1ph9K+MODJPirhZL6C+6EbkbcDYTpwxtDoGmcbJrCvdwiLDTzEWF1u/I\nQV7O8Wedpg1iuAgxOiFthsxALeQZGiP/8fV1SlssRRRBKddL33fegHExOTeq8UQN\n04UUQWJebXHqdRWWAdIXxgPEuQKBgQDifwaeFYrDmImGiRbjEJY1oOitMp7mtn3k\nx8eA/aEDH/j6C5rrsUtOl4b/0gOaKAEUBzHCYDnx9QE59cqNAwqGxzaYsDSCMdpm\nq8GZ/2L98ugEHZywdgjDpI87le/aOUyiUK6Z4BMuXcrJObU6MAyNLuZjHYABtSm6\nExEhy+YzDwKBgQCAEdwq2yBOIy/3VhDq5CBm4Pko+l7DdJgAsHScI6UQhxqwkJCg\nl+5aB8p3DTgZuORmAGZhmjdUoqGcZvyTxYPViVK/q/3jmlx0j3Hfa0i9Al70fBx+\nl78S9GbTXMzngW6Gb9N2cbWbBMo9PRtlJIh6e/MWyRXVAKRQA2uMVZDJiQKBgEhl\neeQF1rj2hN7v6tThdGHn8PeLeqccJdl+0hI0/8ZT7e1e0EIOBZg1bv1OT8BykQWp\n1wneYCcqvR2dpwSzuCWkf5sGl4IWFU1EETn8G9Q4VFkcbf0pfVuruey93FDQh+JK\nD8U3jmn/qNXxEDBtM1Xda966izQAiDnl5k/7MLWZAoGAF9qKDwP0AEBdanSsLmxt\nkJORWxEbcyRBKv1mlIoq3GOKYSeGpAEwMZmj6l6SLaFW8HC6XSi9TNFIgifBplt9\n0IK6xQU8QwGNm/tZy54SsKGqbFuqqdDTYBWMFWUVEhul5IjCmvOYncmb4MGcq0f5\nCK+9A7riVBGloXz0gcpJ3dY=\n-----END PRIVATE KEY-----\n",
+  "client_email": "trpo-bot@trpo-bot.iam.gserviceaccount.com",
+  "client_id": "100523313958912066183",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/trpo-bot%40trpo-bot.iam.gserviceaccount.com"
+}
