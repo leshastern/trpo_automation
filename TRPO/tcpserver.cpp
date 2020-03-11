@@ -2,7 +2,7 @@
 #include <QDebug>
 #include <QCoreApplication>
 /**
- * @brief TcpServer::TcpServer - конструктор класса, в котором создается объект класса QTcpServer
+ * @brief Конструктор класса, в котором создается объект класса QTcpServer
  * Сервер включается и ждет новых соединений.
  */
 TcpServer::TcpServer(QObject *parent)
@@ -19,7 +19,7 @@ TcpServer::TcpServer(QObject *parent)
     }
 }
 /**
- * @brief TcpServer::slotNewConnection - метод отвечающий за подключение клиента к серверу
+ * @brief Метод отвечающий за подключение клиента к серверу
  * @return void
  */
 void TcpServer::slotNewConnection()
@@ -32,12 +32,12 @@ void TcpServer::slotNewConnection()
     connect(mTcpSocket, &QTcpSocket::disconnected, this, &TcpServer::slotClientDisconnected);
 }
 /**
- * @brief TcpServer::slotServerRead - метод, считывающий количество байтов, отличных от нуля, передаваемых серверу
+ * @brief Метод, считывающий количество байтов, отличных от нуля, передаваемых серверу
  * @return void
  */
 void TcpServer::slotServerRead()
 {
-    while (mTcpSocket->bytesAvailable() > 0){
+    while (mTcpSocket->bytesAvailable() > 0) {
 
         QByteArray array = mTcpSocket->readAll();
 
@@ -45,7 +45,7 @@ void TcpServer::slotServerRead()
     }
 }
 /**
- * @brief TcpServer::slotClientDisconnected - Выключает сервер.
+ * @brief метод выключает сервер.
  * @return void
  */
 void TcpServer::slotClientDisconnected()
