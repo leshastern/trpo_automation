@@ -62,7 +62,7 @@ def programm_progress(service, user_id):
 					if #метод обработки самой лабораторной работы
 						#если словарь ошибок пуст, то высылаем письмо о завершении проверки
 						title = "Работа успешно принята"
-						our_msg = "Поздравляю!\nРабота успешно принята!\nОценку можно проверить в журнале: " + "ссылка на журнал
+						our_msg = "Поздравляю!\nРабота успешно принята!\nОценку можно проверить в журнале: " + "https://drive.google.com/open?id=1gOX8T8ihy3J1khhC16U1qDwaI-K6ndkp9LFWAHncuWA"
 						send_message(service, user_id, email_of_student, name_of_student, our_msg, title)
 
 
@@ -79,7 +79,7 @@ def programm_progress(service, user_id):
 
 			else #метод не нашел человека
 				title = "Авторизация пользователя"
-				our_msg = "Вы не найдены в системе. Пожалуйста, перейдите по ссылке и зарегистрируйтесь." + "ссылка	на гуглформу
+				our_msg = "Вы не найдены в системе. Пожалуйста, перейдите по ссылке и зарегистрируйтесь." + "https://drive.google.com/open?id=1nXhfOkE3KnWVFNzZ-jvvATAIb6T3zzwD5Ry8Itc-VmQ"
 				send_message(service, user_id, email_of_student, name_of_student, our_msg, title)
 			#архивация сообщения(403 недостаточно прав для gmail api с python)
 			label_id = 'id_of_msg' 
