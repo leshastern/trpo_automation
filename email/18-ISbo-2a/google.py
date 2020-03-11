@@ -1,4 +1,4 @@
-﻿oding: utf-8
+﻿#coding: utf-8
 from config import SPREAD_SHEET_ID
 from config import CREDENTIALS_FILE
 import pickle
