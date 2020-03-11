@@ -105,7 +105,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.JSONSend">
+  <component name="RunManager" selected="Python.Server">
     <configuration name="HTTPReq (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Server" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -213,9 +213,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.Server" />
         <item itemvalue="Python.JSONSend" />
         <item itemvalue="Python.HTTPReq" />
-        <item itemvalue="Python.Server" />
         <item itemvalue="Python.HTTPReq (1)" />
         <item itemvalue="Python.Server (1)" />
       </list>
