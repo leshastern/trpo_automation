@@ -1,4 +1,4 @@
-# coding: utf-8
+﻿#coding: utf-8
 from config import SPREAD_SHEET_ID
 from config import CREDENTIALS_FILE
 import pickle
@@ -10,6 +10,8 @@ import email
 import base64
 import logging
 import logging.config
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from datetime import datetime
 from pprint import pprint
 import httplib2
@@ -23,8 +25,8 @@ user_id = 'me'
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/gmail.send', 'https://www.googleapis.com/auth/gmail.labels']
 
 
-def get_message(service, user_id):
-	logger.info('Got into the get_message method')
+def programm_progress(service, user_id):
+	logger.info('Got into the programm_progress method')
 	try:
 		search_id = service.users().messages().list(userId=user_id, labelIds = ['INBOX']).execute()
 		#список наших собщений в папке "Входящие"
@@ -42,11 +44,9 @@ def get_message(service, user_id):
 			#Часть сообщения верхнего уровня с полезной информацией
 			info_of_msg = message_list.get('payload')['headers']
 
-
 			email_id = '' # Имя и ГуглМаил отправителя
 			head_of_msg = '' # Тема письма
 			body_of_msg = '' # Тело письма
-
 
 			for head in info_of_msg :
 				if head['name'] == 'From' :
@@ -56,19 +56,36 @@ def get_message(service, user_id):
 			body_of_msg = message_list['snippet']
 
 
-			#if #метод Никиты отработал и нашел человека
+			#Разбиваем нашу строку email_id на email и name_of_student
+			name_of_student = name_surname(email_id)
+			email_of_student = cleaning_email(email_id)
+
+
+			if #метод авторизации отработал и нашел человека
 				#отправляем письмо с фразами, что работа принята к рассмотрению
-			#	if #метод Макса отработал и студент правильно запомнил 
-					#сообщение
-					##включаются остальные методы проверки работы
-			#	else #если сообщение заполнено неверно, то высылается 
-					#письмо отправителю о правильном заполнении писем
-
-			#else #метод не нашел человека
-				#отправляется письмо на авторизацию пользователя
+				if #метод Макса отработал и студент правильно запомнил 
+					if #метод обработки самой лабораторной работы
+						#если словарь ошибок пуст, то высылаем письмо о завершении проверки
+						title = "Работа успешно принята"
+						our_msg = "Поздравляю!\nРабота успешно принята!\nОценку можно проверить в журнале: " + "https://drive.google.com/open?id=1gOX8T8ihy3J1khhC16U1qDwaI-K6ndkp9LFWAHncuWA"
+						send_message(service, user_id, email_of_student, name_of_student, our_msg, title)
 
 
+					else #у студента есть ошибки в работе
+						title = "Обнаружены ошибки в работе"
+						our_msg = "В Вашей работе обнаружены ошибки:\n" + error_in_work + "Просьба исправить их и отправить письмо повторно"
+						send_message(service, user_id, email_of_student, name_of_student, our_msg, title)
+				else #если сообщение заполнено неверно, то высылается
+				title = "Обнаружены ошибки в заполнении письма"
+				our_msg = "В структуре письма обнаружены следующие ошибки:\n" + error_in_msg() + 
+				"\nПросьба исправить их в соответствии с документом\n" + "https://docs.google.com/document/d/1DRhgepxVwoscylIS2LCW-po5SFBdqOr-oo92bP_XfHE/edit?usp=sharing" 	
+				send_message(service, user_id, email_of_student, name_of_student, our_msg, title)
+					
 
+			else #метод не нашел человека
+				title = "Авторизация пользователя"
+				our_msg = "Вы не найдены в системе. Пожалуйста, перейдите по ссылке и зарегистрируйтесь." + "https://drive.google.com/open?id=1nXhfOkE3KnWVFNzZ-jvvATAIb6T3zzwD5Ry8Itc-VmQ"
+				send_message(service, user_id, email_of_student, name_of_student, our_msg, title)
 			#архивация сообщения(403 недостаточно прав для gmail api с python)
 			label_id = 'id_of_msg' 
 			# ID of user label to add
@@ -88,8 +105,36 @@ def get_message(service, user_id):
 	except Exception as ex:
 		logger.exception(ex)
 	finally:
-		logger.info('The get_message method has completed its execution')
+		logger.info('The programm_progress method has completed its execution')
 		return messages
+
+
+##
+##
+def error_in_work #Ожидает выполнение работы метода Валидации 
+##
+##
+
+
+def send_message(service, user_id, email_of_student, name_of_student, our_msg, title):
+		#Данные используемые в каждом письме
+		hello_student = "Здравствуйте," + name_of_student + "\n\n"
+		signature = "\n\nС уважением,\n Бот"
+		sending_msg['from'] = "trpo.automation@gmail.com"
+
+		sending_msg = MIMEMultipart('alternative')
+		#Тело нашего сообщения
+		sending_msg = MIMEText(hello_student + our_msg + signature)
+		#Кому мы его отправляем
+		sending_msg['to'] = email_of_student
+		#Заголовок нашего сообщения
+		sending_msg['subject'] = title
+		#Преобразование строки
+		raw = base64.urlsafe_b64encode(sending_msg.as_bytes())
+		raw = raw.decode()
+		body = {'raw': raw}
+		#Отправка
+		send_msg = service.users().messages().send(userId=user_id, body=body).execute()
 
 
 def get_service():
