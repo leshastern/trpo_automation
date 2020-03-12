@@ -53,9 +53,10 @@ def validation(head_of_msg,body_of_msg):
      'URL': URL,
      'Errors': Errors_list
     }
-    
-    
-    print(validation_dictionary)
+
+    #Возвращаем словарь с номером лабораторной,URL,лист ошибок.
+    return(validation_dictionary)
+    #print(validation_dictionary)
      
     #Проверка на наличие URL.Возврат ссылки.
 def url_cheack(Number,body_of_msg):
@@ -94,7 +95,7 @@ def url_cheack(Number,body_of_msg):
 
 
 
-validation("ТРПО.ЛР№2",'Добрый день! Выполнил здание как и просили. Ссылка на репо: https://github.com/MaXL2000/VR_Laboratory.git. -- Лютый Максим 18-ИСбо-2а')
+#validation("ТРПО.ЛР№2",'Добрый день! Выполнил здание как и просили. Ссылка на репо: https://github.com/MaXL2000/VR_Laboratory.git. -- Лютый Максим 18-ИСбо-2а')
 #url_cheack('7', 'https://gi.cm/Sa/tn.git.')
 
     
