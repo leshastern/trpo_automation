@@ -117,24 +117,26 @@ def error_in_work #Ожидает выполнение работы метода
 
 
 def send_message(service, user_id, email_of_student, name_of_student, our_msg, title):
-		#Данные используемые в каждом письме
-		hello_student = "Здравствуйте," + name_of_student + "\n\n"
-		signature = "\n\nС уважением,\n Бот"
-		sending_msg['from'] = "trpo.automation@gmail.com"
+	logger.info('Got into the send_message method')
+	#Данные используемые в каждом письме
+	hello_student = "Здравствуйте," + name_of_student + "\n\n"
+	signature = "\n\nС уважением,\n Бот"
+	sending_msg['from'] = "trpo.automation@gmail.com"
 
-		sending_msg = MIMEMultipart('alternative')
-		#Тело нашего сообщения
-		sending_msg = MIMEText(hello_student + our_msg + signature)
-		#Кому мы его отправляем
-		sending_msg['to'] = email_of_student
-		#Заголовок нашего сообщения
-		sending_msg['subject'] = title
-		#Преобразование строки
-		raw = base64.urlsafe_b64encode(sending_msg.as_bytes())
-		raw = raw.decode()
-		body = {'raw': raw}
-		#Отправка
-		send_msg = service.users().messages().send(userId=user_id, body=body).execute()
+	sending_msg = MIMEMultipart('alternative')
+	#Тело нашего сообщения
+	sending_msg = MIMEText(hello_student + our_msg + signature)
+	#Кому мы его отправляем
+	sending_msg['to'] = email_of_student
+	#Заголовок нашего сообщения
+	sending_msg['subject'] = title
+	#Преобразование строки
+	raw = base64.urlsafe_b64encode(sending_msg.as_bytes())
+	raw = raw.decode()
+	body = {'raw': raw}
+	#Отправка
+	send_msg = service.users().messages().send(userId=user_id, body=body).execute()
+	logger.info('The server_otvet method has completed its execution')
 
 
 def get_service():
