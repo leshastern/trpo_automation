@@ -21,7 +21,7 @@ def validation(head_of_msg,body_of_msg):
             break
     if a==-1:Errors_list.append('Неерно указано название предмета')
     
-    #Прповерка на номер лабораторной
+    #Проверка на номер лабораторной
     for x in SubjectNumber_list:
         a=head_of_msg.find(x)
         if a!=-1:
@@ -32,7 +32,7 @@ def validation(head_of_msg,body_of_msg):
         Errors_list.append('Неверно указан номер ЛР')
         Number=None
  
-    #Проверка на приветсвие  
+    #Проверка на приветствие  
     for x in Greeting_list:
         a=body_of_msg.find(x)
         if a!=-1:
@@ -54,15 +54,15 @@ def validation(head_of_msg,body_of_msg):
      'Errors': Errors_list
     }
 
-    #Возвращаем словарь с номером лабораторной,URL,лист ошибок.
+    #Возвращаем словарь с номером лабораторной, URL, лист ошибок.
     return(validation_dictionary)
     #print(validation_dictionary)
      
-    #Проверка на наличие URL.Возврат ссылки.
+    #Проверка на наличие URL. Возврат ссылки.
 def url_cheack(Number,body_of_msg):
     #Список ЛР в которых должна содержаться URL
     SubjectNumberURL_list=['7','8','9']
-    #Прповерка на содержание URL
+    #Проверка на содержание URL
     for x in SubjectNumberURL_list:
         if Number==x:
             a=body_of_msg.find('http')
