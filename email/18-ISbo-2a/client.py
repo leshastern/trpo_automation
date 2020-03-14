@@ -8,14 +8,12 @@ logging.config.fileConfig('logging_config.conf')
 logger = logging.getLogger(__name__)
 
 ##def SendURL(url, student, studentgroup, labnumber, port):
-def send_a_laboratory_work_for_verification(labNumber, **kwargs): 
+def send_a_laboratory_work_for_verification(**kwargs): 
     """
     Метод, отправляющий работу на проверку
-    labNumber - номер лабораторной работы
-    **kwargs - все остальные параметры
+    **kwargs - все параметры Лабораторной работы
     """
     logger.info('Got into the send_a_laboratory_work_for_verification method')
-    if (labNumber != kwargs['labNumber']): return 0
     data = ({
         "labNumber": str(kwargs['labNumber']),
         "labLink": str(kwargs['labLink']),
