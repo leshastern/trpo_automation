@@ -12,7 +12,7 @@ TcpServer::TcpServer(QObject *parent)
 
     connect(mTcpServer, &QTcpServer::newConnection, this, &TcpServer::slotNewConnection);
 
-    if(!mTcpServer->listen(QHostAddress::Any, 10000)){
+    if (!mTcpServer->listen(QHostAddress::Any, 10000)) {
         qDebug() << "Server is not started";
     } else {
         qDebug() << "Server is started";
