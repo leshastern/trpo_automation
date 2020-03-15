@@ -1,12 +1,12 @@
 #ifndef TCPSERVER_H
 #define TCPSERVER_H
-/**
-*   @brief Реализация сервера для проверки лабораторных работ по паттерну стратегии
-*/
+
 #include <QObject>
 #include <QTcpServer>
 #include <QTcpSocket>
-
+/**
+*   @brief Реализация сервера для проверки лабораторных работ по паттерну стратегии
+*/
 class TcpServer : public QObject
 {
     Q_OBJECT
