@@ -18,7 +18,7 @@ import httplib2
 import apiclient.discovery
 import re;
 from oauth2client.service_account import ServiceAccountCredentials
-SCOPES = ['https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/gmail.send', 'https://www.googleapis.com/auth/gmail.labels', 'https://www.googleapis.com/auth/gmail.modefy']
+SCOPES = ['https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/gmail.send', 'https://www.googleapis.com/auth/gmail.labels', 'https://www.googleapis.com/auth/gmail.modify']
 
 logging.config.fileConfig('logging_config.conf')
 logger = logging.getLogger(__name__)
