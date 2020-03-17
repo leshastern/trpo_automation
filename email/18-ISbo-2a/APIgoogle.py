@@ -18,11 +18,146 @@ import httplib2
 import apiclient.discovery
 import re;
 from oauth2client.service_account import ServiceAccountCredentials
+SCOPES = ['https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/gmail.send', 'https://www.googleapis.com/auth/gmail.labels', 'https://www.googleapis.com/auth/gmail.modefy']
+
 logging.config.fileConfig('logging_config.conf')
 logger = logging.getLogger(__name__)
+
+def get_service():
+	logger.info('Got into the get_service method')
+	creds = None
+	 # The file token.pickle stores the user's access and refresh tokens, and is
+	 # created automatically when the authorization flow completes for the first
+	 # time.
+	if os.path.exists('token.pickle'):
+		with open('token.pickle', 'rb') as token:
+			creds = pickle.load(token)
+    # If there are no (valid) credentials available, let the user log in.
+	if not creds or not creds.valid:
+		if creds and creds.expired and creds.refresh_token:
+			creds.refresh(Request())
+		else:
+			flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
+			creds = flow.run_local_server(port=0)
+        # Save the credentials for the next run
+		with open('token.pickle', 'wb') as token:
+			pickle.dump(creds, token)
+
+	service = build('gmail', 'v1', credentials=creds)
+	print(service)
+	logger.debug(f'service - {service}')
+	logger.info('The get_service method has completed its execution')
+	return service
+
 service = get_service()
 user_id = 'me'
-SCOPES = ['https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/gmail.send', 'https://www.googleapis.com/auth/gmail.labels']
+
+##
+##
+def error_in_work #Ожидает выполнение работы метода Валидации 
+##
+##
+
+
+def send_message(service, user_id, email_of_student, name_of_student, our_msg, title):
+	logger.info('Got into the send_message method')
+	#Данные используемые в каждом письме
+	hello_student = "Здравствуйте," + name_of_student + "\n\n"
+	signature = "\n\nС уважением,\n Бот"
+	sending_msg['from'] = "trpo.automation@gmail.com"
+
+	sending_msg = MIMEMultipart('alternative')
+	#Тело нашего сообщения
+	sending_msg = MIMEText(hello_student + our_msg + signature)
+	#Кому мы его отправляем
+	sending_msg['to'] = email_of_student
+	#Заголовок нашего сообщения
+	sending_msg['subject'] = title
+	#Преобразование строки
+	raw = base64.urlsafe_b64encode(sending_msg.as_bytes())
+	raw = raw.decode()
+	body = {'raw': raw}
+	#Отправка
+	send_msg = service.users().messages().send(userId=user_id, body=body).execute()
+	logger.info('The server_otvet method has completed its execution')
+
+
+
+def add_mark_in_table(table, cell, mark):
+    """
+    Добавление отметки в журнал. 
+    table - название таблицы. cell - ячейка в таблице. mark - отметка для ячейки.
+    """
+    import httplib2 
+    import apiclient.discovery
+    from oauth2client.service_account import ServiceAccountCredentials	
+
+    logger.info('Got into the AddMarkInTable method')
+    logger.debug(f'table - {table}, cell - {cell}, mark - {mark}')
+    try:
+        credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive'])
+
+        httpAuth = credentials.authorize(httplib2.Http())
+        service = apiclient.discovery.build('sheets', 'v4', http = httpAuth) 
+          
+        rangeTab = str(table) + "!" + str(cell)
+
+        #Сам метод добавления
+        #Если пиздец! То лазить тут!
+        service.spreadsheets().values().batchUpdate(spreadsheetId = SPREAD_SHEET_ID, body = {
+            "valueInputOption": "USER_ENTERED",
+            "data": [
+                {"range": rangeTab,
+                 "majorDimension": "ROWS",     
+                 "values": [ [mark] ]
+                }
+            ]
+        }).execute()
+        logger.info('The AddMarkInTable method has completed its execution')
+    except Exception as ex: 
+        logger.exception(ex)
+        
+def cleaning_email(email):
+    """
+    Метод для выделения почты из передаваемой строки email.
+    email - передаваемая строка с почтой
+    Name Surname <1234@gmail.com> ← пример email который мне передают
+    1234@gmail.com это будет запоминаться после метода очистки
+    """
+    comp = re.compile(r'<(\S*?)>')
+    y=comp.search(email)
+    q=y.group(0)
+    z=q.replace('<','').replace('>','')
+    return z
+def name_surname(email):
+    """
+    Метод для выделения и передачи имени и фамилии.
+    """
+    comp = re.compile('(\S*?) '+'(\S*?) ')
+    y=comp.search(email)
+    q=y.group(0)
+    return q
+def search_email(email):
+    """
+    Метод для поиска в таблице.
+    email - передаваемая строка с почтой
+    """
+    a=email
+    #email=cleaning_email(email) # вызываю метод очистки строки в нужный формат
+    CREDENTIALS_FILE = 'json файл'  #  ← имя скаченного файла с закрытым ключом
+    credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets',                                                                               'https://www.googleapis.com/auth/drive'])
+    httpAuth = credentials.authorize(httplib2.Http())
+    service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
+    spreadsheetId = 'ссылка на таблицу'
+    range_name = 'Лист1!B1:B1000'
+    table = service.spreadsheets().values().get(spreadsheetId=spreadsheetId, range=range_name).execute() 
+    result=re.search(email, str(table)) # поиск почты 
+    if result != None:
+        b=poisk(a)
+    else:
+        b=None
+    return b
+
 
 
 def programm_progress(service, user_id):
@@ -107,136 +242,3 @@ def programm_progress(service, user_id):
 	finally:
 		logger.info('The programm_progress method has completed its execution')
 		return messages
-
-
-##
-##
-def error_in_work #Ожидает выполнение работы метода Валидации 
-##
-##
-
-
-def send_message(service, user_id, email_of_student, name_of_student, our_msg, title):
-	logger.info('Got into the send_message method')
-	#Данные используемые в каждом письме
-	hello_student = "Здравствуйте," + name_of_student + "\n\n"
-	signature = "\n\nС уважением,\n Бот"
-	sending_msg['from'] = "trpo.automation@gmail.com"
-
-	sending_msg = MIMEMultipart('alternative')
-	#Тело нашего сообщения
-	sending_msg = MIMEText(hello_student + our_msg + signature)
-	#Кому мы его отправляем
-	sending_msg['to'] = email_of_student
-	#Заголовок нашего сообщения
-	sending_msg['subject'] = title
-	#Преобразование строки
-	raw = base64.urlsafe_b64encode(sending_msg.as_bytes())
-	raw = raw.decode()
-	body = {'raw': raw}
-	#Отправка
-	send_msg = service.users().messages().send(userId=user_id, body=body).execute()
-	logger.info('The server_otvet method has completed its execution')
-
-
-def get_service():
-	logger.info('Got into the get_service method')
-	creds = None
-	 # The file token.pickle stores the user's access and refresh tokens, and is
-	 # created automatically when the authorization flow completes for the first
-	 # time.
-	if os.path.exists('token.pickle'):
-		with open('token.pickle', 'rb') as token:
-			creds = pickle.load(token)
-    # If there are no (valid) credentials available, let the user log in.
-	if not creds or not creds.valid:
-		if creds and creds.expired and creds.refresh_token:
-			creds.refresh(Request())
-		else:
-			flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
-			creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-		with open('token.pickle', 'wb') as token:
-			pickle.dump(creds, token)
-
-	service = build('gmail', 'v1', credentials=creds)
-	print(service)
-	logger.debug(f'service - {service}')
-	logger.info('The get_service method has completed its execution')
-	return service
-
-def add_mark_in_table(table, cell, mark):
-    """
-    Добавление отметки в журнал. 
-    table - название таблицы. cell - ячейка в таблице. mark - отметка для ячейки.
-    """
-    import httplib2 
-    import apiclient.discovery
-    from oauth2client.service_account import ServiceAccountCredentials	
-
-    logger.info('Got into the AddMarkInTable method')
-    logger.debug(f'table - {table}, cell - {cell}, mark - {mark}')
-    try:
-        credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive'])
-
-        httpAuth = credentials.authorize(httplib2.Http())
-        service = apiclient.discovery.build('sheets', 'v4', http = httpAuth) 
-          
-        rangeTab = str(table) + "!" + str(cell)
-
-        #Сам метод добавления
-        #Если пиздец! То лазить тут!
-        service.spreadsheets().values().batchUpdate(spreadsheetId = SPREAD_SHEET_ID, body = {
-            "valueInputOption": "USER_ENTERED",
-            "data": [
-                {"range": rangeTab,
-                 "majorDimension": "ROWS",     
-                 "values": [ [mark] ]
-                }
-            ]
-        }).execute()
-        logger.info('The AddMarkInTable method has completed its execution')
-    except Exception as ex: 
-        logger.exception(ex)
-        
-def cleaning_email(email):
-    """
-    Метод для выделения почты из передаваемой строки email.
-    email - передаваемая строка с почтой
-    Name Surname <1234@gmail.com> ← пример email который мне передают
-    1234@gmail.com это будет запоминаться после метода очистки
-    """
-    comp = re.compile(r'<(\S*?)>')
-    y=comp.search(email)
-    q=y.group(0)
-    z=q.replace('<','').replace('>','')
-    return z
-def name_surname(email):
-    """
-    Метод для выделения и передачи имени и фамилии.
-    """
-    comp = re.compile('(\S*?) '+'(\S*?) ')
-    y=comp.search(email)
-    q=y.group(0)
-    return q
-def search_email(email):
-    """
-    Метод для поиска в таблице.
-    email - передаваемая строка с почтой
-    """
-    a=email
-    email=cleaning_email(email) # вызываю метод очистки строки в нужный формат
-    CREDENTIALS_FILE = 'json файл'  #  ← имя скаченного файла с закрытым ключом
-    credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets',                                                                               'https://www.googleapis.com/auth/drive'])
-    httpAuth = credentials.authorize(httplib2.Http())
-    service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
-    spreadsheetId = 'ссылка на таблицу'
-    range_name = 'Лист1!B1:B1000'
-    table = service.spreadsheets().values().get(spreadsheetId=spreadsheetId, range=range_name).execute() 
-    result=re.search(email, str(table)) # поиск почты 
-    if result != None:
-        b=poisk(a)
-    else:
-        b=None
-    return b
-
