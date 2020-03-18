@@ -59,6 +59,7 @@ user_id = 'me'
 
 def send_message(service, user_id, email_of_student, name_of_student, our_msg, title):
 	logger.info('Got into the send_message method')
+	sending_msg={}
 	#Данные используемые в каждом письме
 	hello_student = "Здравствуйте," + name_of_student + "\n\n"
 	signature = "\n\nС уважением,\n Бот"
@@ -217,7 +218,7 @@ def programm_progress(service, user_id):
 
 			else #метод не нашел человека
 				title = "Авторизация пользователя"
-				our_msg = "Вы не найдены в системе. Пожалуйста, перейдите по ссылке и зарегистрируйтесь.\n" + "https://docs.google.com/forms/d/1nXhfOkE3KnWVFNzZ-jvvATAIb6T3zzwD5Ry8Itc-VmQ/edit?usp=sharing)"
+				our_msg = "Вы не найдены в системе. Пожалуйста, перейдите по ссылке и зарегистрируйтесь.\n" + "https://docs.google.com/forms/d/1nXhfOkE3KnWVFNzZ-jvvATAIb6T3zzwD5Ry8Itc-VmQ/edit?usp=sharing"
 				send_message(service, user_id, email_of_student, name_of_student, our_msg, title)
 			#архивация сообщения(403 недостаточно прав для gmail api с python)
 			label_id = 'id_of_msg' 
