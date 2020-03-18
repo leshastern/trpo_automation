@@ -3,7 +3,7 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-email/18-ISbo-2a/*.pickle
+18-ISbo-2a/*.pickle
 
 # User-specific files
 *.rsuser
