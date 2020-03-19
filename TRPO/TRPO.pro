@@ -17,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
+        strategylab.cpp \
         tcpserver.cpp
 
 # Default rules for deployment.
@@ -25,4 +26,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    strategylab.h \
     tcpserver.h
+
+LIBS    += -lqjson
