@@ -22,6 +22,7 @@ public slots:
     void slotNewConnection();
     void slotServerRead();
     void slotClientDisconnected();
+    void slotSendToClient(int answer);
 };
 
 #endif // TCPSERVER_H

@@ -52,3 +52,13 @@ void TcpServer::slotClientDisconnected()
 {
     mTcpSocket->close();
 }
+/**
+ * @brief Метод отправляет 1 или 0 клиенту
+ * @param int answer - ответ, отправляемый клиенту(1 или 0)
+ * @return void
+ */
+void TcpServer::slotSendToClient(int answer)
+{
+    mTcpSocket->write((char*) &answer, sizeof(int));
+}
+
