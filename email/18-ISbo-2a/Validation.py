@@ -1,4 +1,11 @@
+import logging
+import logging.config
+
+logging.config.fileConfig('logging_config.conf')
+logger = logging.getLogger(__name__)
+
 def validation(head_of_msg,body_of_msg):
+    logger.info('Got into the validation method')
     #Список предметов
     Subjects_list=['ТРПО']
     #Список лабораторных работ
@@ -19,7 +26,9 @@ def validation(head_of_msg,body_of_msg):
         a=head_of_msg.find(x)
         if a!=-1:
             break
-    if a==-1:Errors_list.append('Неерно указано название предмета')
+    if a==-1:
+        logger.warning('The name of the item is incorrect.')
+        Errors_list.append('Неверно указано название предмета')
     
     #Проверка на номер лабораторной
     for x in SubjectNumber_list:
@@ -29,6 +38,7 @@ def validation(head_of_msg,body_of_msg):
             Number=head_of_msg[a+1]
             break
     if a==-1:
+        logger.warning('The lab number is incorrect.')
         Errors_list.append('Неверно указан номер ЛР')
         Number=None
  
@@ -37,33 +47,39 @@ def validation(head_of_msg,body_of_msg):
         a=body_of_msg.find(x)
         if a!=-1:
             break
-    if a==-1:Errors_list.append('Отсутсвует приветсвие')
+    if a==-1:
+        logger.warning('Missing greeting.')
+        Errors_list.append('Отсутсвует приветсвие')
 
     #Проверка на URL
     URL=url_cheack(Number,body_of_msg)
 
     #Проверка на подпись
     a=body_of_msg.find('--')
-    if a==-1:Errors_list.append('Отсутсвует подпись')
+    if a==-1:
+        logger.warning('Missing signature.')
+        Errors_list.append('Отсутсвует подпись')
 
 
     #Словарь
-    validation_dictionary={
+    validation_dictionary={ #а я думал кортеж))))
      'Number':Number,
      'URL': URL,
      'Errors': Errors_list
     }
 
     #Возвращаем словарь с номером лабораторной, URL, лист ошибок.
+    logger.info('The validation method has completed its execution')
     return(validation_dictionary)
     #print(validation_dictionary)
      
     #Проверка на наличие URL. Возврат ссылки.
 def url_cheack(Number,body_of_msg):
+    logger.info('Got into the url_cheack method')
     #Список ЛР в которых должна содержаться URL
     SubjectNumberURL_list=['7','8','9']
     #Проверка на содержание URL
-    for x in SubjectNumberURL_list:
+    for x in SubjectNumberURL_list: #Можно было заменить на if Number in SubjectNumberURL_list:
         if Number==x:
             a=body_of_msg.find('http')
             counter=0
@@ -77,21 +93,22 @@ def url_cheack(Number,body_of_msg):
             if a+counter==len(body_of_msg)-1:
                 if body_of_msg[a+counter]=='.':
                     URL=body_of_msg[a:a+counter]
-                    print(URL)
+                    logging.debug('url = %s' % URL)
                     return(URL)
                 else:
                     URL=body_of_msg[a:a+counter+1]
-                    print(URL)
+                    logging.debug('url = %s' % URL)
                     return(URL)
-                    break 
+                    break #зачем здесь нужен break? Ведь этот блок не в цикле
                    
             while a+counter>=a:
                 if body_of_msg[a+counter]=='.':
                     URL=body_of_msg[a:a+counter]
-                    print(URL)
+                    logging.debug('url = %s' % URL)
                     return (URL)                  
                 if body_of_msg[a+counter]!='.':
                     counter=counter-1    
+    logger.info('The url_cheack method has completed its execution')
 
 
 

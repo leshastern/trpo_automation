@@ -123,24 +123,31 @@ def cleaning_email(email):
     Name Surname <1234@gmail.com> ← пример email который мне передают
     1234@gmail.com это будет запоминаться после метода очистки
     """
+	logger.info('Got into the cleaning_email method')
     comp = re.compile(r'<(\S*?)>')
     y=comp.search(email)
     q=y.group(0)
     z=q.replace('<','').replace('>','')
+	logger.debug('z = %s' % z)
+	logger.info('The AddMarkInTable method has completed its execution')
     return z
 def name_surname(email):
     """
     Метод для выделения и передачи имени и фамилии.
     """
+	logger.info('Got into the name_surname method')
     comp = re.compile('(\S*?) '+'(\S*?) ')
     y=comp.search(email)
     q=y.group(0)
+	logger.debug('q = %s' %s)
+	logger.info('The name_surname method has completed its execution')
     return q
 def search_email(email):
     """
     Метод для поиска в таблице.
     email - передаваемая строка с почтой
     """
+	logger.info('Got into the search_email method')
     a=email
     #email=cleaning_email(email) # вызываю метод очистки строки в нужный формат
     CREDENTIALS_FILE = 'json файл'  #  ← имя скаченного файла с закрытым ключом
@@ -155,11 +162,13 @@ def search_email(email):
         b=poisk(a)
     else:
         b=None
+	logger.debug('search_email Returning = %s' % b)
+	logger.info('The search_email method has completed its execution')
     return b
 
 
 
-def programm_progress(service, user_id):
+def programm_progress(service, user_id): #поставьте, пожалуйста, комментарий. Вообще не понятно, что делает метод
 	logger.info('Got into the programm_progress method')
 	try:
 		search_id = service.users().messages().list(userId=user_id, labelIds = ['INBOX']).execute()
