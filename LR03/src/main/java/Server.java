@@ -9,7 +9,15 @@ import org.json.simple.parser.ParseException;
 
 public class Server {
 
-    private static Socket clientSocket;
+
+    public static void main(String[] args) {
+        Selenium Check=new Selenium("https://github.com/HozookiSan/Pin","1");
+        System.out.println(Check.Check_Readme());
+        System.out.println(Check.Check_Labels());
+        System.out.println(Check.Check_Milestone());
+    }
+
+   /* private static Socket clientSocket;
     private static ServerSocket server;
     private static BufferedReader in;
     private static BufferedWriter out;
@@ -35,7 +43,7 @@ public class Server {
                     out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
                     String word = in.readLine();
                     JSONObject Cilka = (JSONObject) JSONValue.parseWithException(word);
-                    int NomberVar=Integer.parseInt(Cilka.get("option").toString());
+                    String NomberVar=Cilka.get("option").toString();
                     String Repos=Cilka.get("body").toString();
                     Selenium Check_Repository=new Selenium(Repos,NomberVar);
                     Check_Repository.test();
@@ -58,5 +66,5 @@ public class Server {
         } catch (IOException e) {
             System.err.println(e);
         }
-    }
+    } */
 }
