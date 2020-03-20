@@ -61,4 +61,18 @@ void TcpServer::slotSendToClient(int answer)
 {
     mTcpSocket->write((char*) &answer, sizeof(int));
 }
+/**
+ * @brief Метод получает данные от клиента в формате json
+ * @return void
+ */
+void TcpServer::slotReadingDataJson()
+{
+    QByteArray data;
+
+    if (mTcpSocket->waitForConnected(500)) {
+        mTcpSocket->waitForConnected(500);
+        data = mTcpSocket->readAll();
+        docJson = QJsonDocument::fromJson(data, &docJsonError);
+    }
+}
 
