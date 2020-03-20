@@ -11,10 +11,10 @@ public class Server {
 
 
     public static void main(String[] args) {
-        Selenium Check=new Selenium("https://github.com/HozookiSan/Pin","1");
-        System.out.println(Check.Check_Readme());
-        System.out.println(Check.Check_Labels());
-        System.out.println(Check.Check_Milestone());
+        Selenium Check=new Selenium("https://github.com/HozookiSan/Losyash","1");
+        Check.test();
+        System.out.println(Check.Get_Ozenka());
+        System.out.println(Check.Get_Result());
     }
 
    /* private static Socket clientSocket;

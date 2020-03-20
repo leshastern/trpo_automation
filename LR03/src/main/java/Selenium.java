@@ -34,6 +34,7 @@ public class Selenium {
     public  String Repository="https://github.com/HozookiSan/Losyash"; // Ссылка на репозитори
     public  String variant; // Номер варика
     private String itog_ozenka="0";
+    private boolean empty=false;
     private String Var_Repository; // 1 Варик- Лосяш, 2 - Крош и тд
 
 
@@ -52,6 +53,7 @@ public class Selenium {
         driver = new ChromeDriver(options);
         Get_GoodReposotory();
         driver.get(Var_Repository);
+
         Add_Tab();
         Change_Tab(0);
     }
@@ -97,49 +99,125 @@ public class Selenium {
         return itog_ozenka;
     }
 
-    public String Check_Branches(int branches) {
-        if (branches==2){
-            driver.get(Repository + "/branches");
-            if (!("task-" + (variant + 1)).equals(pull_String("//div[2]/ul[1]/li[1]/div[1]/a[1]", true)))
-                return  "Неверное имя ветки ";
-            else {
-                driver.get(Repository + "/tree/task-" + (variant + 1));
-                if (driver.findElements(By.xpath("//td[@class='message']")).size() != 5) {
-                    driver.get(Repository + "tree/master/.gitignore");
-                    if (driver.findElements(By.xpath("//img[3]")).size() != 0)
-                        return  "В ветке task должно быть 5 файлов (.gitignore, README.md, 3 файла описания)";
-                }
-                driver.get(Repository + "/tree/master");
-                if (driver.findElements(By.xpath("//td[@class='message']")).size() != 3) {
-                    driver.get(Repository + "tree/task-" + (variant + 1) + "/.gitignore");
-                    if (driver.findElements(By.xpath("//img[3]")).size() != 0)
-                        return "В ветке master должно быть 3 файла (.gitignore, README.md, 1 файл описания)";
-                }
-            }}
-        else return "Ошибка в branches";
-        return "";
+    public String Check_Branches(int Good_branches,int Var_branches) {
+       if (Good_branches==Var_branches){
+           driver.get(Var_Repository+"/branches");
+           String Good_branches_Name=pull_String("//div[2]/ul[1]/li[@class='Box-row d-flex js-branch-row flex-items-center Details position-relative' and 1]/div[1]/a[@class='branch-name css-truncate-target v-align-baseline width-fit mr-2 Details-content--shown' and 1]",true);
+           Change_Tab(1);
+           driver.get(Repository+"/branches");
+           String Var_branches_Name=pull_String("//div[2]/ul[1]/li[@class='Box-row d-flex js-branch-row flex-items-center Details position-relative' and 1]/div[1]/a[@class='branch-name css-truncate-target v-align-baseline width-fit mr-2 Details-content--shown' and 1]",true);
+           Change_Tab(0);
+           if (Good_branches_Name.equals(Var_branches_Name)){
+               return ""; //  Реалиовать проверку файлов в ветках task и master. Проверку имени файлов и их наличия, а также их содержания
+           }
+           else { return "Неверное имя ветки\n"; }
+       }
+       else  { return "Неверное кол-во branches\n"; }
     }
 
 
-    public String Check_Issues(int issues){
-        if (issues!=0){
-            driver.get(Repository+"/issues");
-            if (!"2Open".equals(pull_String("//a[@class='btn-link selected']", true))&&!"1Closed".equals(pull_String("//a[@class='btn-link ']", true)))
-                return "Ошибка в issues. Нужно чтобы было открыто 2 и закрыт 1\n";}
-        else return "Отсутсвуют issues, либо все закрыты.\n";
-        return "";
+    public String Check_Issues(int Good_issues,int Var_issues){
+       if (Good_issues==Var_issues){
+           driver.get(Var_Repository+"/issues");
+           String Good_issues_str=pull_String("//a[@class='btn-link selected']",true)+pull_String("//a[@class='btn-link ']",true);
+           Change_Tab(1);
+           driver.get(Repository+"/issues");
+           String Var_issues_str=pull_String("//a[@class='btn-link selected']",true)+pull_String("//a[@class='btn-link ']",true);
+           Change_Tab(0);
+           if (Good_issues_str.equals(Var_issues_str)){
+               Good_issues_str=pull_String("//div[@id='issue_3']/div[@class='d-flex Box-row--drag-hide position-relative' and 1]/div[2]",true).toLowerCase();
+               for (String retval : Good_issues_str.split("#", 2)) {
+                   Good_issues_str=retval;break;
+               }
+               Change_Tab(1);
+               Var_issues_str=pull_String("//div[@id='issue_3']/div[@class='d-flex Box-row--drag-hide position-relative' and 1]/div[2]",true).toLowerCase();
+               for (String retval : Var_issues_str.split("#", 2)) {
+                   Var_issues_str=retval;break;
+               }
+               Change_Tab(0);
+               if (Good_issues_str.equals(Var_issues_str)){
+                   Good_issues_str=pull_String("//div[@id='issue_2']/div[@class='d-flex Box-row--drag-hide position-relative' and 1]/div[2]",true).toLowerCase();
+                   for (String retval : Good_issues_str.split("#", 2)) {
+                       Good_issues_str=retval;break;
+                   }
+                   Change_Tab(1);
+                   Var_issues_str=pull_String("//div[@id='issue_2']/div[@class='d-flex Box-row--drag-hide position-relative' and 1]/div[2]",true).toLowerCase();
+                   for (String retval : Var_issues_str.split("#", 2)) {
+                       Var_issues_str=retval;break;
+                   }
+                   Change_Tab(0);
+                   if (Good_issues_str.equals(Var_issues_str)){
+                       driver.get(Var_Repository+"/issues?q=is%3Apr+is%3Aclosed");
+                       Good_issues_str=pull_String("//div[@class='flex-auto min-width-0 lh-condensed p-2 pr-3 pr-md-2']",true).toLowerCase();
+                       for (String retval : Good_issues_str.split("#", 2)) {
+                           Good_issues_str=retval;break;
+                       }
+                       Change_Tab(1);
+                       driver.get(Repository+"/issues?q=is%3Apr+is%3Aclosed");
+                       Var_issues_str=pull_String("//div[@class='flex-auto min-width-0 lh-condensed p-2 pr-3 pr-md-2']",true).toLowerCase();
+                       for (String retval : Var_issues_str.split("#", 2)) {
+                           Var_issues_str=retval;break;
+                       }
+                       Change_Tab(0);
+                       if (Good_issues_str.equals(Var_issues_str)){
+                           return "";
+                       }
+                       else { return "Имя закрытого issues неверно,либо не назначен label"; }
+                   }
+                   else { return "Неверное имя 2 задачи, либо не назначен label"; }
+               }
+               else { return "Неверное имя 1 задачи, либо не назначен label"; }
+           }
+           else {return "Ошибка в issues. Должно быть 2 открытых, 1 закрытый\n"; }
+       }
+       else  { return "Не совпадает кол-во issues\n"; }
     }
 
-    public   String Check_PullRequests(int pull){
-        if (pull!=0){
+    public   String Check_PullRequests(int Good_pull,int Var_pull){
+        if (Good_pull==Var_pull){
+            driver.get(Var_Repository+"/pulls");
+            String Good_pull_str=pull_String("//a[@class='btn-link selected']",true)+pull_String("//a[@class='btn-link ']",true);
+            Change_Tab(1);
             driver.get(Repository+"/pulls");
-            if (!"1Open".equals(pull_String("//a[@class='btn-link selected']", true))&&!"1Closed".equals(pull_String("//a[@class='btn-link ']", true)))
-                return "Ошибка в pull requests. Нужно чтобы был открыт 1 и закрыт 1\n";}
-        else return "Отсутсвуют pull requsts, либо все закрыты.\n";
-        return "";
+            String Var_pull_str=pull_String("//a[@class='btn-link selected']",true)+pull_String("//a[@class='btn-link ']",true);
+            Change_Tab(0);
+            if (Good_pull_str.equals(Var_pull_str)){
+                Good_pull_str=pull_String("//div[@class='flex-auto min-width-0 lh-condensed p-2 pr-3 pr-md-2']",true).toLowerCase();
+                for (String retval : Good_pull_str.split("#", 2)) {
+                    Good_pull_str=retval;break;
+                }
+                Change_Tab(1);
+                Var_pull_str=pull_String("//div[@class='flex-auto min-width-0 lh-condensed p-2 pr-3 pr-md-2']",true).toLowerCase();
+                for (String retval : Var_pull_str.split("#", 2)) {
+                    Var_pull_str=retval;break;
+                }
+                Change_Tab(0);
+                if (Good_pull_str.equals(Var_pull_str)){
+                    driver.get(Var_Repository+"/pulls?q=is%3Apr+is%3Aclosed");
+                    Good_pull_str=pull_String("//div[@class='flex-auto min-width-0 lh-condensed p-2 pr-3 pr-md-2']",true).toLowerCase();
+                    for (String retval : Good_pull_str.split("#", 2)) {
+                        Good_pull_str=retval;break;
+                    }
+                    Change_Tab(1);
+                    driver.get(Repository+"/pulls?q=is%3Apr+is%3Aclosed");
+                    Var_pull_str=pull_String("//div[@class='flex-auto min-width-0 lh-condensed p-2 pr-3 pr-md-2']",true).toLowerCase();
+                    for (String retval : Var_pull_str.split("#", 2)) {
+                        Var_pull_str=retval;break;
+                    }
+                    Change_Tab(0);
+                    if (Good_pull_str.equals(Var_pull_str)){
+                        return "";
+                    }
+                    else { return "Имя закрытого pull_request неверно,либо не назначен label"; }
+                }
+                else { return "Имя открытого pull_request неверно,либо не назначен label"; }
+            }
+            else {return "Ошибка в pull_requests. Должно быть 1 открытый, 1 закрытый\n"; }
+        }
+        else {return "Кол-во pull_request неверно\n";}
     }
 
-    public   String Check_Project(int projects){
+   /* public   String Check_Project(int Good_project,int Var_project){
         String str="";
         if (projects!=0) {
             driver.get(Repository + "/projects/1");
@@ -175,7 +253,7 @@ public class Selenium {
             return "Отсутсвует project, либо он закрыт.\n";
         }
         return str;
-    }
+    } */
 
    public String Check_Labels(){
         driver.get(Var_Repository+"/labels");
@@ -190,14 +268,22 @@ public class Selenium {
            String Var_Labels_Name=pull_String("//div[10]/div[@class='col-3 pr-3' and 1]/a[@class='IssueLabel--big d-inline-block v-align-top lh-condensed js-label-link' and 1]/span[1]",true);
            Change_Tab(0);
            if (Good_Labels_Name.equals(Var_Labels_Name)){
-               return "";
+               Good_Labels_Name=pull_String("//a[@class='muted-link']",true);
+               Change_Tab(1);
+               Var_Labels_Name=pull_String("//a[@class='muted-link']",true);
+               Change_Tab(0);
+               if (Good_Labels_Name.equals(Var_Labels_Name)){
+                   return "";
+               }
+               else { return "Label верен, но назначен не на все задачи или/и pull_requests\n"; }
            }
-           else { return "Имя labels не совпадает"; }
+           else { return "Имя labels не совпадает\n"; }
         }
         else {
-            return "Кол-во labels не совпадает";
+            return "Кол-во labels не совпадает\n";
         }
     }
+
 
     public String Check_Milestone(){
         driver.get(Var_Repository+"/milestones");
@@ -221,24 +307,27 @@ public class Selenium {
                 if(Good_Milestone.equals(Var_Milestone)){
                     return "";
                 }
-                else { return "В milestone должно быть 5 задач(3 открытых, 2 закрытых)"; }
+                else { return "В milestone должно быть 5 задач(3 открытых, 2 закрытых)\n"; }
             }
-            else  {return "Имя milestone некорректно"; }
+            else  {return "Имя milestone некорректно\n"; }
 
         }
-        else {return "Отсутствует либо закрыт milestone"; }
+        else {return "Отсутствует либо закрыт milestone\n"; }
     }
 
     public  String Check_Readme(){
        String Readme_Good = pull_String("//article",true);
        Change_Tab(1);
-       String Readme_Var  =  pull_String("//article",true);
-       Change_Tab(0);
-       if (Readme_Good.equals(Readme_Var)){
-           return "";
+       if (driver.findElements(By.xpath("//article")).size()!=0) {
+           String Readme_Var = pull_String("//article", true);
+           Change_Tab(0);
+           if (Readme_Good.equals(Readme_Var)) {
+               return "";
+           }
+           else { return "Фаил Readme неверен"; }
        }
        else {
-           return "Файл Readme не найден, либо неверен";
+           return "Файл Readme не найден\n";
        }
 
     }
@@ -275,6 +364,9 @@ public class Selenium {
         ArrayList<String> tabs = new ArrayList<String>(driver.getWindowHandles());
         driver.switchTo().window(tabs.get(1));
         driver.get(Repository);
+        if (driver.findElements(By.xpath("//div[@class='blankslate blankslate-narrow']")).size()!=0){
+            empty=true;
+        }
     }
 
 
@@ -283,54 +375,37 @@ public class Selenium {
 
     public void test() {
         if (Var_Repository != null) {
-            final int Good_commits = pull_INT("//li[@class='commits']/a[1]/span[@class='num text-emphasized' and 1]");
-            Change_Tab(1);
-            final int Var_commits = pull_INT("//li[@class='commits']/a[1]/span[@class='num text-emphasized' and 1]");
-            Change_Tab(0);
+         if (!empty){
 
             final int Good_branches = pull_INT("//li[2]/a[1]/span[@class='num text-emphasized' and 1]");
-            Change_Tab(1);
-            final int Var_branches = pull_INT("//li[@class='commits']/a[1]/span[@class='num text-emphasized' and 1]");
-            Change_Tab(0);
-
             final int Good_issues = pull_INT("//span[2]/a[@class='js-selected-navigation-item reponav-item' and 1]/span[@class='Counter' and 2]");
-            Change_Tab(1);
-            final int Var_issues = pull_INT("//li[@class='commits']/a[1]/span[@class='num text-emphasized' and 1]");
-            Change_Tab(0);
-
             final int Good_pull_request = pull_INT("//*[1]/span[@class='Counter' and 2]");
-            Change_Tab(1);
-            final int Var_pull_request = pull_INT("//li[@class='commits']/a[1]/span[@class='num text-emphasized' and 1]");
-            Change_Tab(0);
-
             final int Good_projects = pull_INT("//nav/a[@class='js-selected-navigation-item reponav-item' and 1]/span[@class='Counter' and 1]");
             Change_Tab(1);
-            final int Var_projects = pull_INT("//li[@class='commits']/a[1]/span[@class='num text-emphasized' and 1]");
+            final int Var_branches = pull_INT("//li[2]/a[1]/span[@class='num text-emphasized' and 1]");
+            final int Var_issues = pull_INT("//span[2]/a[@class='js-selected-navigation-item reponav-item' and 1]/span[@class='Counter' and 2]");
+            final int Var_pull_request = pull_INT("//*[1]/span[@class='Counter' and 2]");
+            final int Var_projects = pull_INT("//nav/a[@class='js-selected-navigation-item reponav-item' and 1]/span[@class='Counter' and 1]");
             Change_Tab(0);
 
-
-            result += Check_Readme();
-
+            result+= Check_Readme();
             result+=Check_Labels();
-
-            //   result+=Check_Milestone();
-
-           // result += Check_Project(projects);
-
-           // result += Check_PullRequests(pull_request);
-
-           // result += Check_Issues(issues);
-
-           // result += Check_Branches(branches);
+            result+=Check_Milestone();
+            //result += Check_Project(Good_projects,Var_projects); //Реализовать проверку проекта
+            result += Check_PullRequests(Good_pull_request,Var_pull_request);
+            result += Check_Issues(Good_issues,Var_issues);
+            result += Check_Branches(Good_branches,Var_branches);
 
             if ("".equals(result)) {
                 itog_ozenka = "1";
             }
 
-            driver.close();
+            driver.quit();
 
         }
-        else {System.out.println("Не найден вариант в файле"); }
+         else { result="Репозиторий пуст"; driver.quit();}
+        }
+        else {System.out.println("Не найден вариант в файле");driver.quit();}
     }
 
 
