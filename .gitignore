@@ -30,7 +30,6 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
-.idea/**
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -402,3 +401,5 @@ compile_commands.json
 
 # QtCreator local machine specific files for imported projects
 *creator.user*
+
+.idea/**
