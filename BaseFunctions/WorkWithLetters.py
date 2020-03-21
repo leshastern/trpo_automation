@@ -18,7 +18,7 @@ def WorkWithLetters(letters):
 
     # GetResultsFromCheck - Дождаться результатов проверки писем
     # emailResults - Переменная, хранящая результаты проверок
-    print("emailResults = GetResultsFromCheck()")
+    print("emailResults = GetResultsFromCheck(letters)")
 
     # SetResults - Передать данные следующему модулю в формате списка экземпляров класса EmailResults
     print("SetResults(emailResults)")
