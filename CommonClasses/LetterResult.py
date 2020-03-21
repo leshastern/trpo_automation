@@ -12,6 +12,7 @@ class LetterResult:
     Student = User.User()
     ThemeOfLetter = ""
     IsOK = False
+    Comment = ""
     Variant = 0
     CodeStatus = 0
     CodeStatusComment = ""
