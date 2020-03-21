@@ -1,9 +1,6 @@
 import com.google.errorprone.annotations.Var;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
@@ -14,6 +11,8 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.security.sasl.SaslException;
@@ -22,7 +21,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node; import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 
@@ -91,6 +91,8 @@ public class Selenium {
 
 
 
+
+
     public String Get_Result(){
         return result;
     }
@@ -100,21 +102,108 @@ public class Selenium {
     }
 
     public String Check_Branches(int Good_branches,int Var_branches) {
-       if (Good_branches==Var_branches){
+       if (Good_branches==Var_branches){  //Если кол-во веток в репозитория одно и тоже то смотрим их имена
            driver.get(Var_Repository+"/branches");
            String Good_branches_Name=pull_String("//div[2]/ul[1]/li[@class='Box-row d-flex js-branch-row flex-items-center Details position-relative' and 1]/div[1]/a[@class='branch-name css-truncate-target v-align-baseline width-fit mr-2 Details-content--shown' and 1]",true);
            Change_Tab(1);
            driver.get(Repository+"/branches");
            String Var_branches_Name=pull_String("//div[2]/ul[1]/li[@class='Box-row d-flex js-branch-row flex-items-center Details position-relative' and 1]/div[1]/a[@class='branch-name css-truncate-target v-align-baseline width-fit mr-2 Details-content--shown' and 1]",true);
            Change_Tab(0);
-           if (Good_branches_Name.equals(Var_branches_Name)){
-               return ""; //  Реалиовать проверку файлов в ветках task и master. Проверку имени файлов и их наличия, а также их содержания
+           if (Good_branches_Name.equals(Var_branches_Name)){ //Если с имена все ок, то смотрим кол-во файлов в ветке
+               driver.get(Var_Repository+"/tree/master");
+               List<WebElement> Good_File_Size =driver.findElements(By.className("js-navigation-item"));
+               Change_Tab(1);
+               driver.get(Repository+"/tree/master");
+               List<WebElement> Var_File_Size =driver.findElements(By.className("js-navigation-item"));
+               Change_Tab(0);
+               if (Good_File_Size.size()==Var_File_Size.size()){ //Если с кол-во файлов все ок, то смотрим имена этих файлов
+                   Good_File_Size=driver.findElements(By.className("content"));
+                   String[] Good_File_Str_Mas =new String[Good_File_Size.size()];
+                   for (int i=1;i<Good_File_Size.size();i++){
+                     Good_File_Str_Mas[i]=Good_File_Size.get(i).getAttribute("textContent");
+                     Good_File_Str_Mas[i]=Good_File_Str_Mas[i].replaceAll(" ","").replaceAll("\n","");
+                   }
+                   Change_Tab(1);
+                   Var_File_Size=driver.findElements(By.className("content"));
+                   String[] Var_File_Str_Mas =new String[Var_File_Size.size()];
+                   for (int i=1;i<Good_File_Size.size();i++){
+                       Var_File_Str_Mas[i]=Var_File_Size.get(i).getAttribute("textContent");
+                       Var_File_Str_Mas[i]=Var_File_Str_Mas[i].replaceAll(" ","").replaceAll("\n","");
+                   }
+                   Change_Tab(0);
+                   if (Arrays.equals(Good_File_Str_Mas,Var_File_Str_Mas)){ //Если имена файлов в ветках совпадают, то смторим что в этих файлах
+                       boolean correct_file=true;
+                       for (int i=1;i<Good_File_Size.size();i++){ //начинать с 1!!
+                        driver.get(Var_Repository+"/blob/master/"+Good_File_Str_Mas[i]);
+                        driver.findElement(By.xpath("//a[@id='raw-url']")).click();
+                        Good_branches_Name=driver.findElement(By.cssSelector("body")).getAttribute("textContent");
+                        Change_Tab(1);
+                        driver.get(Repository+"/blob/master/"+Var_File_Str_Mas[i]);
+                        driver.findElement(By.xpath("//a[@id='raw-url']")).click();
+                        Var_branches_Name=driver.findElement(By.cssSelector("body")).getAttribute("textContent");
+                        Change_Tab(0);
+                        if (!Good_branches_Name.equals(Var_branches_Name)){
+                            correct_file=false;
+                        }
+                       }
+                       if (correct_file){ //Если проверка прошла, то смотрим другую ветку?
+                           driver.get(Var_Repository+"/tree/task-"+variant);
+                           Good_File_Size =driver.findElements(By.className("js-navigation-item"));
+                           Change_Tab(1);
+                           driver.get(Repository+"/tree/task-"+variant);
+                           Var_File_Size =driver.findElements(By.className("js-navigation-item"));
+                           Change_Tab(0);
+                           if (Good_File_Size.size()==Var_File_Size.size()){ //Если с кол-во файлов все ок, то смотрим имена этих файлов
+                               Good_File_Size=driver.findElements(By.className("content"));
+                                Good_File_Str_Mas =new String[Good_File_Size.size()];
+                               for (int i=1;i<Good_File_Size.size();i++){
+                                   Good_File_Str_Mas[i]=Good_File_Size.get(i).getAttribute("textContent");
+                                   Good_File_Str_Mas[i]=Good_File_Str_Mas[i].replaceAll(" ","").replaceAll("\n","");
+                               }
+                               Change_Tab(1);
+                               Var_File_Size=driver.findElements(By.className("content"));
+                               Var_File_Str_Mas =new String[Var_File_Size.size()];
+                               for (int i=1;i<Good_File_Size.size();i++){
+                                   Var_File_Str_Mas[i]=Var_File_Size.get(i).getAttribute("textContent");
+                                   Var_File_Str_Mas[i]=Var_File_Str_Mas[i].replaceAll(" ","").replaceAll("\n","");
+                               }
+                               Change_Tab(0);
+                               if (Arrays.equals(Good_File_Str_Mas,Var_File_Str_Mas)) { //Если имена файлов в ветках совпадают, то смторим что в этих файлах
+                                   correct_file = true;
+                                   for (int i = 1; i < Good_File_Size.size(); i++) { //начинать с 1!!
+                                       driver.get(Var_Repository + "/blob/task-"+variant+"/" + Good_File_Str_Mas[i]);
+                                       driver.findElement(By.xpath("//a[@id='raw-url']")).click();
+                                       Good_branches_Name = driver.findElement(By.cssSelector("body")).getAttribute("textContent");
+                                       Change_Tab(1);
+                                       driver.get(Repository + "/blob/task-"+variant+"/" + Var_File_Str_Mas[i]);
+                                       driver.findElement(By.xpath("//a[@id='raw-url']")).click();
+                                       Var_branches_Name = driver.findElement(By.cssSelector("body")).getAttribute("textContent");
+                                       Change_Tab(0);
+                                       if (!Good_branches_Name.equals(Var_branches_Name)){
+                                           correct_file=false;
+                                       }
+                                   }
+                                   if (correct_file){
+                                       return "";
+                                   }
+                                   else { return "Наполнение файлов в ветке task неверно\n"; }
+                               }
+                               else { return "В ветке task неверные файлы\n"; }
+                           }
+                           else { return "В ветке task неверное кол-во файлов\n"; }
+                       }
+                       else { return "Наполнение файлов в ветке master неверно\n";}
+                   }
+                   else { return "В ветке master неверные файлы\n"; }
+               }
+               else { return "В ветке master неверное кол-во файлов\n"; }
            }
            else { return "Неверное имя ветки\n"; }
        }
        else  { return "Неверное кол-во branches\n"; }
     }
 
+    
 
     public String Check_Issues(int Good_issues,int Var_issues){
        if (Good_issues==Var_issues){
@@ -388,13 +477,13 @@ public class Selenium {
             final int Var_projects = pull_INT("//nav/a[@class='js-selected-navigation-item reponav-item' and 1]/span[@class='Counter' and 1]");
             Change_Tab(0);
 
-            result+= Check_Readme();
-            result+=Check_Labels();
-            result+=Check_Milestone();
-            //result += Check_Project(Good_projects,Var_projects); //Реализовать проверку проекта
-            result += Check_PullRequests(Good_pull_request,Var_pull_request);
-            result += Check_Issues(Good_issues,Var_issues);
-            result += Check_Branches(Good_branches,Var_branches);
+            result+= Check_Readme(); //Done
+            result+=Check_Labels(); //Done
+            result+=Check_Milestone(); //Done
+            //result += Check_Project(Good_projects,Var_projects); //Реализовать проверку проекта In progress
+            result += Check_PullRequests(Good_pull_request,Var_pull_request); //Done
+            result += Check_Issues(Good_issues,Var_issues); //Done
+            result += Check_Branches(Good_branches,Var_branches); //Done
 
             if ("".equals(result)) {
                 itog_ozenka = "1";
