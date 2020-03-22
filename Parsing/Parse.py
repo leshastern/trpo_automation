@@ -62,4 +62,6 @@ def finding_links(table):
     return date
 
 
+url = input("Введите ссылку: ")
+Parse.finding_files(Parse.get_html(url), url)
 
