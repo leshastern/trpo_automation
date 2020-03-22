@@ -63,5 +63,5 @@ def finding_links(table):
 
 
 url = input("Введите ссылку: ")
-Parse.finding_files(Parse.get_html(url), url)
+finding_files(get_html(url), url)
 
