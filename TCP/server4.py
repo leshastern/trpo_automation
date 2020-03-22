@@ -1,7 +1,7 @@
 import socket
 
 """Настройка модуля сервера через файл config.txt"""
-config= open("config.txt", "r")
+config= open("config4.txt", "r")
 HOST=config.readline()
 HOST= HOST.replace("\n", '')
 PORT=int(config.readline())
@@ -18,9 +18,4 @@ while True:
     recvdata = data.decode()
     print("Полученные данные:")
     print(recvdata)
-
-    """Ответ сервера"""
-    recvdata = recvdata + "///СЕРВЕР///"
-    conn.send(recvdata.encode())
-
 conn.close()
