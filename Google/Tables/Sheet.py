@@ -1,28 +1,29 @@
 """
-Подключение класса, вызов метода проверки наличия студента в базе.
-Метод принимает строковые параметры (обязательные),
-проверяет наличие email в базе, в случае отсутствия - добавляет
-информацию о студенте последней строкой.
-возвращает bool!
+Подключение класса
 """
 
 #Просто скопируйте это в вашу программу:
 
 """
 from Sheet import Sheet
+"""
+# ---------------------------------------------------------------- #
 
+"""
+Вызов метода проверки email в базе.
+возвращает bool или объект с ФИО студента!
+"""
+
+#Просто скопируйте это в вашу программу:
+
+"""
 email = 'test@gmail.com'    #замените здесь на ваши данные
-group = 'группа'    #замените здесь на ваши данные
-first_name = 'имя'  #замените здесь на ваши данные
-surname = 'фамилия' #замените здесь на ваши данные
-patronymic = 'отчество' #замените здесь на ваши данные
-
-result = Sheet.check_student_email(email, group, first_name, surname, patronymic)
+result = Sheet.check_email(email)
 """
-
+# ----------------------------------------------------------------- #
 
 """
-Подключение класса, вызов метода выставления оценок.
+Вызов метода выставления оценок.
 возвращает bool!
 """
 
@@ -38,6 +39,7 @@ value = 0 #оценка #замените здесь на ваши данные
 
 result = Sheet.journal(group, first_name, surname, patronymic, lab_id, value)
 """
+
 
 from Auth import Auth
 import datetime
@@ -224,18 +226,21 @@ class Sheet:
         result = Sheet.append_sheet(spreadsheetId, ranges, body) #Добавление записи в конец листа
         return result
 
-
-    #проверка наличия студента в базе, в случае отсутствия - добавление, ничего не возвращает
-
-    #проверка наличия студента в базе, возвращает true/false
-    def check_student_email(email, group, first_name, surname, patronymic):
+    """
+    # проверка наличия email в базе
+        принимает email студента
+        возвращает
+            ФИО в формате: [['Фамилия', 'Имя', 'Отчество']]
+            или bool (false), если email не найден
+    """
+    #проверка наличия email в базе
+    def check_email(email):
         #ID документа в гугл-таблицах (список студентов)
         Email_sheetId = '1gMZiZqSE89vk3ZeYbTGYGaMMy7j-iMrYRjn-ECUhaag'
         
-        #sheet_name = Sheet.sheet_name(Email_sheetId) #имя первого листа
         sheet_name = 'Ответы на форму (1)' #имя листа
         
-        d_start = "B2"  #начало диапазона
+        d_start = "B1"  #начало диапазона
         d_end = "B" #конец диапазона
         
         #получаем все email из списка
@@ -243,36 +248,16 @@ class Sheet:
         if not email_full:
             return bool(0)
         
-        #проверка наличия email в списке
-        email_str = ' '.join(map(str, email_full))
-    
-        pattern = "\[\'" + email + "\'\]"        
-        match = re.search(pattern, email_str)
-
-        # --------------------------------------------#
-
-        if not match:
+        #проверяем в базе
+        number_str = Sheet.search_number_string(email_full, email)
+        if not number_str:
             return bool(0)
-
-        return bool(1)
-
-        # --------------------------------------------#
-
-        # if not match:
-        #     #добавляем студента в список, если отсутствует
-        #     result = Sheet.new_student(Email_sheetId, email, group, first_name, surname, patronymic)
-        #     #print("добавлено")
-        #     return result
-        # return bool(1)
-
-        # --------------------------------------------#
-
-        #else:
-        #    print("Уже существует")
-        #    print(match[0])
-
-
-
+        else:
+            #Диапазон выставлен на ФИО студента
+            start = 'C' + '{}'.format(number_str)
+            end = 'E' + '{}'.format(number_str)
+            student = Sheet.read_sheet(Email_sheetId, sheet_name, start, end)
+            return student
     
     """
     # поиск листа по группе студента
@@ -303,7 +288,6 @@ class Sheet:
         except Exception:
             return bool(0)
     
-    
     """
     # добавление оценки в журнал
         принимает
@@ -327,12 +311,12 @@ class Sheet:
             print(1)
             return bool(0)
         
-        alfa = Sheet.search_alfa(Journal_sheetId, sheet_name, lab_id)
+        alfa = Sheet.search_for_id(Journal_sheetId, sheet_name, lab_id)
         if not alfa:
             print(2)
             return bool(0)
 
-        number_str = Sheet.search_number_str(Journal_sheetId, sheet_name, first_name, surname, patronymic)
+        number_str = Sheet.search_for_student(Journal_sheetId, sheet_name, first_name, surname, patronymic)
         
         if number_str:        
             #адрес ячейки для выставления оценки
@@ -347,7 +331,6 @@ class Sheet:
             print('нет строки')
             return bool(0)
 
-
     """
     #поиск адреса столбца по id лабы
         принимает
@@ -358,24 +341,37 @@ class Sheet:
            имя столбца или bool 
     """    
     #поиск адреса столбца по id лабы
-    def search_alfa(Journal_sheetId, sheet_name, lab_id):
+    def search_for_id(Journal_sheetId, sheet_name, lab_id):
         d_start = "A1"  #начало диапазона
         d_end = "1" #конец диапазона
             
         #получаем всю строку с id из списка
         id_full = Sheet.read_sheet(Journal_sheetId, sheet_name, d_start, d_end)
 
+        result = Sheet.search_alfa(id_full, lab_id)
+        return result
+
+    """
+    #поиск адреса столбца в строке по шаблону
+        принимает
+            объект, содержащий ячейки в одной строке
+            pattern - шаблон для поиска
+        возвращает
+           имя столбца или bool
+    """    
+    #поиск адреса столбца в строке по шаблону
+    def search_alfa(full_str, pattern):
         alfa = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
                   
-        """ поиск адреса столбца по id лабы """
-        count_lab_id = id_full[0].count(lab_id) # проверяем присутствие id в журнале
+        """ поиск адреса столбца по шаблону """
+        count_pattern = full_str[0].count(pattern) # проверяем наличие ячейки (шаблона) в полученном объекте 
             
-        #если ИД найден, то получаем его индекс в списке
-        if count_lab_id != 0:
-            index_lab_id = id_full[0].index(lab_id)
+        #если шаблон найден, то получаем его индекс в списке
+        if count_pattern != 0:
+            index_pattern = full_str[0].index(pattern)
 
-            a = index_lab_id // len(alfa)
-            b = index_lab_id % len(alfa)
+            a = index_pattern // len(alfa)
+            b = index_pattern % len(alfa)
 
             S = ""  # сюда запишем адрес столбца
             if a < 1:
@@ -385,7 +381,6 @@ class Sheet:
             return S
         
         return bool(0)
-
 
     """
     #поиск номера строки в журнале по ФИО студента
@@ -399,7 +394,7 @@ class Sheet:
             номер строки или bool 
     """
     #поиск номера строки в журнале по ФИО студента
-    def search_number_str(Journal_sheetId, sheet_name, first_name, surname, patronymic):
+    def search_for_student(Journal_sheetId, sheet_name, first_name, surname, patronymic):
         d_start = "D1"  #начало диапазона
         d_end = "D" #конец диапазона
             
@@ -410,13 +405,26 @@ class Sheet:
         
         pattern = first_name + "\W+" + surname + "\W+" + patronymic #"\[\'" + email + "\'\]"        
 
-        for i in range(len(name_full)):
-            name_str = ' '.join(map(str, name_full[i]))
-            match = re.search(pattern, name_str)
+        result = Sheet.search_number_string(name_full, pattern)
+        return result
+
+    """
+    #поиск содержимого ячейки в столбце
+        принимает
+            объект, содержащий все значения в столбце
+        возвращает
+            номер строки, если шаблон найден
+            bool (false), если шаблон не найден 
+    """
+    #поиск содержимого ячейки в столбце
+    def search_number_string(full_column, pattern):
+        for i in range(len(full_column)):
+            value = ' '.join(map(str, full_column[i]))
+            match = re.search(pattern, value)
             if match:
                 number_str = i + 1     #номер строки
-                #print(match[0])    #содержимое ячейки с ФИО
+                #print(match[0])    #содержимое ячейки
                 return number_str
-        #print("Студент не найден")
+        #print("pattern не найден")
         return bool(0)
         
