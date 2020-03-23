@@ -64,5 +64,3 @@ def finding_links(table):
 
 url = input("Введите ссылку: ")
 finding_files(get_html(url), url)
-
-
