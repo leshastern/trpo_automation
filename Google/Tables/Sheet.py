@@ -224,7 +224,10 @@ class Sheet:
         result = Sheet.append_sheet(spreadsheetId, ranges, body) #Добавление записи в конец листа
         return result
 
+
     #проверка наличия студента в базе, в случае отсутствия - добавление, ничего не возвращает
+
+    #проверка наличия студента в базе, возвращает true/false
     def check_student_email(email, group, first_name, surname, patronymic):
         #ID документа в гугл-таблицах (список студентов)
         Email_sheetId = '1gMZiZqSE89vk3ZeYbTGYGaMMy7j-iMrYRjn-ECUhaag'
@@ -245,12 +248,25 @@ class Sheet:
     
         pattern = "\[\'" + email + "\'\]"        
         match = re.search(pattern, email_str)
+
+        # --------------------------------------------#
+
         if not match:
-            #добавляем студента в список, если отсутствует
-            result = Sheet.new_student(Email_sheetId, email, group, first_name, surname, patronymic)
-            #print("добавлено")
-            return result
+            return bool(0)
+
         return bool(1)
+
+        # --------------------------------------------#
+
+        # if not match:
+        #     #добавляем студента в список, если отсутствует
+        #     result = Sheet.new_student(Email_sheetId, email, group, first_name, surname, patronymic)
+        #     #print("добавлено")
+        #     return result
+        # return bool(1)
+
+        # --------------------------------------------#
+
         #else:
         #    print("Уже существует")
         #    print(match[0])
