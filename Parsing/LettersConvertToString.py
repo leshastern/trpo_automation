@@ -2,6 +2,14 @@ import requests
 from bs4 import BeautifulSoup
 
 
+def LettersConvertToString(letters):
+    """Предположительно пока что забираем ссылки из писем на репозиторий"""
+    for tmp in letters:
+        html = get_html(tmp.url)
+        finding_files(html, url)
+
+
+
 def get_html(url):
     """Достаю html с введённой ссылки и возвращаю в виде текста"""
     r = requests.get(url)    # Получим метод Response
