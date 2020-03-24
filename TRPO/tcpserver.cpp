@@ -57,9 +57,15 @@ void TcpServer::slotClientDisconnected()
  * @param int answer - ответ, отправляемый клиенту(1 или 0)
  * @return void
  */
-void TcpServer::slotSendToClient(int answer)
+void TcpServer::sendToClient(bool answer)
 {
-    mTcpSocket->write((char*) &answer, sizeof(int));
+   if (answer) {
+       mTcpSocket->readAll();
+       mTcpSocket->write("1");
+   } else {
+       mTcpSocket->readAll();
+       mTcpSocket->write("0");
+   }
 }
 /**
  * @brief Метод получает данные от клиента в формате json
@@ -73,6 +79,15 @@ void TcpServer::slotReadingDataJson()
         mTcpSocket->waitForConnected(500);
         data = mTcpSocket->readAll();
         docJson = QJsonDocument::fromJson(data, &docJsonError);
+
+        // Проверка ключа и данных
+        if (docJsonError.errorString().toInt() == QJsonParseError::NoError) {
+            if (docJson.object().value("code").toString() == "content") {
+                qDebug() << "ReadingDataJson() - work";
+            } else {
+                qDebug() << "ReadingDataJson() - don't work";
+            }
+        }
     }
 }
 

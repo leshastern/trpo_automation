@@ -22,12 +22,12 @@ private:
 
 public:
     explicit TcpServer(QObject *parent = 0);
+     void sendToClient(bool answer);
 
 public slots:
     void slotNewConnection();
     void slotServerRead();
     void slotClientDisconnected();
-    void slotSendToClient(int answer);
     void slotReadingDataJson();
 };
 
