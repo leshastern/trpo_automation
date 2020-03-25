@@ -48,20 +48,20 @@ user_id = 'me'
 
 @log_method.log_method_info
 def add_mark_in_table(table, cell, mark):
-    """
-    Добавление отметки в журнал. 
-    table - название таблицы. cell - ячейка в таблице. mark - отметка для ячейки.
-    """
-    import httplib2 
-    import apiclient.discovery
-    from oauth2client.service_account import ServiceAccountCredentials	
+	"""
+	Добавление отметки в журнал. 
+	table - название таблицы. cell - ячейка в таблице. mark - отметка для ячейки.
+	"""
+	import httplib2
+	import apiclient.discovery
+	from oauth2client.service_account import ServiceAccountCredentials
 
-    log_method.logger.debug(f'add_mark_in_table: table - {table}, cell - {cell}, mark - {mark}')
+	log_method.logger.debug(f'add_mark_in_table: table - {table}, cell - {cell}, mark - {mark}')
 	credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive'])
 
 	httpAuth = credentials.authorize(httplib2.Http())
 	service = apiclient.discovery.build('sheets', 'v4', http = httpAuth) 
-		
+
 	rangeTab = str(table) + "!" + str(cell)
 
 	#Сам метод добавления
@@ -106,8 +106,8 @@ def search_email(email_id):
     Метод для поиска в таблице.
     email - передаваемая строка с почтой
     """
-    a=email
-    email=cleaning_email(email) # вызываю метод очистки строки в нужный формат
+    #a=email
+    email=cleaning_email(email_id) # вызываю метод очистки строки в нужный формат
     CREDENTIALS_FILE = 'json файл'  #  ← имя скаченного файла с закрытым ключом
     credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets',                                                                               'https://www.googleapis.com/auth/drive'])
     httpAuth = credentials.authorize(httplib2.Http())
@@ -115,12 +115,14 @@ def search_email(email_id):
     spreadsheetId = 'ссылка на таблицу'
     range_name = 'Лист1!B1:B1000'
     table = service.spreadsheets().values().get(spreadsheetId=spreadsheetId, range=range_name).execute() 
-    result=re.search(email, str(table)) # поиск почты 
-    if result != None:
-        b=poisk(a)
+    #result=re.search(email, str(table)) # поиск почты 
+    if 	re.search(email, str(table)):#result != None:
+        #b=cleaning_email(a)
+		return email
     else:
-        b=None
-    return b
+        #b=None
+		return None
+    #return b
 
 def get_message(service, user_id):
 	"""
