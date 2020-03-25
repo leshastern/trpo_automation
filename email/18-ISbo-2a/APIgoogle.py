@@ -107,7 +107,7 @@ def search_email(email_id):
     email - передаваемая строка с почтой
     """
     #a=email
-    email=cleaning_email(email_id) # вызываю метод очистки строки в нужный формат
+    mail_str=cleaning_email(email_id) # вызываю метод очистки строки в нужный формат
     CREDENTIALS_FILE = 'json файл'  #  ← имя скаченного файла с закрытым ключом
     credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets',                                                                               'https://www.googleapis.com/auth/drive'])
     httpAuth = credentials.authorize(httplib2.Http())
@@ -117,12 +117,12 @@ def search_email(email_id):
     table = service.spreadsheets().values().get(spreadsheetId=spreadsheetId, range=range_name).execute() 
     #result=re.search(email, str(table)) # поиск почты 
     if 	re.search(email, str(table)):#result != None:
-        #b=cleaning_email(a)
-		return email
+        b=mail_str
+		#return email
     else:
-        #b=None
-		return None
-    #return b
+        b=None
+		#return None
+    return b
 
 def get_message(service, user_id):
 	"""
