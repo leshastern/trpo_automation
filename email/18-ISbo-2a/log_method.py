@@ -18,16 +18,16 @@ logging.basicConfig(
 logger = logging.getLogger(__name__) 
 
 def log_method_info(method):
-    def write_logs():
+    def write_logs(*args, **kwargs):
         try:
             logger.info(f'Got into - {method.__name__}')
-            result = method()
+            result = method(*args, **kwargs)
             logger.debug(f'Method {method.__name__} has returned - {result}')
             logger.info(f'Method has completed - {method.__name__}')
             return result
         except Exception as ex:
             logger.exception(ex)
-            logger.info(f'Method has crashed - {method.__name__}')
+            logger.error(f'Method has crashed - {method.__name__}')
     return write_logs
 
 if __name__ == '__main__':
