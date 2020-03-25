@@ -69,5 +69,84 @@ class Test_google(unittest.TestCase):
         new_one = response['values'][0][0]
         self.assertEqual(new_one, '2')
 
+    def test_get_message(self):
+
+        from APIgoogle import get_message
+        from APIgoogle import get_service
+
+        service = get_service()
+
+        message_info = get_message(service, 'sanyabl.atchtozah.inya@gmail.com')
+
+        hello_student = "Здравствуйте, " + 'человек, который делает всё невовремя' + "!"
+        signature = " С уважением, Бот"
+        our_msg = ' В Вашей работе обнаружены ошибки: ' + '- неверно указан номер ЛР ' + 'Просьба исправить их и отправить письмо повторно.'
+        body_of_msg = hello_student + our_msg + signature
+
+        our_info = {
+            'email_id':'sanyabl.atchtozah.inya@gmail.com',
+            'head_of_msg':'Обнаружены ошибки в работе',
+            'body_of_msg':body_of_msg
+            }
+
+        self.assertEqual(message_info, our_info)
+
+    def test_error_in_word(self):
+
+        from APIgoogle import error_in_work
+
+        Errors_list=[]
+        Errors_list.append('неверно указано название предмета')
+        Errors_list.append('неверно указан номер ЛР')
+
+        validation_dictionary={ 
+            'Number':1,
+            'URL': "someurl.what",
+            'Errors': Errors_list
+            }
+
+        answer = '- неверно указано название предмета'+"\n"+'- неверно указан номер ЛР'+"\n"
+
+        get_error = error_in_work(validation_dictionary)
+
+        self.assertEqual(get_error, answer)
+
+    def test_send_message(self):
+
+        from APIgoogle import send_message
+        from APIgoogle import get_service
+        from APIgoogle import get_message
+
+        service = get_service()
+
+        user_id = 'sanyabl.atchtozah.inya@gmail.com'
+        email_of_student = 'sanyabl.atchtozah.inya@gmail.com'
+        name_of_student = 'человек, который делает всё невовремя'
+        number_of_templates = 1;
+
+        Errors_list=[]
+        Errors_list.append('неверно указан номер ЛР')
+        validation_dictionary={ 
+            'Number':1,
+            'URL': "someurl.what",
+            'Errors': Errors_list
+            }
+
+        send_message(service, user_id, email_of_student, name_of_student, number_of_templates, validation_dictionary)
+        message_info = get_message(service, 'sanyabl.atchtozah.inya@gmail.com')
+
+        hello_student = "Здравствуйте, " + name_of_student + "!"
+        signature = " С уважением, Бот"
+        our_msg = ' В Вашей работе обнаружены ошибки: ' + '- неверно указан номер ЛР '+ 'Просьба исправить их и отправить письмо повторно.'
+        body_of_msg = hello_student + our_msg + signature
+
+        our_info = {
+            'email_id':'sanyabl.atchtozah.inya@gmail.com',
+            'head_of_msg':'Обнаружены ошибки в работе',
+            'body_of_msg': body_of_msg
+            }
+        
+        self.assertEqual(message_info, our_info)
+
 
 
