@@ -7,6 +7,9 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonParseError>
+
+#include "strategylab.h"
+
 /**
 *   @brief Реализация сервера для проверки лабораторных работ по паттерну стратегии
 */
@@ -17,11 +20,12 @@ class TcpServer : public QObject
 private:
     QTcpServer* mTcpServer;
     QTcpSocket* mTcpSocket;
+    StrategyLab* lab;
     QJsonDocument docJson;
     QJsonParseError docJsonError;
 
 public:
-    explicit TcpServer(QObject *parent = 0);
+    explicit TcpServer(QObject *parent = nullptr);
      void sendToClient(bool answer);
 
 public slots:

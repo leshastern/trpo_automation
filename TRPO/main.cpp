@@ -1,11 +1,11 @@
 #include <QCoreApplication>
-#include "strategylab.h"
+#include "tcpserver.h"
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    StrategyLab lab;
+    TcpServer * server = new TcpServer();
 
     return a.exec();
 }

@@ -28,5 +28,3 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     strategylab.h \
     tcpserver.h
-
-LIBS    += -lqjson
