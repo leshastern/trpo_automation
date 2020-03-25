@@ -25,7 +25,7 @@ def validation(head_of_msg,body_of_msg):
             break
     if a==-1:
         log_method.logger.warning('validation: The name of the item is incorrect.')
-        Errors_list.append('Неверно указано название предмета')
+        Errors_list.append('неверно указано название предмета')
     
     #Проверка на номер лабораторной
     for x in SubjectNumber_list:
@@ -36,7 +36,7 @@ def validation(head_of_msg,body_of_msg):
             break
     if a==-1:
         log_method.logger.warning('validation: The lab number is incorrect.')
-        Errors_list.append('Неверно указан номер ЛР')
+        Errors_list.append('неверно указан номер ЛР')
         Number=None
  
     #Проверка на приветствие  
@@ -46,7 +46,7 @@ def validation(head_of_msg,body_of_msg):
             break
     if a==-1:
         log_method.logger.warning('validation: Missing greeting.')
-        Errors_list.append('Отсутсвует приветсвие')
+        Errors_list.append('отсутсвует приветсвие')
 
     #Проверка на URL
     URL=url_cheack(Number,body_of_msg)
@@ -55,7 +55,7 @@ def validation(head_of_msg,body_of_msg):
     a=body_of_msg.find('--')
     if a==-1:
         log_method.logger.warning('validation: Missing signature.')
-        Errors_list.append('Отсутсвует подпись')
+        Errors_list.append('отсутсвует подпись')
 
 
     #Словарь
