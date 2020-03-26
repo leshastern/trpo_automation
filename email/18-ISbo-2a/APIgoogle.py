@@ -235,7 +235,7 @@ def send_message_to_techsub(service, user_id, email_of_student, name_of_student,
 	#Отправка
 	send_msg = service.users().messages().send(userId=user_id, body=body).execute()
 
-def	error_in_work(some_errors):
+def error_in_work(some_errors):
 	"""
 	Метод преобразования массива с ошибками в строку
 	Метод используется для валидации и ошибок кода студента
