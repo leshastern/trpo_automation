@@ -5,8 +5,6 @@ import json
 from config import PORTS
 from client import send_a_laboratory_work_for_verification
 
-
-
 class Test_client(unittest.TestCase):
 
     def test_1(self):
@@ -45,5 +43,6 @@ class Test_client(unittest.TestCase):
         a = send_a_laboratory_work_for_verification(labNumber = number, labLink = link)
 
         self.assertEqual(a, 0)
-
         
+if __name__ == '__main__':
+    unittest.main()
