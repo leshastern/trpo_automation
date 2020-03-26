@@ -183,9 +183,9 @@ def send_message(service, user_id, email_of_student, name_of_student, number_of_
 	#Тело нашего сообщения
 	sending_msg = MIMEText(hello_student + our_msg + signature)
 	#Кому мы его отправляем
-	sending_msg['to'] = email_of_student
+	sending_msg['To'] = email_of_student
 	#Заголовок нашего сообщения
-	sending_msg['Subject'] = title#новый патч
+	sending_msg['Subject'] = title
 	#Преобразование строки
 	raw = base64.urlsafe_b64encode(sending_msg.as_bytes())
 	raw = raw.decode()
