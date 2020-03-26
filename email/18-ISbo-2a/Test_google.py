@@ -148,5 +148,5 @@ class Test_google(unittest.TestCase):
         
         self.assertEqual(message_info, our_info)
 
-
-
+if __name__ == '__main__':
+    unittest.main()
