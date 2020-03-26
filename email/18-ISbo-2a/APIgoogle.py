@@ -158,7 +158,7 @@ def get_message(service, user_id):
 
 
 @log_method.log_method_info
-def send_message(service, user_id, email_of_student, name_of_student, number_of_templates, validation_dictionary):
+def send_message(service, user_id, email_of_student, name_of_student, number_of_templates, error_dictionary):
 	"""
 	Метод по отправке сообщения студенту
 	"""
@@ -166,14 +166,15 @@ def send_message(service, user_id, email_of_student, name_of_student, number_of_
 	#Шаблоны писем
 	message_templates = [{
 		'title':'Работа успешно принята', 'our_msg':'Поздравляю!\nРабота успешно принята!\nОценку можно проверить в журнале:\nhttps://docs.google.com/spreadsheets/d/1gOX8T8ihy3J1khhC16U1qDwaI-K6ndkp9LFWAHncuWA/edit?usp=sharing'},
-		{'title':'Обнаружены ошибки в работе', 'our_msg':'В Вашей работе обнаружены ошибки:\n\n' + error_in_work(validation_dictionary) + '\nПросьба исправить их и отправить письмо повторно.'},
-		{'title':'Обнаружены ошибки в заполнении письма', 'our_msg':'В структуре письма обнаружены следующие ошибки:\n\n' + error_in_work(validation_dictionary) + 	'\nПросьба исправить их в соответствии с документом\n' + 'https://docs.google.com/document/d/1DRhgepxVwoscylIS2LCW-po5SFBdqOr-oo92bP_XfHE/edit?usp=sharing'},
-		{'title':'Авторизация пользователя', 'our_msg':'Вы не найдены в системе. Пожалуйста, перейдите по ссылке и зарегистрируйтесь.\nhttps://docs.google.com/forms/d/1nXhfOkE3KnWVFNzZ-jvvATAIb6T3zzwD5Ry8Itc-VmQ/edit?usp=sharing'
+		{'title':'Обнаружены ошибки в работе', 'our_msg':'В Вашей работе обнаружены ошибки:\n\n' + error_in_work(error_dictionary) + '\nПросьба исправить их и отправить письмо повторно.'},
+		{'title':'Обнаружены ошибки в заполнении письма', 'our_msg':'В структуре письма обнаружены следующие ошибки:\n\n' + error_in_work(error_dictionary) + 	'\nПросьба исправить их в соответствии с документом\n' + 'https://docs.google.com/document/d/1DRhgepxVwoscylIS2LCW-po5SFBdqOr-oo92bP_XfHE/edit?usp=sharing'},
+		{'title':'Авторизация пользователя', 'our_msg':'Вы не найдены в системе. Пожалуйста, перейдите по ссылке и зарегистрируйтесь.\nhttps://docs.google.com/forms/d/1nXhfOkE3KnWVFNzZ-jvvATAIb6T3zzwD5Ry8Itc-VmQ/edit?usp=sharing'}
+		{'title':'Ошибка модулю', 'our_msg':'В модуле ... обнаружена ошибка. В ближайшее время проблема будет исправлена. Просим прощения за неудобства.'
 	}]
 	sending_msg={}
 	#Данные используемые в каждом письме
 	hello_student = "Здравствуйте, " + name_of_student + "!\n\n"
-	signature = "\n\nС уважением,\n Бот"
+	signature = "\n\nС уважением,\nБот"
 	sending_msg['from'] = "trpo.automation@gmail.com"
 	our_msg = message_templates[number_of_templates]['our_msg']
 	title = message_templates[number_of_templates]['title']
@@ -182,9 +183,9 @@ def send_message(service, user_id, email_of_student, name_of_student, number_of_
 	#Тело нашего сообщения
 	sending_msg = MIMEText(hello_student + our_msg + signature)
 	#Кому мы его отправляем
-	sending_msg['to'] = email_of_student
+	sending_msg['To'] = email_of_student
 	#Заголовок нашего сообщения
-	sending_msg['subject'] = title
+	sending_msg['Subject'] = title
 	#Преобразование строки
 	raw = base64.urlsafe_b64encode(sending_msg.as_bytes())
 	raw = raw.decode()
@@ -192,7 +193,49 @@ def send_message(service, user_id, email_of_student, name_of_student, number_of_
 	#Отправка
 	send_msg = service.users().messages().send(userId=user_id, body=body).execute()
 
-def	error_in_work(some_errors):
+def send_message_to_techsub(service, user_id, email_of_student, name_of_student, error_dictionary, number_of_templates):
+	"""
+	Метод рассылки писем ТП.
+	Вызывается преподавателю, если у студента есть ошибки в работе
+	Вызывается, если пал какой-либо модуль
+	"""
+	message_templates=[{
+		'hello':'Здравствуйте, Юрий Викторович!\n\n','title':'Ошибка в работе студента', 'our_msg':'Студент '+name_of_student+' не справился с задачей №'validation_dictionary['Numder']+' ('+validation_dictionary['URL']+')'+
+		'\nБыли допущены ошибки в работе:\n\n'+error_in_work(error_dictionary)}
+		{'hello':'Здравствуйте!', 'title':'Служба дала сбой', 'our_msg':'В модуле ... возникла ошибка ...'
+	}]
+	sending_msg={}
+	mas_of_To=['yuri.silenok@gmail.com', '0sashasmirnov0@gmail.com', 'k.svyat395@gmail.com', 'MaXLyuT2000@gmail.com', 'majishpro@gmail.com', 'Sirokko77@gmail.com', 'nikita.lukyanow@gmail.com',
+	 'generalgrigorevous@gmail.com', 'molchok.yurij@gmail.com', 'amr15319@gmail.com']
+	#Данные используемые в каждом письме
+	signature = "\n\nС уважением,\nБот"
+	sending_msg['From'] = 'trpo.automation@gmail.com'
+	#Определяем тип нашего форматирования
+	sending_msg = MIMEMultipart('alternative')
+	#Тело нашего сообщения
+	sending_msg = MIMEText(message_templates[number_of_templates]['hello'] + message_templates[number_of_templates]['our_msg'] + signature)
+	#Заголовок нашего сообщения
+	sending_msg['Subject'] = message_templates[number_of_templates]['title']
+	#Кому мы его отправляем
+	if number_of_templates != 0
+		#Цикл рассылки сообщений ТП
+		for i in mas_of_To:
+			sending_msg['To'] = i
+			#Преобразование строки
+			raw = base64.urlsafe_b64encode(sending_msg.as_bytes())
+			raw = raw.decode()
+			body = {'raw': raw}
+	else
+		#Письмо преподавателю в случае ошибок в коде студента
+		sending_msg['To'] = 'yuri.silenok@gmail.com'
+		#Преобразование строки
+		raw = base64.urlsafe_b64encode(sending_msg.as_bytes())
+		raw = raw.decode()
+		body = {'raw': raw}
+	#Отправка
+	send_msg = service.users().messages().send(userId=user_id, body=body).execute()
+
+def error_in_work(some_errors):
 	"""
 	Метод преобразования массива с ошибками в строку
 	Метод используется для валидации и ошибок кода студента
