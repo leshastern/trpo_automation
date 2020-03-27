@@ -62,7 +62,7 @@ def validation(head_of_msg,body_of_msg):
     validation_dictionary={ #а я думал кортеж))))
      'Number':Number,
      'URL': URL,
-     'Errors': Errors_list
+     "errorDescription": Errors_list
     }
 
     #Возвращаем словарь с номером лабораторной, URL, лист ошибок.
