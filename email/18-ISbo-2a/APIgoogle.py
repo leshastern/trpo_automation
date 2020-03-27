@@ -243,7 +243,7 @@ def error_in_work(some_errors):
 	Метод используется для валидации и ошибок кода студента
 	"""
 	error = ""
-	mas_of_er = some_errors['Errors']
+	mas_of_er = some_errors["errorDescription"]
 	i=0
 	while i<len(mas_of_er):
 		error +="- "+mas_of_er[i]+"\n"
