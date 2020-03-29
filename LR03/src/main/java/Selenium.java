@@ -105,6 +105,7 @@ public class Selenium {
        if (Good_branches==Var_branches){  //Если кол-во веток в репозитория одно и тоже то смотрим их имена
            driver.get(Var_Repository+"/branches");
            String Good_branches_Name=pull_String("//div[2]/ul[1]/li[@class='Box-row d-flex js-branch-row flex-items-center Details position-relative' and 1]/div[1]/a[@class='branch-name css-truncate-target v-align-baseline width-fit mr-2 Details-content--shown' and 1]",true);
+           String good_name=Good_branches_Name;
            Change_Tab(1);
            driver.get(Repository+"/branches");
            String Var_branches_Name=pull_String("//div[2]/ul[1]/li[@class='Box-row d-flex js-branch-row flex-items-center Details position-relative' and 1]/div[1]/a[@class='branch-name css-truncate-target v-align-baseline width-fit mr-2 Details-content--shown' and 1]",true);
@@ -126,82 +127,89 @@ public class Selenium {
                    Change_Tab(1);
                    Var_File_Size=driver.findElements(By.className("content"));
                    String[] Var_File_Str_Mas =new String[Var_File_Size.size()];
-                   for (int i=1;i<Good_File_Size.size();i++){
+                   for (int i=1;i<Var_File_Size.size();i++){
                        Var_File_Str_Mas[i]=Var_File_Size.get(i).getAttribute("textContent");
                        Var_File_Str_Mas[i]=Var_File_Str_Mas[i].replaceAll(" ","").replaceAll("\n","");
                    }
                    Change_Tab(0);
-                   if (Arrays.equals(Good_File_Str_Mas,Var_File_Str_Mas)){ //Если имена файлов в ветках совпадают, то смторим что в этих файлах
-                       boolean correct_file=true;
-                       for (int i=1;i<Good_File_Size.size();i++){ //начинать с 1!!
-                        driver.get(Var_Repository+"/blob/master/"+Good_File_Str_Mas[i]);
-                        driver.findElement(By.xpath("//a[@id='raw-url']")).click();
-                        Good_branches_Name=driver.findElement(By.cssSelector("body")).getAttribute("textContent");
-                        Change_Tab(1);
-                        driver.get(Repository+"/blob/master/"+Var_File_Str_Mas[i]);
-                        driver.findElement(By.xpath("//a[@id='raw-url']")).click();
-                        Var_branches_Name=driver.findElement(By.cssSelector("body")).getAttribute("textContent");
-                        Change_Tab(0);
-                        if (!Good_branches_Name.equals(Var_branches_Name)){
-                            correct_file=false;
-                        }
-                       }
-                       if (correct_file){ //Если проверка прошла, то смотрим другую ветку?
-                           driver.get(Var_Repository+"/tree/task-"+variant);
-                           Good_File_Size =driver.findElements(By.className("js-navigation-item"));
-                           Change_Tab(1);
-                           driver.get(Repository+"/tree/task-"+variant);
-                           Var_File_Size =driver.findElements(By.className("js-navigation-item"));
-                           Change_Tab(0);
-                           if (Good_File_Size.size()==Var_File_Size.size()){ //Если с кол-во файлов все ок, то смотрим имена этих файлов
-                               Good_File_Size=driver.findElements(By.className("content"));
-                                Good_File_Str_Mas =new String[Good_File_Size.size()];
-                               for (int i=1;i<Good_File_Size.size();i++){
-                                   Good_File_Str_Mas[i]=Good_File_Size.get(i).getAttribute("textContent");
-                                   Good_File_Str_Mas[i]=Good_File_Str_Mas[i].replaceAll(" ","").replaceAll("\n","");
-                               }
+                       if (Arrays.equals(Good_File_Str_Mas, Var_File_Str_Mas)) { //Если имена файлов в ветках совпадают, то смторим что в этих файлах
+                           boolean correct_file = true;
+                           for (int i = 1; i < Good_File_Size.size(); i++) { //начинать с 1!!
+                               driver.get(Var_Repository + "/blob/master/" + Good_File_Str_Mas[i]);
+                               driver.findElement(By.xpath("//a[@id='raw-url']")).click();
+                               Good_branches_Name = driver.findElement(By.cssSelector("body")).getAttribute("textContent");
                                Change_Tab(1);
-                               Var_File_Size=driver.findElements(By.className("content"));
-                               Var_File_Str_Mas =new String[Var_File_Size.size()];
-                               for (int i=1;i<Good_File_Size.size();i++){
-                                   Var_File_Str_Mas[i]=Var_File_Size.get(i).getAttribute("textContent");
-                                   Var_File_Str_Mas[i]=Var_File_Str_Mas[i].replaceAll(" ","").replaceAll("\n","");
+                               driver.get(Repository + "/blob/master/" + Var_File_Str_Mas[i]);
+                               if (driver.findElements(By.xpath("//a[@id='raw-url']")).size()==0) {
+                                   driver.findElement(By.xpath("//a[@id='raw-url']")).click();
                                }
+                               else { return "В ветке master неверный тип файла/файлов "; }
+                               Var_branches_Name = driver.findElement(By.cssSelector("body")).getAttribute("textContent");
                                Change_Tab(0);
-                               if (Arrays.equals(Good_File_Str_Mas,Var_File_Str_Mas)) { //Если имена файлов в ветках совпадают, то смторим что в этих файлах
-                                   correct_file = true;
-                                   for (int i = 1; i < Good_File_Size.size(); i++) { //начинать с 1!!
-                                       driver.get(Var_Repository + "/blob/task-"+variant+"/" + Good_File_Str_Mas[i]);
-                                       driver.findElement(By.xpath("//a[@id='raw-url']")).click();
-                                       Good_branches_Name = driver.findElement(By.cssSelector("body")).getAttribute("textContent");
-                                       Change_Tab(1);
-                                       driver.get(Repository + "/blob/task-"+variant+"/" + Var_File_Str_Mas[i]);
-                                       driver.findElement(By.xpath("//a[@id='raw-url']")).click();
-                                       Var_branches_Name = driver.findElement(By.cssSelector("body")).getAttribute("textContent");
-                                       Change_Tab(0);
-                                       if (!Good_branches_Name.equals(Var_branches_Name)){
-                                           correct_file=false;
-                                       }
-                                   }
-                                   if (correct_file){
-                                       return "";
-                                   }
-                                   else { return "Наполнение файлов в ветке task неверно\n"; }
+                               if (!Good_branches_Name.equals(Var_branches_Name)) {
+                                   correct_file = false;
                                }
-                               else { return "В ветке task неверные файлы\n"; }
                            }
-                           else { return "В ветке task неверное кол-во файлов\n"; }
+                           if (correct_file) { //Если проверка прошла, то смотрим другую ветку?
+                               driver.get(Var_Repository + "/tree/" + good_name);
+                               Good_File_Size = driver.findElements(By.className("js-navigation-item"));
+                               Change_Tab(1);
+                               driver.get(Repository + "/tree/" + good_name);
+                               Var_File_Size = driver.findElements(By.className("js-navigation-item"));
+                               Change_Tab(0);
+                               if (Good_File_Size.size() == Var_File_Size.size()) { //Если с кол-во файлов все ок, то смотрим имена этих файлов
+                                   Good_File_Size = driver.findElements(By.className("content"));
+                                   Good_File_Str_Mas = new String[Good_File_Size.size()];
+                                   for (int i = 1; i < Good_File_Size.size(); i++) {
+                                       Good_File_Str_Mas[i] = Good_File_Size.get(i).getAttribute("textContent");
+                                       Good_File_Str_Mas[i] = Good_File_Str_Mas[i].replaceAll(" ", "").replaceAll("\n", "");
+                                   }
+                                   Change_Tab(1);
+                                   Var_File_Size = driver.findElements(By.className("content"));
+                                   Var_File_Str_Mas = new String[Var_File_Size.size()];
+                                   for (int i = 1; i < Good_File_Size.size(); i++) {
+                                       Var_File_Str_Mas[i] = Var_File_Size.get(i).getAttribute("textContent");
+                                       Var_File_Str_Mas[i] = Var_File_Str_Mas[i].replaceAll(" ", "").replaceAll("\n", "");
+                                   }
+                                   Change_Tab(0);
+                                       if (Arrays.equals(Good_File_Str_Mas, Var_File_Str_Mas)) { //Если имена файлов в ветках совпадают, то смторим что в этих файлах
+                                           correct_file = true;
+                                           for (int i = 1; i < Good_File_Size.size(); i++) { //начинать с 1!!
+                                               driver.get(Var_Repository + "/blob/" + good_name + "/" + Good_File_Str_Mas[i]);
+                                               driver.findElement(By.xpath("//a[@id='raw-url']")).click();
+                                               Good_branches_Name = driver.findElement(By.cssSelector("body")).getAttribute("textContent");
+                                               Change_Tab(1);
+                                               driver.get(Repository + "/blob/" + good_name + "/" + Var_File_Str_Mas[i]);
+                                               if (driver.findElements(By.xpath("//a[@id='raw-url']")).size()==0) {
+                                                   driver.findElement(By.xpath("//a[@id='raw-url']")).click();
+                                               }
+                                               else { return "В ветке "+good_name+" неверный тип файла/файлов "; }
+                                               Var_branches_Name = driver.findElement(By.cssSelector("body")).getAttribute("textContent");
+                                               Change_Tab(0);
+                                               if (!Good_branches_Name.equals(Var_branches_Name)) {
+                                                   correct_file = false;
+                                               }
+                                           }
+                                           if (correct_file) {
+                                               return "";
+                                           }
+                                           else { return "Наполнение файлов в ветке " + good_name + " неверно\n"; }
+                                       }
+                                       else { return "В ветке " + good_name + " неверные файлы\n"; }
+                               }
+                               else { return "В ветке" + good_name + " неверное кол-во файлов\n"; }
+                           }
+                           else { return "Наполнение файлов в ветке master неверно\n"; }
                        }
-                       else { return "Наполнение файлов в ветке master неверно\n";}
-                   }
-                   else { return "В ветке master неверные файлы\n"; }
-               }
+                       else { return "В ветке master неверные файлы\n"; }
+                    }
                else { return "В ветке master неверное кол-во файлов\n"; }
            }
            else { return "Неверное имя ветки\n"; }
        }
        else  { return "Неверное кол-во branches\n"; }
     }
+
 
     
 
@@ -482,7 +490,7 @@ public class Selenium {
             result+=Check_Milestone(); //Done
             //result += Check_Project(Good_projects,Var_projects); //Реализовать проверку проекта In progress
             result += Check_PullRequests(Good_pull_request,Var_pull_request); //Done
-            result += Check_Issues(Good_issues,Var_issues); //Done
+          //  result += Check_Issues(Good_issues,Var_issues); //Done
             result += Check_Branches(Good_branches,Var_branches); //Done
 
             if ("".equals(result)) {
