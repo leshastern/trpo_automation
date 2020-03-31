@@ -152,11 +152,22 @@ def get_message(service, user_id):
 	body_of_msg = message_list['snippet']
 	#Словарь с информацией о Никнейме_и_email_студента, Заголовке и теле письма
 	message_info ={
+	'id_of_msg':id_of_msg,
 	'email_id':email_id,
 	'head_of_msg':head_of_msg,
 	'body_of_msg':body_of_msg
 	}
 	return message_info
+	
+"""
+service: авторизация через мыло
+user_id: наше мыло или спец слово 'me'
+message_info: словарь с данными письма
+"""
+def email_archiving(service, user_id, message_info):
+	#указываем удаляемые и устанавливаемые ярлыки для нашего письма
+	msg_labels = {'removeLabelIds': ['UNREAD', 'INBOX'], 'addLabelIds': ['TRASH','Label_4436622035204509097']}
+	message = service.users().messages().modify(userId=user_id, id=message_info['id_of_msg'],body=msg_labels).execute()
 
 """
 service: авторизация через мыло
