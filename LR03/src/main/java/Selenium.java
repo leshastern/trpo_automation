@@ -5,7 +5,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.w3c.dom.Document;
-
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -25,8 +24,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-
-
 public class Selenium {
     private static final String FILENAME = "Repository.xml";
     public static WebDriver driver=null;
@@ -36,7 +33,6 @@ public class Selenium {
     private String itog_ozenka="0";
     private boolean empty=false;
     private String Var_Repository; // 1 Варик- Лосяш, 2 - Крош и тд
-
 
     public Selenium (String Repository,String variant){
         this.Repository=Repository;
@@ -53,45 +49,37 @@ public class Selenium {
         driver = new ChromeDriver(options);
         Get_GoodReposotory();
         driver.get(Var_Repository);
-
         Add_Tab();
         Change_Tab(0);
     }
 
-
-
     private void Get_GoodReposotory(){
-    try {
-        final File xmlFile = new File(System.getProperty("user.dir") + File.separator + FILENAME);
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.parse(xmlFile);
+        try {
+            final File xmlFile = new File(System.getProperty("user.dir") + File.separator + FILENAME);
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(xmlFile);
 
-        doc.getDocumentElement().normalize();
+            doc.getDocumentElement().normalize();
 
-        NodeList NodeList = doc.getElementsByTagName("variant");
+            NodeList NodeList = doc.getElementsByTagName("variant");
 
-        for (int i = 0; i < NodeList.getLength(); i++) {
-            // Вывoдиm инфopmaцию пo kaждomy из нaйдeнных элemeнтoв                
-            Node node = NodeList.item(i);
-            if (Node.ELEMENT_NODE == node.getNodeType()) {
-                Element element = (Element) node;
-                if (element.getAttribute("id").equals(variant)){
-                   Var_Repository=element.getElementsByTagName("url").item(0).getTextContent();
-                   break;
+            for (int i = 0; i < NodeList.getLength(); i++) {
+                // Вывoдиm инфopmaцию пo kaждomy из нaйдeнных элemeнтoв                
+                Node node = NodeList.item(i);
+                if (Node.ELEMENT_NODE == node.getNodeType()) {
+                    Element element = (Element) node;
+                    if (element.getAttribute("id").equals(variant)){
+                       Var_Repository=element.getElementsByTagName("url").item(0).getTextContent();
+                       break;
+                    }
                 }
             }
         }
+        catch (ParserConfigurationException| SAXException | IOException ex){
+            Logger.getLogger(Selenium.class.getName()).log(Level.SEVERE,null,ex);
+        }
     }
-    catch (ParserConfigurationException| SAXException | IOException ex){
-        Logger.getLogger(Selenium.class.getName()).log(Level.SEVERE,null,ex);
-    }
-    }
-
-
-
-
-
 
     public String Get_Result(){
         return result;
@@ -101,7 +89,7 @@ public class Selenium {
         return itog_ozenka;
     }
 
-    public String Check_Branches(int Good_branches,int Var_branches) {
+    public String Check_Branches(int Good_branches, int Var_branches) {
        if (Good_branches==Var_branches){  //Если кол-во веток в репозитория одно и тоже то смотрим их имена
            driver.get(Var_Repository+"/branches");
            String Good_branches_Name=pull_String("//div[2]/ul[1]/li[@class='Box-row d-flex js-branch-row flex-items-center Details position-relative' and 1]/div[1]/a[@class='branch-name css-truncate-target v-align-baseline width-fit mr-2 Details-content--shown' and 1]",true);
@@ -140,10 +128,10 @@ public class Selenium {
                                Good_branches_Name = driver.findElement(By.cssSelector("body")).getAttribute("textContent");
                                Change_Tab(1);
                                driver.get(Repository + "/blob/master/" + Var_File_Str_Mas[i]);
-                               if (driver.findElements(By.xpath("//a[@id='raw-url']")).size()==0) {
+                               if (driver.findElements(By.xpath("//a[@id='raw-url']")).size()!=0) {
                                    driver.findElement(By.xpath("//a[@id='raw-url']")).click();
                                }
-                               else { return "В ветке master неверный тип файла/файлов "; }
+                               else { return "В ветке master неверный тип файла/файлов\n"; }
                                Var_branches_Name = driver.findElement(By.cssSelector("body")).getAttribute("textContent");
                                Change_Tab(0);
                                if (!Good_branches_Name.equals(Var_branches_Name)) {
@@ -180,10 +168,10 @@ public class Selenium {
                                                Good_branches_Name = driver.findElement(By.cssSelector("body")).getAttribute("textContent");
                                                Change_Tab(1);
                                                driver.get(Repository + "/blob/" + good_name + "/" + Var_File_Str_Mas[i]);
-                                               if (driver.findElements(By.xpath("//a[@id='raw-url']")).size()==0) {
+                                               if (driver.findElements(By.xpath("//a[@id='raw-url']")).size()!=0) {
                                                    driver.findElement(By.xpath("//a[@id='raw-url']")).click();
                                                }
-                                               else { return "В ветке "+good_name+" неверный тип файла/файлов "; }
+                                               else { return "В ветке "+good_name+" неверный тип файла/файлов\n"; }
                                                Var_branches_Name = driver.findElement(By.cssSelector("body")).getAttribute("textContent");
                                                Change_Tab(0);
                                                if (!Good_branches_Name.equals(Var_branches_Name)) {
@@ -209,10 +197,7 @@ public class Selenium {
        }
        else  { return "Неверное кол-во branches\n"; }
     }
-
-
     
-
     public String Check_Issues(int Good_issues,int Var_issues){
        if (Good_issues==Var_issues){
            driver.get(Var_Repository+"/issues");
@@ -259,18 +244,18 @@ public class Selenium {
                        if (Good_issues_str.equals(Var_issues_str)){
                            return "";
                        }
-                       else { return "Имя закрытого issues неверно,либо не назначен label"; }
+                       else { return "Имя закрытого issues неверно,либо не назначен label\n"; }
                    }
-                   else { return "Неверное имя 2 задачи, либо не назначен label"; }
+                   else { return "Неверное имя 2 задачи, либо не назначен label\n"; }
                }
-               else { return "Неверное имя 1 задачи, либо не назначен label"; }
+               else { return "Неверное имя 1 задачи, либо не назначен label\n"; }
            }
            else {return "Ошибка в issues. Должно быть 2 открытых, 1 закрытый\n"; }
        }
        else  { return "Не совпадает кол-во issues\n"; }
     }
 
-    public   String Check_PullRequests(int Good_pull,int Var_pull){
+    public String Check_PullRequests(int Good_pull,int Var_pull){
         if (Good_pull==Var_pull){
             driver.get(Var_Repository+"/pulls");
             String Good_pull_str=pull_String("//a[@class='btn-link selected']",true)+pull_String("//a[@class='btn-link ']",true);
@@ -281,19 +266,19 @@ public class Selenium {
             if (Good_pull_str.equals(Var_pull_str)){
                 Good_pull_str=pull_String("//div[@class='flex-auto min-width-0 lh-condensed p-2 pr-3 pr-md-2']",true).toLowerCase();
                 for (String retval : Good_pull_str.split("#", 2)) {
-                    Good_pull_str=retval;break;
+                    Good_pull_str=retval; break;
                 }
                 Change_Tab(1);
                 Var_pull_str=pull_String("//div[@class='flex-auto min-width-0 lh-condensed p-2 pr-3 pr-md-2']",true).toLowerCase();
                 for (String retval : Var_pull_str.split("#", 2)) {
-                    Var_pull_str=retval;break;
+                    Var_pull_str=retval; break;
                 }
                 Change_Tab(0);
                 if (Good_pull_str.equals(Var_pull_str)){
                     driver.get(Var_Repository+"/pulls?q=is%3Apr+is%3Aclosed");
                     Good_pull_str=pull_String("//div[@class='flex-auto min-width-0 lh-condensed p-2 pr-3 pr-md-2']",true).toLowerCase();
                     for (String retval : Good_pull_str.split("#", 2)) {
-                        Good_pull_str=retval;break;
+                        Good_pull_str=retval; break;
                     }
                     Change_Tab(1);
                     driver.get(Repository+"/pulls?q=is%3Apr+is%3Aclosed");
@@ -305,52 +290,63 @@ public class Selenium {
                     if (Good_pull_str.equals(Var_pull_str)){
                         return "";
                     }
-                    else { return "Имя закрытого pull_request неверно,либо не назначен label"; }
+                    else { return "Имя закрытого pull_request неверно,либо не назначен label\n"; }
                 }
-                else { return "Имя открытого pull_request неверно,либо не назначен label"; }
+                else { return "Имя открытого pull_request неверно,либо не назначен label\n"; }
             }
             else {return "Ошибка в pull_requests. Должно быть 1 открытый, 1 закрытый\n"; }
         }
         else {return "Кол-во pull_request неверно\n";}
     }
 
-   /* public   String Check_Project(int Good_project,int Var_project){
+    public String Check_Project(int Good_project,int Var_project){
         String str="";
-        if (projects!=0) {
+        String Good_issue, Var_issue;
+        if (Var_project!=0) {
+            driver.get(Var_Repository + "/projects/1");
+            Change_Tab(1);
             driver.get(Repository + "/projects/1");
-
-
-
+            Change_Tab(0);
             String count_path = "div[@class='clearfix js-details-container details-container Details js-add-note-container' and 1]/div[@class='hide-sm position-relative p-sm-2' and 1]/span[1]";
             String name_path = "div[@class='clearfix js-details-container details-container Details js-add-note-container' and 1]/div[@class='hide-sm position-relative p-sm-2' and 1]/h3[1]/span[@class='js-project-column-name' and 1]";
-
             if (driver.findElements(By.xpath("//div[1]/div[1]/div/span")).size() != 0) {
-                if (pull_INT("//div[1]/" + count_path) < 1) {
-                    str += "Доска " + pull_String("//div[1]/" + name_path, false) + " не содержит задач.\n";
-                }
-            } else {
-                str += "Отсутствует 1-я доска.\n";
-            }
+                if (pull_INT("//div[1]/" + count_path) >= 1) {
+                    Var_issue = pull_String("//div[1]/div/article[1]/div/div/div/a", false);
+                    Change_Tab(1);
+                    Good_issue = pull_String("//div[1]/div/article[1]/div/div/div/a", false);
+                    Change_Tab(0);
+                    if(!Good_issue.equals(Var_issue)) {
+                        str += "Доска " + pull_String("//div[1]/" + name_path, false) + " не содержит задачи: " + Good_issue + "\n";
+                    }
+                } else {str += "Доска " + pull_String("//div[1]/" + name_path, false) + " не содержит задач.\n"; }
+            } else { str += "Отсутствует 1-я доска.\n"; }
+
             if (driver.findElements(By.xpath("//div[2]/div[1]/div/span")).size() != 0) {
-                if (pull_INT("//div[2]/" + count_path) < 1) {
-                    str += "Доска " + pull_String("//div[2]/" + name_path, false) + " не содержит задач.\n";
-                }
-            } else {
-                str += "Отсутствует 2-я доска.\n";
-            }
+                if (pull_INT("//div[2]/" + count_path) >= 1) {
+                    Var_issue = pull_String("//div[2]/div/article[1]/div/div/div/a", false);
+                    Change_Tab(1);
+                    Good_issue = pull_String("//div[2]/div/article[1]/div/div/div/a", false);
+                    Change_Tab(0);
+                    if(!Good_issue.equals(Var_issue)) {
+                        str += "Доска " + pull_String("//div[2]/" + name_path, false) + " не содержит задачи: " + Good_issue + "\n";
+                    }
+                } else { str += "Доска " + pull_String("//div[2]/" + name_path, false) + " не содержит задач.\n"; }
+            } else { str += "Отсутствует 2-я доска.\n"; }
+
             if (driver.findElements(By.xpath("//div[3]/div[1]/div/span")).size() != 0) {
-                if (pull_INT("//div[3]/" + count_path) < 1) {
-                    str += "Доска " + pull_String("//div[3]/" + name_path, false) + " не содержит задач.\n";
-                }
-            } else {
-                str += "Отсутствует 3-я доска.\n";
-            }
-        }
-        else {
-            return "Отсутсвует project, либо он закрыт.\n";
-        }
+                if (pull_INT("//div[3]/" + count_path) >= 1) {
+                    Var_issue = pull_String("//div[3]/div/article[1]/div/div/div/a", false);
+                    Change_Tab(1);
+                    Good_issue = pull_String("//div[3]/div/article[1]/div/div/div/a", false);
+                    Change_Tab(0);
+                    if(!Good_issue.equals(Var_issue)) {
+                        str += "Доска " + pull_String("//div[3]/" + name_path, false) + " не содержит задачи: " + Good_issue + "\n";
+                    }
+                } else { str += "Доска " + pull_String("//div[3]/" + name_path, false) + " не содержит задач.\n"; }
+            } else { str += "Отсутствует 3-я доска.\n"; }
+        } else { str += "Отсутсвует project, либо он закрыт.\n"; }
         return str;
-    } */
+    }
 
    public String Check_Labels(){
         driver.get(Var_Repository+"/labels");
@@ -376,9 +372,7 @@ public class Selenium {
            }
            else { return "Имя labels не совпадает\n"; }
         }
-        else {
-            return "Кол-во labels не совпадает\n";
-        }
+        else { return "Кол-во labels не совпадает\n"; }
     }
 
 
@@ -407,30 +401,23 @@ public class Selenium {
                 else { return "В milestone должно быть 5 задач(3 открытых, 2 закрытых)\n"; }
             }
             else  {return "Имя milestone некорректно\n"; }
-
         }
         else {return "Отсутствует либо закрыт milestone\n"; }
     }
 
-    public  String Check_Readme(){
+    public String Check_Readme(){
        String Readme_Good = pull_String("//article",true);
        Change_Tab(1);
        if (driver.findElements(By.xpath("//article")).size()!=0) {
            String Readme_Var = pull_String("//article", true);
            Change_Tab(0);
-           if (Readme_Good.equals(Readme_Var)) {
-               return "";
-           }
-           else { return "Фаил Readme неверен"; }
-       }
-       else {
-           return "Файл Readme не найден\n";
-       }
-
+           if (Readme_Good.equals(Readme_Var)) { return ""; }
+           else { return "Файл Readme неверен\n"; }
+       } else { return "Файл Readme не найден\n"; }
     }
 
-    private String pull_String(String tmp, boolean flag){
-        if (flag) return driver.findElement(By.xpath(tmp)).getAttribute("textContent").replaceAll(" ","").replaceAll("\n","");
+    private String pull_String(String tmp, boolean DeleteSpaces){
+        if (DeleteSpaces) return driver.findElement(By.xpath(tmp)).getAttribute("textContent").replaceAll(" ","").replaceAll("\n","");
         else return driver.findElement(By.xpath(tmp)).getAttribute("textContent");
     }
 
@@ -442,9 +429,7 @@ public class Selenium {
         Robot robot = null;
         try {
             robot = new Robot();
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
+        } catch (AWTException e) { e.printStackTrace(); }
         robot.keyPress(KeyEvent.VK_CONTROL);
         robot.keyPress(KeyEvent.VK_TAB);
         robot.keyRelease(KeyEvent.VK_CONTROL);
@@ -452,8 +437,6 @@ public class Selenium {
 
         ArrayList<String> tabs = new ArrayList<String>(driver.getWindowHandles());
         driver.switchTo().window(tabs.get(tab));
-
-
     }
 
     public void Add_Tab(){
@@ -466,44 +449,31 @@ public class Selenium {
         }
     }
 
-
-
-
-
     public void test() {
         if (Var_Repository != null) {
-         if (!empty){
+            if (!empty){
+                final int Good_branches = pull_INT("//li[2]/a[1]/span[@class='num text-emphasized' and 1]");
+                final int Good_issues = pull_INT("//span[2]/a[@class='js-selected-navigation-item reponav-item' and 1]/span[@class='Counter' and 2]");
+                final int Good_pull_request = pull_INT("//*[1]/span[@class='Counter' and 2]");
+                final int Good_projects = pull_INT("//nav/a[@class='js-selected-navigation-item reponav-item' and 1]/span[@class='Counter' and 1]");
+                Change_Tab(1);
+                final int Var_branches = pull_INT("//li[2]/a[1]/span[@class='num text-emphasized' and 1]");
+                final int Var_issues = pull_INT("//span[2]/a[@class='js-selected-navigation-item reponav-item' and 1]/span[@class='Counter' and 2]");
+                final int Var_pull_request = pull_INT("//*[1]/span[@class='Counter' and 2]");
+                final int Var_projects = pull_INT("//nav/a[@class='js-selected-navigation-item reponav-item' and 1]/span[@class='Counter' and 1]");
+                Change_Tab(0);
 
-            final int Good_branches = pull_INT("//li[2]/a[1]/span[@class='num text-emphasized' and 1]");
-            final int Good_issues = pull_INT("//span[2]/a[@class='js-selected-navigation-item reponav-item' and 1]/span[@class='Counter' and 2]");
-            final int Good_pull_request = pull_INT("//*[1]/span[@class='Counter' and 2]");
-            final int Good_projects = pull_INT("//nav/a[@class='js-selected-navigation-item reponav-item' and 1]/span[@class='Counter' and 1]");
-            Change_Tab(1);
-            final int Var_branches = pull_INT("//li[2]/a[1]/span[@class='num text-emphasized' and 1]");
-            final int Var_issues = pull_INT("//span[2]/a[@class='js-selected-navigation-item reponav-item' and 1]/span[@class='Counter' and 2]");
-            final int Var_pull_request = pull_INT("//*[1]/span[@class='Counter' and 2]");
-            final int Var_projects = pull_INT("//nav/a[@class='js-selected-navigation-item reponav-item' and 1]/span[@class='Counter' and 1]");
-            Change_Tab(0);
+                //result += Check_Readme(); //Done
+                //result += Check_Labels(); //Done
+                //result += Check_Milestone(); //Done
+                result += Check_Project(Good_projects,Var_projects); //Реализовать проверку проекта In progress
+                //result += Check_PullRequests(Good_pull_request,Var_pull_request); //Done
+                //result += Check_Issues(Good_issues,Var_issues); //Done
+                //result += Check_Branches(Good_branches,Var_branches); //Done
 
-            result+= Check_Readme(); //Done
-            result+=Check_Labels(); //Done
-            result+=Check_Milestone(); //Done
-            //result += Check_Project(Good_projects,Var_projects); //Реализовать проверку проекта In progress
-            result += Check_PullRequests(Good_pull_request,Var_pull_request); //Done
-          //  result += Check_Issues(Good_issues,Var_issues); //Done
-            result += Check_Branches(Good_branches,Var_branches); //Done
-
-            if ("".equals(result)) {
-                itog_ozenka = "1";
-            }
-
-            driver.quit();
-
-        }
-         else { result="Репозиторий пуст"; driver.quit();}
-        }
-        else {System.out.println("Не найден вариант в файле");driver.quit();}
+                if ("".equals(result)) {itog_ozenka = "1";}
+                driver.quit();
+            } else { result="Репозиторий пуст\n"; driver.quit();}
+        } else {System.out.println("Не найден вариант в файле\n");driver.quit();}
     }
-
-
 }
