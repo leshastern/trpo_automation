@@ -18,5 +18,5 @@ void StrategyLab::getCode()
 
 StrategyLab::~StrategyLab()
 {
-
+    // TODO дописать
 }
