@@ -4,6 +4,10 @@
 #include <QException>
 #include "tcpserver.h"
 
+/**
+ * @brief Класс для проверки лабораторных работ
+ *  по паттерну 'Стратегия'
+ */
 class StrategyLab: public QObject
 {
     Q_OBJECT
