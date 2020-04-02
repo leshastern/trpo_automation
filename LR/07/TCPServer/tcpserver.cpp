@@ -83,7 +83,10 @@ void TcpServer::slotReadingDataJson()
         }
     }
 }
-
+/**
+ * @brief Метод отправляет клиенту 0 либо 1
+ * @return void
+ */
 void TcpServer::SendToClient(bool answer)
 {
 
