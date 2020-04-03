@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    TCPServer \
-    Tests
+    src \
+    tests

@@ -1,7 +1,9 @@
 QT += testlib
-QT += network
 QT -= gui
-HEADERS += \
 
+CONFIG += qt console warn_on depend_includepath testcase
+CONFIG -= app_bundle
 
-SOURCES += \
+TEMPLATE = app
+
+SOURCES +=  tst_temp.cpp

@@ -1,14 +1,10 @@
 #ifndef TCPSERVER_H
 #define TCPSERVER_H
 
-#include <QObject>
+#include "strategylab.h"
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonParseError>
-
-#include "strategylab.h"
 
 /**
 *   @brief Реализация сервера для проверки лабораторных работ по паттерну стратегии
@@ -30,7 +26,7 @@ public:
 
 public slots:
     void slotNewConnection();
-    void slotServerRead();
+//    void slotServerRead();
     void slotClientDisconnected();
     void slotReadingDataJson();
 };
