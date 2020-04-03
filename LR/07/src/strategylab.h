@@ -1,8 +1,8 @@
 #ifndef STARTEGYLAB_H
 #define STARTEGYLAB_H
 
-#include <QException>
-#include "tcpserver.h"
+#include <QObject>
+#include <QJsonObject>
 
 /**
  * @brief Класс для проверки лабораторных работ

@@ -1,4 +1,5 @@
 #include "strategylab.h"
+
 /**
  * @brief Конструктор
  * @param objectFromServer
