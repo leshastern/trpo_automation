@@ -48,7 +48,7 @@ void test_tcp::test_disconnetion()
     if (Client->state() == QAbstractSocket::UnconnectedState
         || Client->waitForDisconnected(1000))
     {
-            isOff=true;
+            isOff = true;
     }
     QCOMPARE(isOff,true);
 };
