@@ -32,20 +32,6 @@ void TcpServer::slotNewConnection()
     connect(mTcpSocket, &QTcpSocket::disconnected, this, &TcpServer::slotClientDisconnected);
 }
 
-///**
-// * @brief Метод, считывающий количество байтов, отличных от нуля, передаваемых серверу
-// * @return void
-// */
-//void TcpServer::slotServerRead()
-//{
-//    while (mTcpSocket->bytesAvailable() > 0) {
-
-//        QByteArray array = mTcpSocket->readAll();
-
-//        mTcpSocket->write(array);
-//    }
-//}
-
 /**
  * @brief метод выключает сервер.
  * @return void

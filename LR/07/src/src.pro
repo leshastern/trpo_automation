@@ -1,6 +1,8 @@
 QT -= gui
 QT += network
 
+LIBS += -lqjson
+
 CONFIG += c++11 console
 CONFIG -= app_bundle
 

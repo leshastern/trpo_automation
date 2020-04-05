@@ -26,7 +26,6 @@ public:
 
 public slots:
     void slotNewConnection();
-//    void slotServerRead();
     void slotClientDisconnected();
     void slotReadingDataJson();
 };
