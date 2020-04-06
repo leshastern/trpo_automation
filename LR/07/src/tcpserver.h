@@ -5,6 +5,7 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QJsonDocument>
+#include <QJsonObject>
 
 /**
 *   @brief Реализация сервера для проверки лабораторных работ по паттерну стратегии
@@ -23,6 +24,9 @@ private:
 public:
     explicit TcpServer(QObject *parent = nullptr);
      void sendToClient(bool answer);
+
+private:
+    void parsingJson(QJsonDocument, QString*, int*);
 
 public slots:
     void slotNewConnection();

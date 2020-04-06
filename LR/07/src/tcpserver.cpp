@@ -78,12 +78,14 @@ void TcpServer::sendToClient(bool answer)
 void TcpServer::slotReadingDataJson()
 {
     QByteArray data;
+    QString labLink;
+    int labNumber = 0;
 
     if (mTcpSocket->waitForConnected(500)) {
         mTcpSocket->waitForConnected(500);
         data = mTcpSocket->readAll();
         docJson = QJsonDocument::fromJson(data, &docJsonError);
-
+        parsingJson(docJson, &labLink, &labNumber);
         // TODO вместо docJson.object() нужно вызывать функцию конфертации json в map-объект (задача #47)
         if (docJsonError.errorString().toInt() == QJsonParseError::NoError) {
             try {
@@ -98,3 +100,15 @@ void TcpServer::slotReadingDataJson()
     }
 }
 
+void TcpServer::parsingJson(QJsonDocument docJson, QString *labLink, int *labNumber)
+{
+QJsonValue link;
+QJsonObject jsonObj;
+
+jsonObj = docJson.object();
+link = jsonObj.take("labLink");
+(*labLink) = link.toString();
+
+link = jsonObj.take("labNumber");
+(*labNumber) = link.toInt();
+}
