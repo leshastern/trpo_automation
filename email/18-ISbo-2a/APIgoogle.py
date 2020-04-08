@@ -152,26 +152,56 @@ def get_message(service, user_id):
 	body_of_msg = message_list['snippet']
 	#Словарь с информацией о Никнейме_и_email_студента, Заголовке и теле письма
 	message_info ={
+	'id_of_msg':id_of_msg,
 	'email_id':email_id,
 	'head_of_msg':head_of_msg,
 	'body_of_msg':body_of_msg
 	}
 	return message_info
 
+"""
+service: авторизация через мыло
+user_id: наше мыло или спец слово 'me'
+message_info: словарь с данными письма
+"""
+def email_archiving(service, user_id, message_info):
+	#указываем удаляемые и устанавливаемые ярлыки для нашего письма
+	msg_labels = {'removeLabelIds': ['UNREAD', 'INBOX'], 'addLabelIds': ['Label_4436622035204509097']}
+	message = service.users().messages().modify(userId=user_id, id=message_info['id_of_msg'],body=msg_labels).execute()
 
+"""
+service: авторизация через мыло
+user_id: наше мыло или спец слово 'me'
+email_of_student: мыло студента
+name_of_student: имя и фамилия студента
+validation_dictionary: словарь с валидации письма, в котором есть ('Numder')номер работы и ('URL')ссылка на работу
+error_dictionary: словарь с ошибками в коде студента
+number_of_templates: номер используемого для заполнения письма шаблона
+"""
 @log_method.log_method_info
-def send_message(service, user_id, email_of_student, name_of_student, number_of_templates, error_dictionary):
+def send_message(service, user_id, email_of_student, name_of_student, number_of_templates, validation_dictionary, error_dictionary):
 	"""
 	Метод по отправке сообщения студенту
 	"""
 
+	if number_of_templates == 1
+		str_of_val_er = error_in_work(validation_dictionary)
+	else 
+		if number_of_templates == 2
+			str_of_er = error_in_work(error_dictionary)
+		else
+			str_of_val_er = ""
+			str_of_er = ""	
+
+
+
 	#Шаблоны писем
 	message_templates = [{
 		'title':'Работа успешно принята', 'our_msg':'Поздравляю!\nРабота успешно принята!\nОценку можно проверить в журнале:\nhttps://docs.google.com/spreadsheets/d/1gOX8T8ihy3J1khhC16U1qDwaI-K6ndkp9LFWAHncuWA/edit?usp=sharing'},
-		{'title':'Обнаружены ошибки в работе', 'our_msg':'В Вашей работе обнаружены ошибки:\n\n' + error_in_work(error_dictionary) + '\nПросьба исправить их и отправить письмо повторно.'},
-		{'title':'Обнаружены ошибки в заполнении письма', 'our_msg':'В структуре письма обнаружены следующие ошибки:\n\n' + error_in_work(error_dictionary) + 	'\nПросьба исправить их в соответствии с документом\n' + 'https://docs.google.com/document/d/1DRhgepxVwoscylIS2LCW-po5SFBdqOr-oo92bP_XfHE/edit?usp=sharing'},
+		{'title':'Обнаружены ошибки в работе', 'our_msg':'В Вашей работе обнаружены ошибки:\n\n' + str_of_val_er + '\nПросьба исправить их и отправить письмо повторно.'},
+		{'title':'Обнаружены ошибки в заполнении письма', 'our_msg':'В структуре письма обнаружены следующие ошибки:\n\n' + str_of_er + '\nПросьба исправить их в соответствии с документом\n' + 'https://docs.google.com/document/d/1DRhgepxVwoscylIS2LCW-po5SFBdqOr-oo92bP_XfHE/edit?usp=sharing'},
 		{'title':'Авторизация пользователя', 'our_msg':'Вы не найдены в системе. Пожалуйста, перейдите по ссылке и зарегистрируйтесь.\nhttps://docs.google.com/forms/d/1nXhfOkE3KnWVFNzZ-jvvATAIb6T3zzwD5Ry8Itc-VmQ/edit?usp=sharing'}
-		{'title':'Ошибка модулю', 'our_msg':'В модуле ... обнаружена ошибка. В ближайшее время проблема будет исправлена. Просим прощения за неудобства.'
+		{'title':'Ошибка модуля', 'our_msg':'В модуле ... обнаружена ошибка. В ближайшее время проблема будет исправлена. Просим прощения за неудобства.'
 	}]
 	sending_msg={}
 	#Данные используемые в каждом письме
@@ -195,15 +225,29 @@ def send_message(service, user_id, email_of_student, name_of_student, number_of_
 	#Отправка
 	send_msg = service.users().messages().send(userId=user_id, body=body).execute()
 
-def send_message_to_techsub(service, user_id, email_of_student, name_of_student, error_dictionary, number_of_templates):
+"""
+service: авторизация через мыло
+user_id: наше мыло или спец слово 'me'
+email_of_student: мыло студента
+name_of_student: имя и фамилия студента
+validation_dictionary: словарь с валидации письма, в котором есть ('Numder')номер работы и ('URL')ссылка на работу
+error_dictionary: словарь с ошибками в коде студента
+number_of_templates: номер используемого для заполнения письма шаблона
+"""
+def send_message_to_techsub(service, user_id, email_of_student, name_of_student, validation_dictionary, error_dictionary, number_of_templates):
 	"""
 	Метод рассылки писем ТП.
 	Вызывается преподавателю, если у студента есть ошибки в работе
 	Вызывается, если пал какой-либо модуль
 	"""
+	if number_of_templates == 0
+		str_of_er = error_in_work(error_dictionary)
+	else
+		str_of_er = ""
+
 	message_templates=[{
 		'hello':'Здравствуйте, Юрий Викторович!\n\n','title':'Ошибка в работе студента', 'our_msg':'Студент '+name_of_student+' не справился с задачей №'validation_dictionary['Numder']+' ('+validation_dictionary['URL']+')'+
-		'\nБыли допущены ошибки в работе:\n\n'+error_in_work(error_dictionary)}
+		'\nБыли допущены ошибки в работе:\n\n'+str_of_er}
 		{'hello':'Здравствуйте!', 'title':'Служба дала сбой', 'our_msg':'В модуле ... возникла ошибка ...'
 	}]
 	sending_msg={}
