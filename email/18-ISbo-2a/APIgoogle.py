@@ -1,6 +1,7 @@
 ﻿#coding: utf-8
 from config import SPREAD_SHEET_ID
 from config import CREDENTIALS_FILE
+from config import SPREAD_SHEET_ID_INIT
 import pickle
 import os.path
 from googleapiclient.discovery import build
@@ -187,25 +188,25 @@ def send_message(service, user_id, email_of_student, name_of_student, number_of_
 	Метод по отправке сообщения студенту
 	"""
 
-	if number_of_templates == 1
+	if number_of_templates == 1:
 		str_of_val_er = error_in_work(validation_dictionary)
-	else 
-		if number_of_templates == 2
+	else: 
+		if number_of_templates == 2:
 			str_of_er = error_in_work(error_dictionary)
-		else
+		else:
 			str_of_val_er = ""
 			str_of_er = ""	
 
 
 
 	#Шаблоны писем
-	message_templates = [{
-		'title':'Работа успешно принята', 'our_msg':'Поздравляю!\nРабота успешно принята!\nОценку можно проверить в журнале:\nhttps://docs.google.com/spreadsheets/d/1gOX8T8ihy3J1khhC16U1qDwaI-K6ndkp9LFWAHncuWA/edit?usp=sharing'},
+	message_templates = [
+		{'title':'Работа успешно принята', 'our_msg':'Поздравляю!\nРабота успешно принята!\nОценку можно проверить в журнале:\nhttps://docs.google.com/spreadsheets/d/1gOX8T8ihy3J1khhC16U1qDwaI-K6ndkp9LFWAHncuWA/edit?usp=sharing'},
 		{'title':'Обнаружены ошибки в работе', 'our_msg':'В Вашей работе обнаружены ошибки:\n\n' + str_of_val_er + '\nПросьба исправить их и отправить письмо повторно.'},
 		{'title':'Обнаружены ошибки в заполнении письма', 'our_msg':'В структуре письма обнаружены следующие ошибки:\n\n' + str_of_er + '\nПросьба исправить их в соответствии с документом\n' + 'https://docs.google.com/document/d/1DRhgepxVwoscylIS2LCW-po5SFBdqOr-oo92bP_XfHE/edit?usp=sharing'},
-		{'title':'Авторизация пользователя', 'our_msg':'Вы не найдены в системе. Пожалуйста, перейдите по ссылке и зарегистрируйтесь.\nhttps://docs.google.com/forms/d/1nXhfOkE3KnWVFNzZ-jvvATAIb6T3zzwD5Ry8Itc-VmQ/edit?usp=sharing'}
-		{'title':'Ошибка модуля', 'our_msg':'В модуле ... обнаружена ошибка. В ближайшее время проблема будет исправлена. Просим прощения за неудобства.'
-	}]
+		{'title':'Авторизация пользователя', 'our_msg':'Вы не найдены в системе. Пожалуйста, перейдите по ссылке и зарегистрируйтесь.\nhttps://docs.google.com/forms/d/1nXhfOkE3KnWVFNzZ-jvvATAIb6T3zzwD5Ry8Itc-VmQ/edit?usp=sharing'},
+		{'title':'Ошибка модуля', 'our_msg':'В модуле ... обнаружена ошибка. В ближайшее время проблема будет исправлена. Просим прощения за неудобства.'}]
+	
 	sending_msg={}
 	#Данные используемые в каждом письме
 	hello_student = "Здравствуйте, " + name_of_student + "!\n\n"
@@ -244,16 +245,16 @@ def send_message_to_techsub(service, user_id, email_of_student, name_of_student,
 	Вызывается преподавателю, если у студента есть ошибки в работе
 	Вызывается, если пал какой-либо модуль
 	"""
-	if number_of_templates == 0
+	if number_of_templates == 0:
 		str_of_er = error_in_work(error_dictionary)
-	else
+	else:
 		str_of_er = ""
 
-	message_templates=[{
-		'hello':'Здравствуйте, Юрий Викторович!\n\n','title':'Ошибка в работе студента', 'our_msg':'Студент '+name_of_student+' не справился с задачей №'validation_dictionary['Numder']+' ('+validation_dictionary['URL']+')'+
-		'\nБыли допущены ошибки в работе:\n\n'+str_of_er}
-		{'hello':'Здравствуйте!', 'title':'Служба дала сбой', 'our_msg':'В модуле ... возникла ошибка ...'
-	}]
+	message_templates=[
+		{'hello':'Здравствуйте, Юрий Викторович!\n\n','title':'Ошибка в работе студента', 'our_msg':'Студент ' + name_of_student + ' не справился с задачей №' + validation_dictionary['Numder']+' ('+validation_dictionary['URL']+')'+
+		'\nБыли допущены ошибки в работе:\n\n'+str_of_er },
+		{'hello':'Здравствуйте!', 'title':'Служба дала сбой', 'our_msg':'В модуле ... возникла ошибка ...'}
+	]
 	sending_msg={}
 	mas_of_To=['yuri.silenok@gmail.com', '0sashasmirnov0@gmail.com', 'k.svyat395@gmail.com', 'MaXLyuT2000@gmail.com', 'majishpro@gmail.com', 'Sirokko77@gmail.com', 'nikita.lukyanow@gmail.com',
 	 'generalgrigorevous@gmail.com', 'molchok.yurij@gmail.com', 'amr15319@gmail.com']
@@ -267,7 +268,7 @@ def send_message_to_techsub(service, user_id, email_of_student, name_of_student,
 	#Заголовок нашего сообщения
 	sending_msg['Subject'] = message_templates[number_of_templates]['title']
 	#Кому мы его отправляем
-	if number_of_templates != 0
+	if number_of_templates != 0:
 		#Цикл рассылки сообщений ТП
 		for i in mas_of_To:
 			sending_msg['To'] = i
@@ -275,7 +276,7 @@ def send_message_to_techsub(service, user_id, email_of_student, name_of_student,
 			raw = base64.urlsafe_b64encode(sending_msg.as_bytes())
 			raw = raw.decode()
 			body = {'raw': raw}
-	else
+	else:
 		#Письмо преподавателю в случае ошибок в коде студента
 		sending_msg['To'] = 'yuri.silenok@gmail.com'
 		#Преобразование строки
@@ -298,3 +299,46 @@ def error_in_work(some_errors):
 		error +="- "+mas_of_er[i]+"\n"
 		i+=1
 	return error
+
+def search_group(email):
+    credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets',  'https://www.googleapis.com/auth/drive'])
+    httpAuth = credentials.authorize(httplib2.Http())
+    service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
+    spreadsheetId = SPREAD_SHEET_ID_INIT
+    range_name ='Ответы на форму (1)!B1:B1000'
+    table = service.spreadsheets().values().get(spreadsheetId=spreadsheetId, range=range_name).execute()
+    values_table = table.get('values')
+    c = 1
+    for val in values_table:
+        if val[0] != email:
+            c += 1
+        else:
+            break
+    nomer = f'Ответы на форму (1)!F{c}:G{c}'
+    table1 = service.spreadsheets().values().get(spreadsheetId=spreadsheetId, range=nomer).execute()
+    values_finish=table1.get('values')[0]
+    return tuple(values_finish)
+
+def search_tablic(group,laba, surname):
+    group1='(ТРПО) '+group
+    c=2
+    credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets',  'https://www.googleapis.com/auth/drive'])
+    httpAuth = credentials.authorize(httplib2.Http())
+    service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
+    spreadsheetId = SPREAD_SHEET_ID
+    range_name = group1+'!D2:D1000'
+    table = service.spreadsheets().values().get(spreadsheetId=spreadsheetId, range=range_name).execute()
+    count=ord('J')+int(laba)-1
+    nomer_stolbca=chr(count)
+    io=table.get('values');print(io)
+    try:
+        for name in io:
+            if name[0]!=surname:
+                c=c+1
+            else:
+                break
+        position=str(nomer_stolbca)+str(c)    	
+    except:
+        return None
+    else:
+        return position

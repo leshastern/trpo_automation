@@ -4,9 +4,10 @@
 """
 
 #id таблицы
-SPREAD_SHEET_ID = "ExampleIdSheet"
+SPREAD_SHEET_ID = "ExampleId"
+SPREAD_SHEET_ID_INIT = 'ExampleId'
 #Ключ Google API
-CREDENTIALS_FILE = "Example.json"
+CREDENTIALS_FILE = "Example"
 #Список портов
 PORTS = {"1":"12001",
 	"2":"12002",
