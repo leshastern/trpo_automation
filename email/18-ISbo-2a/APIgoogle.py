@@ -124,6 +124,7 @@ def search_email(email_id):
 		#return None
     return b
 
+@log_method.log_method_info
 def get_message(service, user_id):
 	"""
 	Метод получения полезной информации из письма студента
@@ -164,6 +165,8 @@ service: авторизация через мыло
 user_id: наше мыло или спец слово 'me'
 message_info: словарь с данными письма
 """
+
+@log_method.log_method_info
 def email_archiving(service, user_id, message_info):
 	#указываем удаляемые и устанавливаемые ярлыки для нашего письма
 	msg_labels = {'removeLabelIds': ['UNREAD', 'INBOX'], 'addLabelIds': ['Label_4436622035204509097']}
@@ -234,6 +237,7 @@ validation_dictionary: словарь с валидации письма, в к�
 error_dictionary: словарь с ошибками в коде студента
 number_of_templates: номер используемого для заполнения письма шаблона
 """
+@log_method.log_method_info
 def send_message_to_techsub(service, user_id, email_of_student, name_of_student, validation_dictionary, error_dictionary, number_of_templates):
 	"""
 	Метод рассылки писем ТП.
@@ -280,7 +284,8 @@ def send_message_to_techsub(service, user_id, email_of_student, name_of_student,
 		body = {'raw': raw}
 	#Отправка
 	send_msg = service.users().messages().send(userId=user_id, body=body).execute()
-
+	
+@log_method.log_method_info
 def error_in_work(some_errors):
 	"""
 	Метод преобразования массива с ошибками в строку
