@@ -5,10 +5,6 @@ import re;
 from oauth2client.service_account import ServiceAccountCredentials
 import httplib2
 from apiclient import discovery
-email='[Surname Name <email@gmail.com>]'
-group='18-ИСбо-2а'
-laba='8'
-surname='ФИО'
 def search_tablic(group,laba, surname):
     group1='(ТРПО) '+group
     a=email
