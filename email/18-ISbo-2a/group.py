@@ -5,7 +5,7 @@ import re;
 from oauth2client.service_account import ServiceAccountCredentials
 import httplib2
 from apiclient import discovery
-def search_tablic(group,laba, surname):
+def search_group(group,laba, surname):
     group1='(ТРПО) '+group
     c=1
     CREDENTIALS_FILE = 'json файл'
