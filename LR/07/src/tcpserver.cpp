@@ -82,14 +82,14 @@ void TcpServer::slotReadingDataJson()
             try {
                 lab = new StrategyLab(labNumber);
                 grade = lab->check(pureCode);
-            } catch (ControlException e) {
-                errorSystem = e.getCode();
-                mistakeDescription = e.getMessage();
+                if (lab->hasComments()) {
+                    errorSystem = false;
+                    mistakeDescription += "\n\nОшибки в решении:\n" + lab->getComments();
+                }
+            } catch (QString errorMsg) {
+                mistakeDescription = errorMsg;
             }
 
-            if (!errorSystem && lab->getComments()) {
-                mistakeDescription += "\n" + lab->getComments();
-            }
             delete lab;
         } else {
             mistakeDescription = "Ошибка парсинга Json: " + docJsonError.errorString();

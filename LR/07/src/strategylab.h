@@ -13,13 +13,15 @@ class StrategyLab: public QObject
     Q_OBJECT
 
 private:
-    QString code;
-    QJsonObject object;
+    int labNumber;
+    QString comments;
 
 public:
-    explicit StrategyLab(QJsonObject, QObject* parent = nullptr);
+    explicit StrategyLab(int, QObject* parent = nullptr);
     ~StrategyLab();
-    bool check();
+    bool check(QList<QString>);
+    bool hasComments() const { return comments.isEmpty(); }
+    QString getComments() const { return comments; }
 
 private:
     void getCode();

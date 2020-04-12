@@ -2,13 +2,11 @@
 #define TCPSERVER_H
 
 #include "strategylab.h"
-#include "controlexception.h"
 
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QList>
 
 /**
 *   @brief Реализация сервера для проверки лабораторных работ по паттерну стратегии
