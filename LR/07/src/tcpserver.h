@@ -2,6 +2,8 @@
 #define TCPSERVER_H
 
 #include "strategylab.h"
+#include "controlexception.h"
+
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QJsonDocument>

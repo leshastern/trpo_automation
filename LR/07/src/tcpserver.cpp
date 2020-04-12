@@ -82,10 +82,12 @@ void TcpServer::slotReadingDataJson()
             try {
                 lab = new StrategyLab(labNumber);
                 grade = lab->check(pureCode);
-            } catch (QString err) {
-                mistakeDescription = err;
+            } catch (ControlException e) {
+                errorSystem = e.getCode();
+                mistakeDescription = e.getMessage();
             }
-            if (lab->getComments()) {
+
+            if (!errorSystem && lab->getComments()) {
                 mistakeDescription += "\n" + lab->getComments();
             }
             delete lab;
