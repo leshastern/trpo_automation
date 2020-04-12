@@ -68,7 +68,19 @@
             <class name="Red"></class>
         </heirs>
     </lab>
-    <lab number="6"></lab>
+    <lab number="6">
+        <abstract name="Car">
+            <method name="purchase"
+                    shouldReturn="true"
+                    hasParams="0" >
+            </method>
+        </abstract>
+        <heirs amount="3">
+            <class name="BMW"></class>
+            <class name="Chevrolet"></class>
+            <class name="Ford"></class>
+        </heirs>
+    </lab>
     <lab number="7">
         <abstract name="SpendTime">
             <method name="choice"
