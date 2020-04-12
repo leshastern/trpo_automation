@@ -1,10 +1,8 @@
 #ifndef STARTEGYLAB_H
 #define STARTEGYLAB_H
 
-#include "./../config/.answerStructure"
-
 #include <QObject>
-#include <QJsonObject>
+#include <QtXml>
 
 /**
  * @brief Класс для проверки лабораторных работ
@@ -17,13 +15,17 @@ class StrategyLab: public QObject
 private:
     int labNumber;
     QString comments;
+    QFile xmlFile;
 
 public:
     explicit StrategyLab(int, QObject* parent = nullptr);
     ~StrategyLab();
-    bool check(QList<QString>);
-    bool hasComments() const { return comments.isEmpty(); }
+    bool check(const QList<QString>);
+    bool hasComments() const { return !comments.isEmpty(); }
     QString getComments() const { return comments; }
+
+private:
+    bool checkInside(const QList<QString>, const QDomNode&);
 };
 
 #endif // STARTEGYLAB_H

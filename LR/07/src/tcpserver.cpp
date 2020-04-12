@@ -76,6 +76,7 @@ void TcpServer::slotReadingDataJson()
 
         if (parsingJson(docJson, &labLink, &labNumber, pureCode)) {
             // TODO нужен массив строчек из сервиса получения листинга с Github из labLink
+            qDebug() << "ссылка: " << labLink << "\nномер лабы: " << labNumber << "\n";
         }
 
         if (docJsonError.errorString().toInt() == QJsonParseError::NoError) {
@@ -113,9 +114,16 @@ bool TcpServer::parsingJson(QJsonDocument docJson, QString *labLink, int *labNum
     QJsonObject jsonObj;
 
     jsonObj = docJson.object();
+    QMap<QString, QVariant> map = jsonObj.toVariantMap();
+    qDebug() << map.value("data") << "\n";
+    foreach(QString key, map.keys()) {
+        QVariant value = map.value(key);
+        qDebug() << key << ":" << value;
+    }
     link = jsonObj.take("data");
     (*labLink) = link.toString();
+    qDebug() << "\nsuccess\n";
 
-    link = jsonObj.take("labNumber");
-    (*labNumber) = link.toInt();
+//    link = jsonObj.take("labNumber");
+//    (*labNumber) = link.toInt();
 }

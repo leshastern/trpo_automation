@@ -1,7 +1,6 @@
 QT -= gui
 QT += network
-
-LIBS += -lqjson
+QT += xml
 
 CONFIG += c++11 console
 CONFIG -= app_bundle
@@ -32,3 +31,6 @@ HEADERS += \
     functional.h \
     strategylab.h \
     tcpserver.h
+
+win32:CONFIG += console
+win32:TARGET  = ../XmlDOMRead
