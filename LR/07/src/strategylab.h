@@ -1,6 +1,8 @@
 #ifndef STARTEGYLAB_H
 #define STARTEGYLAB_H
 
+#include "./../config/.answerStructure"
+
 #include <QObject>
 #include <QJsonObject>
 
@@ -22,10 +24,6 @@ public:
     bool check(QList<QString>);
     bool hasComments() const { return comments.isEmpty(); }
     QString getComments() const { return comments; }
-
-private:
-    void getCode();
-
 };
 
 #endif // STARTEGYLAB_H

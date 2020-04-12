@@ -5,25 +5,13 @@
  * @param objectFromServer
  * @param parent
  */
-StrategyLab::StrategyLab(QJsonObject objectFromServer, QObject* parent)
+StrategyLab::StrategyLab(int givenNumber, QObject* parent)
     : QObject(parent),
-      object(objectFromServer)
-{
-    this->getCode();
-}
+      labNumber(givenNumber)
+{}
 
-/**
- * @brief Метод для извлечения основного кода программы
- *  из доставленного Json объекта
- * @throws QString
- */
-void StrategyLab::getCode()
-{
-    if (object.contains("code")) {
-        this->code = object.value("code").toString();
-    }
-
-    throw QString("Переданный Json объект не содержит поля 'code'");
+bool StrategyLab::check(QList<QString> code) {
+    return false;
 }
 
 /**
