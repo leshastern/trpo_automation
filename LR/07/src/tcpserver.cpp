@@ -64,37 +64,56 @@ void TcpServer::sendToClient(bool answer)
 void TcpServer::slotReadingDataJson()
 {
     QByteArray data;
-    QString labLink;
-    int labNumber = 0;
+    QString labLink, mistakeDescription;
+    QList<QString> pureCode;
+    bool grade = false, errorSystem = true;
+    int labNumber = 1;
 
     if (mTcpSocket->waitForConnected(500)) {
         mTcpSocket->waitForConnected(500);
         data = mTcpSocket->readAll();
         docJson = QJsonDocument::fromJson(data, &docJsonError);
-        parsingJson(docJson, &labLink, &labNumber);
-        // TODO вместо docJson.object() нужно вызывать функцию конфертации json в map-объект (задача #47)
+
+        if (parsingJson(docJson, &labLink, &labNumber, pureCode)) {
+            // TODO нужен массив строчек из сервиса получения листинга с Github из labLink
+        }
+
         if (docJsonError.errorString().toInt() == QJsonParseError::NoError) {
             try {
-                lab = new StrategyLab(docJson.object());
-//                this->sendToClient(lab->check());
-                delete lab;
+                lab = new StrategyLab(labNumber);
+                grade = lab->check(pureCode);
             } catch (QString err) {
-                // TODO добавление текста ошибки к ответу клиенту (задача #195)
-                qDebug() << err;
+                mistakeDescription = err;
             }
+            if (lab->getComments()) {
+                mistakeDescription += "\n" + lab->getComments();
+            }
+            delete lab;
+        } else {
+            mistakeDescription = "Ошибка парсинга Json: " + docJsonError.errorString();
         }
+
+        // TODO  sendToClient (grade + errorSystem + mistakeDiscription)
     }
 }
 
-void TcpServer::parsingJson(QJsonDocument docJson, QString *labLink, int *labNumber)
+/**
+ * @brief Метод парсинга пришедших с почтового сервиса Json-данных
+ * @param docJson - объект json
+ * @param labLink - ссылка на репозиторий решения на Github
+ * @param labNumber - номер лабы
+ * @param pureData - массив строчек (каждая строчка - класс решения с телами методов)
+ * @return bool - Если в поле data пришла ссылка на репозиторий Github - то true, иначе false
+ */
+bool TcpServer::parsingJson(QJsonDocument docJson, QString *labLink, int *labNumber, QList<QString> pureData)
 {
-QJsonValue link;
-QJsonObject jsonObj;
+    QJsonValue link;
+    QJsonObject jsonObj;
 
-jsonObj = docJson.object();
-link = jsonObj.take("labLink");
-(*labLink) = link.toString();
+    jsonObj = docJson.object();
+    link = jsonObj.take("data");
+    (*labLink) = link.toString();
 
-link = jsonObj.take("labNumber");
-(*labNumber) = link.toInt();
+    link = jsonObj.take("labNumber");
+    (*labNumber) = link.toInt();
 }
