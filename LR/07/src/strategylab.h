@@ -2,7 +2,7 @@
 #define STARTEGYLAB_H
 
 #include <QObject>
-#include <QJsonObject>
+#include <QtXml>
 
 /**
  * @brief Класс для проверки лабораторных работ
@@ -13,17 +13,19 @@ class StrategyLab: public QObject
     Q_OBJECT
 
 private:
-    QString code;
-    QJsonObject object;
+    int labNumber;
+    QString comments;
+    QFile xmlFile;
 
 public:
-    explicit StrategyLab(QJsonObject, QObject* parent = nullptr);
+    explicit StrategyLab(int, QObject* parent = nullptr);
     ~StrategyLab();
-    bool check();
+    bool check(const QList<QString>);
+    bool hasComments() const { return !comments.isEmpty(); }
+    QString getComments() const { return comments; }
 
 private:
-    void getCode();
-
+    bool checkInside(const QList<QString>, const QDomNode&);
 };
 
 #endif // STARTEGYLAB_H

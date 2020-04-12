@@ -2,6 +2,7 @@
 #define TCPSERVER_H
 
 #include "strategylab.h"
+
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QJsonDocument>
@@ -23,10 +24,10 @@ private:
 
 public:
     explicit TcpServer(QObject *parent = nullptr);
-     void sendToClient(bool answer);
+    void sendToClient(bool answer);
 
 private:
-    void parsingJson(QJsonDocument, QString*, int*);
+    bool parsingJson(QJsonDocument, QString*, int*, QList<QString>);
 
 public slots:
     void slotNewConnection();
