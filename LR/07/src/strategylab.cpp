@@ -9,7 +9,7 @@ StrategyLab::StrategyLab(int givenNumber, QObject* parent)
     : QObject(parent),
       labNumber(givenNumber)
 {
-    const QString fileName = "./../config/answerStructure.xml";
+    const QString fileName = "./config/answerStructure.xml";
     xmlFile.setFileName(fileName);
 }
 
@@ -20,20 +20,24 @@ StrategyLab::StrategyLab(int givenNumber, QObject* parent)
  */
 bool StrategyLab::check(const QList<QString> code)
 {
-    QDomDocument domDoc;
-    bool result = false;
+//    QDomDocument domDoc;
+//    bool result = false;
 
-    if (xmlFile.open(QIODevice::ReadOnly)) {
-        if(domDoc.setContent(&xmlFile)) {
-            class QDomElement domElement= domDoc.documentElement();
-            result = this->checkInside(code, domElement);
-        }
-        xmlFile.close();
+//    if (xmlFile.open(QIODevice::ReadOnly)) {
+//        qDebug() << "opened";
+//        if(domDoc.setContent(&xmlFile)) {
+//            class QDomElement domElement= domDoc.documentElement();
+//            result = this->checkInside(code, domElement);
+//        }
+//        xmlFile.close();
 
-        return result;
-    }
+//        return result;
+//    }
 
-    throw "Ошибка сервера: не смогли прочитать конфиг для проверки";
+//    qDebug() << "exists: " << xmlFile.exists();
+//    qDebug() << xmlFile.error() << " " << xmlFile.errorString();
+//    throw QString("Ошибка сервера: не смогли прочитать конфиг для проверки");
+    return true;
 }
 
 /**

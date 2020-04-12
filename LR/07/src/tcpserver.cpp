@@ -74,20 +74,21 @@ void TcpServer::slotReadingDataJson()
         data = mTcpSocket->readAll();
         docJson = QJsonDocument::fromJson(data, &docJsonError);
 
-        if (parsingJson(docJson, &labLink, &labNumber, pureCode)) {
-            // TODO нужен массив строчек из сервиса получения листинга с Github из labLink
-            qDebug() << "ссылка: " << labLink << "\nномер лабы: " << labNumber << "\n";
-        }
-
         if (docJsonError.errorString().toInt() == QJsonParseError::NoError) {
             try {
+                if (parsingJson(docJson, &labLink, &labNumber, pureCode)) {
+                    // TODO нужен массив строчек из сервиса получения листинга с Github из labLink
+                }
+
                 lab = new StrategyLab(labNumber);
                 grade = lab->check(pureCode);
                 if (lab->hasComments()) {
                     errorSystem = false;
+                    qDebug() << lab->getComments();
                     mistakeDescription += "\n\nОшибки в решении:\n" + lab->getComments();
                 }
             } catch (QString errorMsg) {
+                qDebug() << errorMsg;
                 mistakeDescription = errorMsg;
             }
 
@@ -114,16 +115,12 @@ bool TcpServer::parsingJson(QJsonDocument docJson, QString *labLink, int *labNum
     QJsonObject jsonObj;
 
     jsonObj = docJson.object();
-    QMap<QString, QVariant> map = jsonObj.toVariantMap();
-    qDebug() << map.value("data") << "\n";
-    foreach(QString key, map.keys()) {
-        QVariant value = map.value(key);
-        qDebug() << key << ":" << value;
-    }
+
     link = jsonObj.take("data");
     (*labLink) = link.toString();
-    qDebug() << "\nsuccess\n";
 
-//    link = jsonObj.take("labNumber");
-//    (*labNumber) = link.toInt();
+    link = jsonObj.take("labNumber");
+    (*labNumber) = link.toInt();
+
+    return true;
 }
