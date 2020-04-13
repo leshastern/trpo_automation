@@ -7,7 +7,11 @@ def Decode_files(file_names):
             for line in file:
                 newline = ''
                 for symbol in line:
-                    symbol = chr(ord(symbol)-1)
+                    if symbol == '':
+                        symbol == ''
+                    else:
+                        if symbol != '/n' and symbol != '/t' and symbol != '	':
+                            symbol = chr(ord(symbol)-1)
                     newline = newline + symbol
                 print(newline)
 
