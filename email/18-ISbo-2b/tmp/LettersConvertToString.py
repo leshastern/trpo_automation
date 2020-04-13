@@ -8,9 +8,9 @@ from bs4 import BeautifulSoup
 def LettersConvertToString(letters):
     """Предположительно пока что забираем ссылки из писем на репозиторий"""
     for tmp in letters:
-        #html = get_html(tmp.url)
-        html = get_html("https://github.com/Progoger/TasksForStudents")
-        finding_files(html, tmp.Student.GroupOfStudent, tmp.Student.NameOfStudent, tmp.ThemeOfLetter)
+        html = get_html(tmp.Body)
+        tmp.Body = finding_files(html, tmp.Student.NameOfStudent)
+    return letters
 
 
 
@@ -27,6 +27,7 @@ def csv_read(data):
     if isinstance(data, str):
         with open("data.txt", 'a') as file:
             file.write(data+'\n')
+            return data
 
 
 def get_link(html):
@@ -34,6 +35,7 @@ def get_link(html):
     Если больше нет полей таблицы( то есть кода или текстовых данных), тогда метод закончит работу"""
     soup = BeautifulSoup(html, 'lxml')
     head = soup.find('strong', class_="final-path")
+    data = ""
     if head != None:
         csv_read("\nFile Title: "+head.getText()+"\n")
     i = 1
@@ -43,27 +45,29 @@ def get_link(html):
         if head is None:
             flag = False
         else:
-            csv_read(head.getText())
+            data += csv_read(head.getText())
             i += 1
+    return data
 
 
-def finding_files(html, group, name, lab):
+def finding_files(html, name):
     """Метод отвечает за поиск и открытие файлов или папок в репозитории Git'a;
     если ссылка, которую мы открыли не имеет ссылок на другие объекты(файлы или папки),
     мы предполагаем, что это открытый файл и передаём его на парсинг файла в get_link"""
+    main_data = ""
     soup = BeautifulSoup(html, 'lxml')
     table = soup.find_all('td', class_ = "content")
     date = finding_links(table)
     if len(date) == 0:
-        get_link(html)
+        data = get_link(html)
+        return data
     for item in date:
         title = item.get('title')
-        if title == name:
-            print(item.get('title'))
+        if title == name or title.split(".")[0] == name:
             item = item.get('href')
             if item != None:
-                finding_files(get_html("https://github.com"+item), group, name, lab)
-    return
+                main_data += finding_files(get_html("https://github.com"+item), name)
+    return main_data
 
 
 
@@ -78,13 +82,11 @@ def finding_links(table):
     return date
 
 
-student = User.User("Максим Расторгуев", "18-ИСбо-2", None, None)
-student1 = User.User("VasiliyPupkin", "18-ИСбо-2", None, None)
+student = User.User("МаксимРасторгуев", "18-ИСбо-2", None, None)
+student1 = User.User("СантьягоЦеместес", "18-ИСбо-2", None, None)
 letters = []
-letter = Letter.Letter(student, "ЛР01", None, None)
-letter1 = Letter.Letter(student1, "ЛР02", None, None)
+letter = Letter.Letter(student, "ЛР01", "https://github.com/Progoger/TasksForStudents/tree/master/18-ИСбо-2/ЛР01", None)
+letter1 = Letter.Letter(student1, "ЛР02", "https://github.com/Progoger/TasksForStudents/tree/master/18-ИСбо-2/ЛР02", None)
 letters.append(letter)
 letters.append(letter1)
-#url = input("Введите ссылку: ")
 LettersConvertToString(letters)
-#finding_files(get_html(url))
