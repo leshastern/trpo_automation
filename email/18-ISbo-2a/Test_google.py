@@ -12,12 +12,14 @@ class Test_google(unittest.TestCase):
 
         from APIgoogle import add_mark_in_table
         
+        Decode.Decode_files(['Example.json'])        
         add_mark_in_table('List1', 'A1', '1')
 
         credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive'])
         httpAuth = credentials.authorize(httplib2.Http())
         service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
-
+        Decode.Finish(['Example.json.bak'])
+        
         ranges = 'List1!A1'
 
         request = service.spreadsheets().values().get(spreadsheetId = SPREAD_SHEET_ID, range = ranges)
@@ -46,13 +48,14 @@ class Test_google(unittest.TestCase):
     def test_get_service(self):
 
         from APIgoogle import get_service
-
+        Decode.Decode_files(['Example.json'])        
         service = get_service();
 
         credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive'])
 
         httpAuth = credentials.authorize(httplib2.Http())
-        service = apiclient.discovery.build('sheets', 'v4', http = httpAuth) 
+        service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
+        Decode.Finish(['Example.json.bak'])
 
         service.spreadsheets().values().batchUpdate(spreadsheetId = SPREAD_SHEET_ID, body = {
             "valueInputOption": "USER_ENTERED",
@@ -73,10 +76,10 @@ class Test_google(unittest.TestCase):
 
         from APIgoogle import get_message
         from APIgoogle import get_service
-
+        Decode.Decode_files(['Example.json']) 
         service = get_service()
-
         message_info = get_message(service, 'sanyabl.atchtozah.inya@gmail.com')
+        Decode.Finish(['Example.json.bak'])
 
         hello_student = "Здравствуйте, " + 'человек, который делает всё невовремя' + "!"
         signature = " С уважением, Бот"
@@ -116,6 +119,7 @@ class Test_google(unittest.TestCase):
         from APIgoogle import send_message
         from APIgoogle import get_service
         from APIgoogle import get_message
+        Decode.Decode_files(['Example.json']) 
 
         service = get_service()
 
@@ -134,6 +138,7 @@ class Test_google(unittest.TestCase):
 
         send_message(service, user_id, email_of_student, name_of_student, number_of_templates, validation_dictionary)
         message_info = get_message(service, 'sanyabl.atchtozah.inya@gmail.com')
+        Decode.Finish(['Example.json.bak'])
 
         hello_student = "Здравствуйте, " + name_of_student + "!"
         signature = " С уважением, Бот"
