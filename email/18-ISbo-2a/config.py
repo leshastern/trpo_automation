@@ -7,7 +7,7 @@
 SPREAD_SHEET_ID = "ExampleId"
 SPREAD_SHEET_ID_INIT = 'ExampleId'
 #Ключ Google API
-CREDENTIALS_FILE = "Example"
+CREDENTIALS_FILE = "Example.json"
 #Список портов
 PORTS = {"1":"12001",
 	"2":"12002",
