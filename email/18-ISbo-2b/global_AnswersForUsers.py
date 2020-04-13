@@ -1,13 +1,17 @@
 # coding=utf-8
 class AnswersForUsers:
     """класс AnswersForUsers-ответы пользователям, содержит данные:
-    Кому написано-Who
-    Что написано-What"""
+    Кому написано - Who
+    Тема письма - Theme
+    Что написано - Body
+    """
     Who = ""
-    What = ""
+    Theme = ""
+    Body = ""
 
-    def __init__(self, who=None, what=None):
+    def __init__(self, who=None, theme=None, body=None):
         """Конструктор, все входные данные не обязательны для того,
                  чтобы была возможность сделать пустой экземпляр класса"""
         self.Who = who
-        self.What = what
+        self.Theme = theme
+        self.Body = body

@@ -1,26 +1,26 @@
 # coding=utf-8
-import User
-
-
-class LetterResult:
-    """Класс LetterResult-результат письма, содержит данные:
+class Letter:
+    """Класс Letter-письмо, содержит данные:
     Студент-Student, при помощи класса User,
     Тема письма-ThemeOfLetter
-    Является ли решение правильным-IsOK
+    Его содержание-Body
     Вариант лабораторной работы - Variant
     Статусы-CodeStatus, CodeStatusComment"""
-    Student = User.User()
+    Student = None
     ThemeOfLetter = ""
-    IsOK = False
-    Comment = ""
-    Variant = 0
+    Body = ""
+    VariantOfLab = 0
+    NumberOfLab = 0
     CodeStatus = 0
     CodeStatusComment = ""
 
-    def __init__(self, student=None, themeOfLetter=None, isOK=None, variant=None):
+    def __init__(self, student=None, themeOfLetter=None, body=None, variant=None, number=None):
         """Конструктор, все входные данные не обязательны для того,
          чтобы была возможность сделать пустой экземпляр класса"""
         self.Student = student
         self.ThemeOfLetter = themeOfLetter
-	self.IsOK = isOK
-        self.Variant = variant
+        self.Body = body
+        self.VariantOfLab = variant
+        self.NumberOfLab = number
+
+

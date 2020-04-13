@@ -1,5 +1,17 @@
+# coding=utf-8
+import global_User as User
+import global_Letter as Letter
 import requests
 from bs4 import BeautifulSoup
+
+
+def LettersConvertToString(letters):
+    """Предположительно пока что забираем ссылки из писем на репозиторий"""
+    for tmp in letters:
+        #html = get_html(tmp.url)
+        html = get_html("https://github.com/Progoger/TasksForStudents")
+        finding_files(html, tmp.Student.GroupOfStudent, tmp.Student.NameOfStudent, tmp.ThemeOfLetter)
+
 
 
 def get_html(url):
@@ -22,7 +34,8 @@ def get_link(html):
     Если больше нет полей таблицы( то есть кода или текстовых данных), тогда метод закончит работу"""
     soup = BeautifulSoup(html, 'lxml')
     head = soup.find('strong', class_="final-path")
-    csv_read("\nFile Title: "+head.getText()+"\n")
+    if head != None:
+        csv_read("\nFile Title: "+head.getText()+"\n")
     i = 1
     flag = True
     while flag:
@@ -34,7 +47,7 @@ def get_link(html):
             i += 1
 
 
-def finding_files(html, url):
+def finding_files(html, group, name, lab):
     """Метод отвечает за поиск и открытие файлов или папок в репозитории Git'a;
     если ссылка, которую мы открыли не имеет ссылок на другие объекты(файлы или папки),
     мы предполагаем, что это открытый файл и передаём его на парсинг файла в get_link"""
@@ -44,11 +57,14 @@ def finding_files(html, url):
     if len(date) == 0:
         get_link(html)
     for item in date:
-        item = item.get('href')
-        last = str(item).split("/")
-        if last[len(last)-1] != None:
-            finding_files(get_html(url+"/"+last[len(last)-1]), url+"/"+last[len(last)-1])
+        title = item.get('title')
+        if title == name:
+            print(item.get('title'))
+            item = item.get('href')
+            if item != None:
+                finding_files(get_html("https://github.com"+item), group, name, lab)
     return
+
 
 
 def finding_links(table):
@@ -62,5 +78,13 @@ def finding_links(table):
     return date
 
 
-url = input("Введите ссылку: ")
-finding_files(get_html(url), url)
+student = User.User("Максим Расторгуев", "18-ИСбо-2", None, None)
+student1 = User.User("VasiliyPupkin", "18-ИСбо-2", None, None)
+letters = []
+letter = Letter.Letter(student, "ЛР01", None, None)
+letter1 = Letter.Letter(student1, "ЛР02", None, None)
+letters.append(letter)
+letters.append(letter1)
+#url = input("Введите ссылку: ")
+LettersConvertToString(letters)
+#finding_files(get_html(url))
