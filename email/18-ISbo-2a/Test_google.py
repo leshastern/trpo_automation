@@ -78,16 +78,22 @@ class Test_google(unittest.TestCase):
         from APIgoogle import get_service
         Decode.Decode_files(['Example.json']) 
         service = get_service()
-        message_info = get_message(service, 'sanyabl.atchtozah.inya@gmail.com')
+        user_id = 'sanyabl.atchtozah.inya@gmail.com'
+        message_info = get_message(service, user_id)
         Decode.Finish(['Example.json.bak'])
-
+        
+        search_id = service.users().messages().list(userId=user_id, labelIds = ['INBOX']).execute()
+        message_id = search_id['messages']
+        alone_msg = message_id[0]
+        id_of_msg = alone_msg['id']
         hello_student = "Здравствуйте, " + 'человек, который делает всё невовремя' + "!"
         signature = " С уважением, Бот"
         our_msg = ' В Вашей работе обнаружены ошибки: ' + '- неверно указан номер ЛР ' + 'Просьба исправить их и отправить письмо повторно.'
         body_of_msg = hello_student + our_msg + signature
 
         our_info = {
-            'email_id':'sanyabl.atchtozah.inya@gmail.com',
+            'id_of_msg':id_of_msg,
+            'email_id':user_id,
             'head_of_msg':'Обнаружены ошибки в работе',
             'body_of_msg':body_of_msg
             }
@@ -133,20 +139,25 @@ class Test_google(unittest.TestCase):
         validation_dictionary={ 
             'Number':1,
             'URL': "someurl.what",
-            'Errors': Errors_list
+            "errorDescription": Errors_list
             }
 
         send_message(service, user_id, email_of_student, name_of_student, number_of_templates, validation_dictionary)
         message_info = get_message(service, 'sanyabl.atchtozah.inya@gmail.com')
         Decode.Finish(['Example.json.bak'])
 
+        search_id = service.users().messages().list(userId=user_id, labelIds = ['INBOX']).execute()
+        message_id = search_id['messages']
+        alone_msg = message_id[0]
+        id_of_msg = alone_msg['id']
         hello_student = "Здравствуйте, " + name_of_student + "!"
         signature = " С уважением, Бот"
         our_msg = ' В Вашей работе обнаружены ошибки: ' + '- неверно указан номер ЛР '+ 'Просьба исправить их и отправить письмо повторно.'
         body_of_msg = hello_student + our_msg + signature
 
         our_info = {
-            'email_id':'sanyabl.atchtozah.inya@gmail.com',
+            'id_of_msg':id_of_msg,
+            'email_id':user_id,
             'head_of_msg':'Обнаружены ошибки в работе',
             'body_of_msg': body_of_msg
             }
