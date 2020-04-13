@@ -46,7 +46,7 @@ def validation(head_of_msg,body_of_msg):
             break
     if a==-1:
         log_method.logger.warning('validation: Missing greeting.')
-        Errors_list.append('отсутсвует приветсвие')
+        Errors_list.append('отсутствует приветствие')
 
     #Проверка на URL
     URL=url_cheack(Number,body_of_msg)
@@ -55,7 +55,7 @@ def validation(head_of_msg,body_of_msg):
     a=body_of_msg.find('--')
     if a==-1:
         log_method.logger.warning('validation: Missing signature.')
-        Errors_list.append('отсутсвует подпись')
+        Errors_list.append('отсутствует подпись')
 
 
     #Словарь
