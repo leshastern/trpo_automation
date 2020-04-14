@@ -1,9 +1,12 @@
 <?xml version="1.0"?>
 <repository>
-     <variant id="1">
-	<url>https://github.com/HozookiSan/Losyash</url>
-     </variant>
-     <variant id="2">
-	<url>https://github.com/HozookiSan/Losyash</url>
-     </variant>
+    <variant id="1">
+        <url>https://github.com/HozookiSan/Losyash</url>
+    </variant>
+    <variant id="2">
+        <url>https://github.com/HozookiSan/Losyash</url>
+    </variant>
+    <variant id="7">
+        <url>https://github.com/HozookiSan/Sovunya</url>
+    </variant>
 </repository>
