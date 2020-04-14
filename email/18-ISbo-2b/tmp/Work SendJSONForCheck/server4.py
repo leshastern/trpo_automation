@@ -13,24 +13,21 @@ while True:
     conn, addr = sock.accept()
     print(' Подключен:', addr)
     while True:
-        conn, addr = sock.accept()
-        print(' Подключен:', addr)
-        while True:
-            data = conn.recv(1024)
-            if not data: break
-            recvdata = data.decode()
-            print("Полученные данные:")
-            print(recvdata)
-            json_otv = """
-            {
-                "mark": "",
-                "comment": ""
-            }
-            """
-            otvet = json.loads(json_otv)
-            otvet["mark"] = "1"
-            otvet["comment"] = "Comment 4"
-            otv = json.dumps(otvet)
-            print(otv.encode())
-            conn.send(otv.encode())
-        conn.close()
+        data = conn.recv(1024)
+        if not data: break
+        recvdata = data.decode()
+        print("Полученные данные:")
+        print(recvdata)
+        json_otv = """
+        {
+            "mark": "",
+            "comment": ""
+        }
+        """
+        otvet = json.loads(json_otv)
+        otvet["mark"] = "1"
+        otvet["comment"] = "Comment 4"
+        otv = json.dumps(otvet)
+        print(otv.encode())
+        conn.send(otv.encode())
+    conn.close()

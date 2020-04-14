@@ -30,5 +30,6 @@ while True:
         otvet["comment"] = "Comment 3"
         otv = json.dumps(otvet)
         print(otv.encode())
+        """Закоментировано, так как демонстрирует ситуацию, когда какие то неполадки на порту"""
         """conn.send(otv.encode())"""
     conn.close()
