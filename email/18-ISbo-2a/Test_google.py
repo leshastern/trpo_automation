@@ -1,10 +1,12 @@
 import unittest
 import httplib2
 import requests
+import Decode
 import apiclient.discovery
 from oauth2client.service_account import ServiceAccountCredentials
 from config import SPREAD_SHEET_ID
 from config import CREDENTIALS_FILE
+from config import SPREAD_SHEET_ID_INIT
 
 class Test_google(unittest.TestCase):
 
@@ -26,6 +28,29 @@ class Test_google(unittest.TestCase):
         response = request.execute();
         new_one = response['values'][0][0]
         self.assertEqual(new_one, '1')
+
+    def test_search_group(self):
+        from APIgoogle import search_group
+
+        Decode.Decode_files(['Example.json'])
+        set_group = search_group('Самореализация')
+
+        credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets',  'https://www.googleapis.com/auth/drive'])
+        httpAuth = credentials.authorize(httplib2.Http())
+        service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
+        Decode.Finish(['Example.json.bak'])
+        spreadsheetId = SPREAD_SHEET_ID_INIT
+
+        ranges='List1!B1:B5'
+        table = service.spreadsheets().values().get(spreadsheetId=spreadsheetId, range=ranges).execute()
+        values_table = table.get('values')
+        nomer='List1!F3:G3'
+        table1 = service.spreadsheets().values().get(spreadsheetId=spreadsheetId, range=nomer).execute()
+        values_finish=table1.get('values')[0]
+        tuple(values_finish)
+        self.assertEqual(set_group,values_finish)
+
+
 
     def test_cleaning_email(self):
 

@@ -5,7 +5,7 @@
 
 #id таблицы
 SPREAD_SHEET_ID = "ExampleId"
-SPREAD_SHEET_ID_INIT = 'ExampleId'
+SPREAD_SHEET_ID_INIT = '1V18AqlN1U5DGEKKtalyVBf0XYaEQVWKdr31yQajvYlw'#'ExampleId'
 #Ключ Google API
 CREDENTIALS_FILE = "Example.json"
 #Список портов
