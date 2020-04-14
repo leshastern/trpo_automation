@@ -55,12 +55,20 @@ def FormJSONDates(letters):
     - Продумать момент обработки списка писем
     """
     with open(cfg.filename, "a") as file: file.write("\nForming jsons...")
-    jsons = []
+    jsonDates = []
     for i in range(len(letters)):
-        jsons.append("my_json" + str(i))
-    sleep(1)
+        if letters[i].CodeStatus == "20":
+            json1 = {
+                "labNumber" : letters[i].VariantOfLab,
+                "link" : None,
+                "code" : letters[i].Body
+                }
+            mystr = json.dumps(json1)
+            jsonDates.append(mystr)
     with open(cfg.filename, "a") as file: file.write("Jsons forms!")
-    return jsons
+    return jsonDates
+
+
 
 def SendJSONForCheck(jsonDates, letters):
     """
@@ -79,9 +87,9 @@ def SendJSONForCheck(jsonDates, letters):
     отправить json1 ->
     получить ответ на json1 ->
     Заполнить нужные поля в result1 ->
-    отправить json3 ->
-    получить ответ на json3 ->
-    Заполнить нужные поля в result3 ->
+    отправить json2 ->
+    получить ответ на json2 ->
+    Заполнить нужные поля в result2 ->
     отправить json3 ->
     получить ответ на json3 ->
     Заполнить нужные поля в result3 ->
