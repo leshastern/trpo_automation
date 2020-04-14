@@ -213,6 +213,7 @@ _pkginfo.txt
 *.appxbundle
 *.appxupload
 
+
 # Visual Studio cache files
 # files ending in .cache can be ignored
 *.[Cc]ache
@@ -401,3 +402,5 @@ compile_commands.json
 
 # QtCreator local machine specific files for imported projects
 *creator.user*
+
+*.DS_Store

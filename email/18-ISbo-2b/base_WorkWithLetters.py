@@ -66,6 +66,7 @@ def FormJSONDates(letters):
             mystr = json.dumps(json1)
             jsonDates.append(mystr)
     with open(cfg.filename, "a") as file: file.write("Jsons forms!")
+    
     return jsonDates
 
 
