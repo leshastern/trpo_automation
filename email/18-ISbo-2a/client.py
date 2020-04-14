@@ -12,7 +12,8 @@ def send_a_laboratory_work_for_verification(**kwargs):
     """
     data = ({
         "labNumber": str(kwargs['labNumber']),
-        "labLink": str(kwargs['labLink']),
+        "link": str(kwargs['labLink']),
+        "code": 'null'
     }) #Создание JSON
     jsn = json.dumps(data)
     sock = socket.socket() #Создание сокета
@@ -23,13 +24,13 @@ def send_a_laboratory_work_for_verification(**kwargs):
     response = sock.recv(1024) #Получение ответа
     log_method.logger.debug('send_a_laboratory_work_for_verification: Accepted the responce')
     while response:
-        if (response["labStatus"]==1):
+        if (response["grade"]==True):
             sock.close()
-            return 1
-        elif (response["labStatus"]==0):
+            return response
+        elif (response["grade"]==False):
             sock.close()
-            return 0
+            return response
         response = sock.recv(1024)
 
     sock.close()
-    return 0
+    return response
