@@ -24,7 +24,6 @@ QString Functional::authorize()
         if (reply->error()) {
             QString error = QString("Error %1").arg(reply->errorString());
             qDebug() << error;
-            throw "Ошибка авторизации: " + error;
         }
 
         for (auto &i:reply->rawHeaderPairs()) {
@@ -45,7 +44,7 @@ QString Functional::authorize()
         return;
     });
 
-    manager->get(QNetworkRequest(QUrl("https://github.com/login/oauth/authorize")));
+    manager->get(QNetworkRequest(QUrl("https://github.com/None-stopCoding/oauth/authorize")));
     return QString("success");
 }
 

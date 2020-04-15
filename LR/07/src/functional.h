@@ -17,6 +17,7 @@ class Functional : public QObject
 
 public:
     QNetworkReply *reply;
+
 private:
     QNetworkAccessManager *manager;
     QString link;
