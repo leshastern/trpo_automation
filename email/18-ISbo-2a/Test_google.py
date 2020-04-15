@@ -33,7 +33,7 @@ class Test_google(unittest.TestCase):
     def test_search_group(self):
         from APIgoogle import search_group
 
-        set_group = search_group('sanyabl.atchtozah.inya@gmail.com')
+        set_group = search_group('Coffee')
 
         credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets',  'https://www.googleapis.com/auth/drive'])
         httpAuth = credentials.authorize(httplib2.Http())
