@@ -19,18 +19,14 @@ def send_a_laboratory_work_for_verification(**kwargs):
     sock = socket.socket() #Создание сокета
     sock.connect(("127.0.0.1",int(PORTS[str(kwargs['labNumber'])]))) #Подключение
     log_method.logger.debug('send_a_laboratory_work_for_verification: Connect to 127.0.0.1:%s' % PORTS[str(kwargs['labNumber'])])
-    sock.send(jsn) #Отправка
+    sock.send(jsn.encode()) #Отправка
     log_method.logger.debug('send_a_laboratory_work_for_verification: Send file')
-    response = sock.recv(1024) #Получение ответа
+    response = sock.recv(1024).decode() #Получение ответа
     log_method.logger.debug('send_a_laboratory_work_for_verification: Accepted the responce')
     while response:
-        if (response["grade"]==True):
+        if (response["grade"]==True or response["grade"]==False or response["grade"]=='null'):
             sock.close()
             return response
-        elif (response["grade"]==False):
-            sock.close()
-            return response
-        response = sock.recv(1024)
-
+        response = sock.recv(1024).decode()
     sock.close()
     return response
