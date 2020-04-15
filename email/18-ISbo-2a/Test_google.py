@@ -4,21 +4,20 @@ import requests
 import Decode
 import apiclient.discovery
 from oauth2client.service_account import ServiceAccountCredentials
-from config import SPREAD_SHEET_ID
-from config import CREDENTIALS_FILE
-from config import SPREAD_SHEET_ID_INIT
 
 class Test_google(unittest.TestCase):
-    def setUp(self):    
-        Decode.Decode_files(['Example.json'])      
+
+    def setUp(self):
+        Decode.Decode_config('config.py', ['SPREAD_SHEET_ID', 'SPREAD_SHEET_ID_INIT', 'CREDENTIALS_FILE', 'CREDENTIALS_FILE_SERVICE'])
+        Decode.Decode_files(['Example.json', 'credentials.json'])
 
     def tearDown(self):
-        Decode.Finish(['Example.json.bak'])
-        
-    def test_add_mark(self):
+        Decode.Finish(['config.py.bak', 'Example.json.bak'])
 
+    def test_add_mark(self):
+        from config import SPREAD_SHEET_ID
+        from config import CREDENTIALS_FILE
         from APIgoogle import add_mark_in_table
-                  
         add_mark_in_table('List1', 'A1', '1')
         credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive'])
         httpAuth = credentials.authorize(httplib2.Http())
@@ -31,6 +30,8 @@ class Test_google(unittest.TestCase):
         self.assertEqual(new_one, '1')
 
     def test_search_group(self):
+        from config import SPREAD_SHEET_ID_INIT
+        from config import CREDENTIALS_FILE
         from APIgoogle import search_group
 
         credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets',  'https://www.googleapis.com/auth/drive'])
@@ -70,7 +71,8 @@ class Test_google(unittest.TestCase):
         # from APIgoogle import search_email
 
     def test_get_service(self):
-
+        from config import SPREAD_SHEET_ID
+        from config import CREDENTIALS_FILE
         from APIgoogle import get_service       
         service = get_service();
 
@@ -92,7 +94,7 @@ class Test_google(unittest.TestCase):
         response = request.execute();
         new_one = response['values'][0][0]
         self.assertEqual(new_one, '2')
-        
+
     def test_get_message(self):
         
         from APIgoogle import get_message
@@ -131,7 +133,7 @@ class Test_google(unittest.TestCase):
         validation_dictionary={ 
             'Number':1,
             'URL': "someurl.what",
-            'Errors': Errors_list
+            "errorDescription": Errors_list
             }
 
         answer = '- неверно указано название предмета'+"\n"+'- неверно указан номер ЛР'+"\n"
@@ -179,8 +181,7 @@ class Test_google(unittest.TestCase):
             'head_of_msg':'Обнаружены ошибки в работе',
             'body_of_msg': body_of_msg
             }
-        
         self.assertEqual(message_info, our_info)
-        
+
 if __name__ == '__main__':
     unittest.main()
