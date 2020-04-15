@@ -1,28 +1,35 @@
 #ifndef FUNCTIONAL_H
 #define FUNCTIONAL_H
 
-#include "tcpserver.h"
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 /**
  * @brief Класс для получения листинга кода с GitHub
  */
-class functional : public QObject
+class Functional : public QObject
 {
     Q_OBJECT
+
 public:
-    explicit functional(QString linkFromServer, QObject *parent = nullptr);
-    void GetContentFromGithub();
-    void DataProcessing();
-    void GetLinkToFile();
+    QNetworkReply *reply;
 private:
     QNetworkAccessManager *manager;
     QString link;
+    QString secretToken;
+
 public:
-    QNetworkReply *reply;
+    explicit Functional(QString linkFromServer, QObject *parent = nullptr);
+    void getContentFromGithub();
+    void dataProcessing();
+    void getLinkToFile();
+
+private:
+    QString authorize();
 };
 
 #endif // FUNCTIONAL_H

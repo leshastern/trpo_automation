@@ -5,17 +5,55 @@
  * @param parent
  * @param QString
  */
-functional::functional(QString linkFromServer, QObject *parent) : QObject(parent)
+Functional::Functional(QString linkFromServer, QObject *parent) : QObject(parent)
 {
     manager = new QNetworkAccessManager();
     link = linkFromServer;
+
+    this->secretToken = this->authorize();
+}
+
+QString Functional::authorize()
+{
+    QObject::connect(
+                    manager,
+                    &QNetworkAccessManager::finished,
+                    [=](QNetworkReply *reply)
+    {
+
+        if (reply->error()) {
+            QString error = QString("Error %1").arg(reply->errorString());
+            qDebug() << error;
+            throw "Ошибка авторизации: " + error;
+        }
+
+        for (auto &i:reply->rawHeaderPairs()) {
+            QString str;
+            qDebug() << str.sprintf(
+                            "%40s: %s",
+                            i.first.data(),
+                            i.second.data());
+        }
+
+        qDebug() << reply->header(QNetworkRequest::ContentTypeHeader).toString();
+
+        QByteArray responseData = reply->readAll();
+        qDebug() << QJsonDocument::fromJson(responseData);
+
+        reply->deleteLater();
+        manager->deleteLater();
+        return;
+    });
+
+    manager->get(QNetworkRequest(QUrl("https://github.com/login/oauth/authorize")));
+    return QString("success");
 }
 
 /**
  * @brief Метод посылает GET запрос на GitHub и получает ответ в формате Json
  * @return void
  */
-void functional::GetContentFromGithub()
+void Functional::getContentFromGithub()
 {
     QUrl url("/*link*/");
     QNetworkRequest request;
@@ -29,7 +67,7 @@ void functional::GetContentFromGithub()
  *        получает листинг кода в формате Json
  * @return void
  */
-void functional::GetLinkToFile()
+void Functional::getLinkToFile()
 {
     QJsonDocument catalog;
     QJsonObject currentPartCatalog;
@@ -43,7 +81,7 @@ void functional::GetLinkToFile()
  *        и помещает их в массив
  * @return void
  */
-void functional::DataProcessing()
+void Functional::dataProcessing()
 {
     //Разделение кода на классы
 }

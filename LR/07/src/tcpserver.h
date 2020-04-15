@@ -2,6 +2,7 @@
 #define TCPSERVER_H
 
 #include "strategylab.h"
+#include "functional.h"
 
 #include <QTcpServer>
 #include <QTcpSocket>
@@ -19,6 +20,7 @@ private:
     QTcpServer* mTcpServer;
     QTcpSocket* mTcpSocket;
     StrategyLab* lab;
+    Functional* githubManager;
     QJsonDocument docJson;
     QJsonParseError docJsonError;
 
@@ -27,7 +29,7 @@ public:
     void sendToClient(bool answer);
 
 private:
-    bool parsingJson(QJsonDocument, QString*, int*, QList<QString>);
+    bool parsingJson(QJsonDocument, QString*, int*, QList<QString>*);
 
 public slots:
     void slotNewConnection();
