@@ -9,7 +9,7 @@ SPREAD_SHEET_ID_INIT = '2IKo8zuej{r3lpYn.s985{mTFnTRgh7Qq6pl7hYhIz39'
 #Ключ Google API для работы с таблицей
 CREDENTIALS_FILE = 'Fybnqmf/ktpo'
 #Ключ Google API для получения доступа к аккаунту
-CREDENTIALS_FILE_SERVICE = 'dsfefoujbmt/ktpo'
+CREDENTIALS_FILE_SERVICE = 'credentials.json'
 #Список портов
 PORTS = {"1":"12001",
 	"2":"12002",
