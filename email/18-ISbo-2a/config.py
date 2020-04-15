@@ -4,10 +4,12 @@
 """
 
 #id таблицы
-SPREAD_SHEET_ID = "ExampleId"
-SPREAD_SHEET_ID_INIT = 'ExampleId'
-#Ключ Google API
-CREDENTIALS_FILE = "Example.json"
+SPREAD_SHEET_ID = '2IKo8zuej{r3lpYn.s985{mTFnTRgh7Qq6pl7hYhIz39'
+SPREAD_SHEET_ID_INIT = '2IKo8zuej{r3lpYn.s985{mTFnTRgh7Qq6pl7hYhIz39'
+#Ключ Google API для работы с таблицей
+CREDENTIALS_FILE = 'Fybnqmf/ktpo'
+#Ключ Google API для получения доступа к аккаунту
+CREDENTIALS_FILE_SERVICE = 'dsfefoujbmt/ktpo'
 #Список портов
 PORTS = {"1":"12001",
 	"2":"12002",
