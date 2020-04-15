@@ -1,12 +1,8 @@
-import com.google.errorprone.annotations.Var;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.interactions.Actions;
 import org.w3c.dom.Document;
-import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,11 +11,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.security.sasl.SaslException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -29,7 +23,7 @@ public class Selenium {
     private static final String FILENAME = "Repository.xml";
     public static WebDriver driver=null;
     private String result ="";
-    public  String Repository="https://github.com/HozookiSan/Sovunya"; // Ссылка на репозитори
+    public  String Repository;// Ссылка на репозитори
     public  String variant; // Номер варика
     private String itog_ozenka="0";
     private boolean empty=false;
@@ -230,13 +224,13 @@ public class Selenium {
                         }
                 }
                     if (ok){
-                        driver.get(Var_Repository+"/issues?q=is%3Apr+is%3Aclosed");
+                        driver.get(Var_Repository+"/issues?q=is%3Aissue+is%3Aclosed");
                         Good_issues_str=pull_String("//div[@class='flex-auto min-width-0 lh-condensed p-2 pr-3 pr-md-2']",true).toLowerCase();
                         for (String retval : Good_issues_str.split("#", 2)) {
                             Good_issues_str=retval;break;
                         }
                         Change_Tab(1);
-                        driver.get(Repository+"/issues?q=is%3Apr+is%3Aclosed");
+                        driver.get(Repository+"/issues?q=is%3Aissue+is%3Aclosed");
                         Var_issues_str=pull_String("//div[@class='flex-auto min-width-0 lh-condensed p-2 pr-3 pr-md-2']",true).toLowerCase();
                         for (String retval : Var_issues_str.split("#", 2)) {
                             Var_issues_str=retval;break;
@@ -398,6 +392,7 @@ public class Selenium {
     }
 
     public String Check_Labels(){
+        Change_Tab(0);
         driver.get(Var_Repository+"/labels");
         int Good_Labels=pull_INT("//span[@class='js-labels-count']");
         Change_Tab(1);
@@ -412,7 +407,10 @@ public class Selenium {
             if (Good_Labels_Name.equals(Var_Labels_Name)){
                 Good_Labels_Name=pull_String("//a[@class='muted-link']",true);
                 Change_Tab(1);
-                Var_Labels_Name=pull_String("//a[@class='muted-link']",true);
+                if (driver.findElements(By.xpath("//a[@class='muted-link']")).size()!=0) {
+                    Var_Labels_Name = pull_String("//a[@class='muted-link']", true);
+                }
+                else {  Change_Tab(0); return "Label не назначен на задачи или или/и pull_requests \n";}
                 Change_Tab(0);
                 if (Good_Labels_Name.equals(Var_Labels_Name)){
                     return "";
@@ -433,10 +431,10 @@ public class Selenium {
         String Var_Milestone=pull_String("//a[@class='btn-link selected']",true)+pull_String("//a[@class='btn-link ']",true);
         Change_Tab(0);
         if (Good_Milestone.equals(Var_Milestone)){
-            driver.get(Var_Repository+"/milestone/1");
+            driver.findElement(By.xpath("//h2/a[1]")).click();
             Good_Milestone=pull_String("//h2",true);
             Change_Tab(1);
-            driver.get(Repository+"/milestone/1");
+            driver.findElement(By.xpath("//h2/a[1]")).click();
             Var_Milestone=pull_String("//h2",true);
             Change_Tab(0);
             if (Good_Milestone.equals(Var_Milestone)){
@@ -475,15 +473,6 @@ public class Selenium {
     }
 
     public void Change_Tab(int tab){
-        Robot robot = null;
-        try {
-            robot = new Robot();
-        } catch (AWTException e) { e.printStackTrace(); }
-        robot.keyPress(KeyEvent.VK_CONTROL);
-        robot.keyPress(KeyEvent.VK_TAB);
-        robot.keyRelease(KeyEvent.VK_CONTROL);
-        robot.keyRelease(KeyEvent.VK_TAB);
-
         ArrayList<String> tabs = new ArrayList<String>(driver.getWindowHandles());
         driver.switchTo().window(tabs.get(tab));
     }
@@ -497,9 +486,6 @@ public class Selenium {
             empty=true;
         }
     }
-
-
-
 
     public void test() {
         if (Var_Repository != null) {
@@ -525,8 +511,10 @@ public class Selenium {
                 result += Check_Wiki(); //In progress
 
                 if ("".equals(result)) {itog_ozenka = "1";}
-                driver.quit();
-            } else { result="Репозиторий пуст\n"; driver.quit();}
-        } else {System.out.println("Не найден вариант в файле\n");driver.quit();}
+            } else { result="Репозиторий пуст\n";
+            }
+        } else {System.out.println("Не найден вариант в файле\n");
+        }
+        driver.quit();
     }
 }
