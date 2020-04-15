@@ -34,7 +34,7 @@ def get_service():
 		if creds and creds.expired and creds.refresh_token:
 			creds.refresh(Request())
 		else:
-			flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
+			flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, SCOPES)
 			creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
 		with open('token.pickle', 'wb') as token:
@@ -109,11 +109,11 @@ def search_email(email_id):
     """
     #a=email
     mail_str=cleaning_email(email_id) # вызываю метод очистки строки в нужный формат
-    CREDENTIALS_FILE = 'json файл'  #  ← имя скаченного файла с закрытым ключом
-    credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets',                                                                               'https://www.googleapis.com/auth/drive'])
+    CREDENTIALS_FILE1 = CREDENTIALS_FILE  #  ← имя скаченного файла с закрытым ключом
+    credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE1, ['https://www.googleapis.com/auth/spreadsheets',                                                                               'https://www.googleapis.com/auth/drive'])
     httpAuth = credentials.authorize(httplib2.Http())
     service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
-    spreadsheetId = 'ссылка на таблицу'
+    spreadsheetId = SPREAD_SHEET_ID
     range_name = 'Лист1!B1:B1000'
     table = service.spreadsheets().values().get(spreadsheetId=spreadsheetId, range=range_name).execute() 
     #result=re.search(email, str(table)) # поиск почты 
