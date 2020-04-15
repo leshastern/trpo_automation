@@ -33,21 +33,23 @@ class Test_google(unittest.TestCase):
     def test_search_group(self):
         from APIgoogle import search_group
 
-        set_group = search_group('Coffee')
-
         credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets',  'https://www.googleapis.com/auth/drive'])
         httpAuth = credentials.authorize(httplib2.Http())
         service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
         spreadsheetId = SPREAD_SHEET_ID_INIT
+        test_number = 57
 
-        ranges='List1!B1:B5'
-        table = service.spreadsheets().values().get(spreadsheetId=spreadsheetId, range=ranges).execute()
-        values_table = table.get('values')
-        nomer='List1!F3:G3'
+        place_of_our_testing_email=f'List1!B{test_number}'
+        table = service.spreadsheets().values().get(spreadsheetId=spreadsheetId, range=place_of_our_testing_email).execute()
+        our_email = table.get('values')[0][0]
+
+        set_group = search_group(our_email)
+
+        nomer=f'List1!F{test_number}:G{test_number}'
         table1 = service.spreadsheets().values().get(spreadsheetId=spreadsheetId, range=nomer).execute()
         values_finish=table1.get('values')[0]
-        tuple(values_finish)
-        self.assertEqual(set_group,values_finish)
+        values_for_test = tuple(values_finish)
+        self.assertEqual(set_group, values_for_test)
 
     def test_cleaning_email(self):
 
