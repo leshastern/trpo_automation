@@ -209,28 +209,27 @@ public class Selenium {
             String Var_issues_str=pull_String("//a[@class='btn-link selected']",true)+pull_String("//a[@class='btn-link ']",true);
             Change_Tab(0);
             if (Good_issues_str.equals(Var_issues_str)){
-                Good_issues_str=pull_String("//div[@id='issue_3']/div[@class='d-flex Box-row--drag-hide position-relative' and 1]/div[2]",true).toLowerCase();
-                for (String retval : Good_issues_str.split("#", 2)) {
-                    Good_issues_str=retval;break;
+                List<WebElement> Good_Issues_Open=driver.findElements(By.xpath("//div/div/div/div/div/div/div/div/div/a"));
+                String[] Good_Issues_Str_Mas =new String[Good_Issues_Open.size()];
+                for (int i=0;i<Good_Issues_Open.size();i++){
+                    Good_Issues_Str_Mas[i]=Good_Issues_Open.get(i).getAttribute("textContent");
                 }
                 Change_Tab(1);
-                Var_issues_str=pull_String("//div[@id='issue_3']/div[@class='d-flex Box-row--drag-hide position-relative' and 1]/div[2]",true).toLowerCase();
-                for (String retval : Var_issues_str.split("#", 2)) {
-                    Var_issues_str=retval;break;
+                List<WebElement> Var_Issues_Open=driver.findElements(By.xpath("//div/div/div/div/div/div/div/div/div/a"));
+                String[] Var_Issues_Str_Mas =new String[Good_Issues_Open.size()];
+                for (int i=0;i<Var_Issues_Open.size();i++){
+                    Var_Issues_Str_Mas[i]=Var_Issues_Open.get(i).getAttribute("textContent");
                 }
                 Change_Tab(0);
-                if (Good_issues_str.equals(Var_issues_str)){
-                    Good_issues_str=pull_String("//div[@id='issue_2']/div[@class='d-flex Box-row--drag-hide position-relative' and 1]/div[2]",true).toLowerCase();
-                    for (String retval : Good_issues_str.split("#", 2)) {
-                        Good_issues_str=retval;break;
-                    }
-                    Change_Tab(1);
-                    Var_issues_str=pull_String("//div[@id='issue_2']/div[@class='d-flex Box-row--drag-hide position-relative' and 1]/div[2]",true).toLowerCase();
-                    for (String retval : Var_issues_str.split("#", 2)) {
-                        Var_issues_str=retval;break;
-                    }
-                    Change_Tab(0);
-                    if (Good_issues_str.equals(Var_issues_str)){
+                Arrays.sort(Var_Issues_Str_Mas);
+                Arrays.sort(Good_Issues_Str_Mas);
+                boolean ok=true;
+                for (int i=0;i<Var_Issues_Open.size();i++){
+                        if (!Var_Issues_Str_Mas[i].equals(Good_Issues_Str_Mas[i])){
+                            ok=false;break;
+                        }
+                }
+                    if (ok){
                         driver.get(Var_Repository+"/issues?q=is%3Apr+is%3Aclosed");
                         Good_issues_str=pull_String("//div[@class='flex-auto min-width-0 lh-condensed p-2 pr-3 pr-md-2']",true).toLowerCase();
                         for (String retval : Good_issues_str.split("#", 2)) {
@@ -246,11 +245,9 @@ public class Selenium {
                         if (Good_issues_str.equals(Var_issues_str)){
                             return "";
                         }
-                        else { return "Имя закрытого issues неверно,либо не назначен label\n"; }
+                        else { return "Имя закрытого issues неверно\n"; }
                     }
-                    else { return "Неверное имя 2 задачи, либо не назначен label\n"; }
-                }
-                else { return "Неверное имя 1 задачи, либо не назначен label\n"; }
+                    else { return "Неверное имя открытого issue/issues\n"; }
             }
             else {return "Ошибка в issues. Должно быть 2 открытых, 1 закрытый\n"; }
         }
@@ -329,52 +326,75 @@ public class Selenium {
     }
 
     public String Check_Project(int Good_project,int Var_project){
-        String str="";
-        String Good_issue, Var_issue;
-        if (Var_project!=0) {
-            driver.get(Var_Repository + "/projects/1");
-            Change_Tab(1);
-            driver.get(Repository + "/projects/1");
-            Change_Tab(0);
-            String count_path = "div[@class='clearfix js-details-container details-container Details js-add-note-container' and 1]/div[@class='hide-sm position-relative p-sm-2' and 1]/span[1]";
-            String name_path = "div[@class='clearfix js-details-container details-container Details js-add-note-container' and 1]/div[@class='hide-sm position-relative p-sm-2' and 1]/h3[1]/span[@class='js-project-column-name' and 1]";
-            if (driver.findElements(By.xpath("//div[1]/div[1]/div/span")).size() != 0) {
-                if (pull_INT("//div[1]/" + count_path) >= 1) {
-                    Var_issue = pull_String("//div[1]/div/article[1]/div/div/div/a", false);
-                    Change_Tab(1);
-                    Good_issue = pull_String("//div[1]/div/article[1]/div/div/div/a", false);
-                    Change_Tab(0);
-                    if(!Good_issue.equals(Var_issue)) {
-                        str += "Доска " + pull_String("//div[1]/" + name_path, false) + " не содержит задачи: " + Good_issue + "\n";
+        driver.get(Var_Repository + "/projects/");
+        String Var_Name=driver.findElement(By.xpath("//a[@class='link-gray-dark mr-1']")).getAttribute("textContent");
+        Change_Tab(1);
+        driver.get(Repository + "/projects/");
+        String Rep_Name=driver.findElement(By.xpath("//a[@class='link-gray-dark mr-1']")).getAttribute("textContent");
+        Change_Tab(0);
+        if (Var_Name.equals(Rep_Name)) {
+            String str = "";
+            String Good_issue, Var_issue;
+            if (Var_project == Good_project) {
+                driver.get(Var_Repository + "/projects/1");
+                Change_Tab(1);
+                driver.get(Repository + "/projects/1");
+                Change_Tab(0);
+                String count_path = "div[@class='clearfix js-details-container details-container Details js-add-note-container' and 1]/div[@class='hide-sm position-relative p-sm-2' and 1]/span[1]";
+                String name_path = "div[@class='clearfix js-details-container details-container Details js-add-note-container' and 1]/div[@class='hide-sm position-relative p-sm-2' and 1]/h3[1]/span[@class='js-project-column-name' and 1]";
+                if (driver.findElements(By.xpath("//div[1]/div[1]/div/span")).size() != 0) {
+                    if (pull_INT("//div[1]/" + count_path) >= 1) {
+                        Var_issue = pull_String("//div[1]/div/article[1]/div/div/div/a", false);
+                        Change_Tab(1);
+                        Good_issue = pull_String("//div[1]/div/article[1]/div/div/div/a", false);
+                        Change_Tab(0);
+                        if (!Good_issue.equals(Var_issue)) {
+                            str += "Доска " + pull_String("//div[1]/" + name_path, false) + " не содержит задачи: " + Good_issue + "\n";
+                        }
+                    } else {
+                        str += "Доска " + pull_String("//div[1]/" + name_path, false) + " не содержит задач.\n";
                     }
-                } else {str += "Доска " + pull_String("//div[1]/" + name_path, false) + " не содержит задач.\n"; }
-            } else { str += "Отсутствует 1-я доска.\n"; }
+                } else {
+                    str += "Отсутствует 1-я доска.\n";
+                }
 
-            if (driver.findElements(By.xpath("//div[2]/div[1]/div/span")).size() != 0) {
-                if (pull_INT("//div[2]/" + count_path) >= 1) {
-                    Var_issue = pull_String("//div[2]/div/article[1]/div/div/div/a", false);
-                    Change_Tab(1);
-                    Good_issue = pull_String("//div[2]/div/article[1]/div/div/div/a", false);
-                    Change_Tab(0);
-                    if(!Good_issue.equals(Var_issue)) {
-                        str += "Доска " + pull_String("//div[2]/" + name_path, false) + " не содержит задачи: " + Good_issue + "\n";
+                if (driver.findElements(By.xpath("//div[2]/div[1]/div/span")).size() != 0) {
+                    if (pull_INT("//div[2]/" + count_path) >= 1) {
+                        Var_issue = pull_String("//div[2]/div/article[1]/div/div/div/a", false);
+                        Change_Tab(1);
+                        Good_issue = pull_String("//div[2]/div/article[1]/div/div/div/a", false);
+                        Change_Tab(0);
+                        if (!Good_issue.equals(Var_issue)) {
+                            str += "Доска " + pull_String("//div[2]/" + name_path, false) + " не содержит задачи: " + Good_issue + "\n";
+                        }
+                    } else {
+                        str += "Доска " + pull_String("//div[2]/" + name_path, false) + " не содержит задач.\n";
                     }
-                } else { str += "Доска " + pull_String("//div[2]/" + name_path, false) + " не содержит задач.\n"; }
-            } else { str += "Отсутствует 2-я доска.\n"; }
+                } else {
+                    str += "Отсутствует 2-я доска.\n";
+                }
 
-            if (driver.findElements(By.xpath("//div[3]/div[1]/div/span")).size() != 0) {
-                if (pull_INT("//div[3]/" + count_path) >= 1) {
-                    Var_issue = pull_String("//div[3]/div/article[1]/div/div/div/a", false);
-                    Change_Tab(1);
-                    Good_issue = pull_String("//div[3]/div/article[1]/div/div/div/a", false);
-                    Change_Tab(0);
-                    if(!Good_issue.equals(Var_issue)) {
-                        str += "Доска " + pull_String("//div[3]/" + name_path, false) + " не содержит задачи: " + Good_issue + "\n";
+                if (driver.findElements(By.xpath("//div[3]/div[1]/div/span")).size() != 0) {
+                    if (pull_INT("//div[3]/" + count_path) >= 1) {
+                        Var_issue = pull_String("//div[3]/div/article[1]/div/div/div/a", false);
+                        Change_Tab(1);
+                        Good_issue = pull_String("//div[3]/div/article[1]/div/div/div/a", false);
+                        Change_Tab(0);
+                        if (!Good_issue.equals(Var_issue)) {
+                            str += "Доска " + pull_String("//div[3]/" + name_path, false) + " не содержит задачи: " + Good_issue + "\n";
+                        }
+                    } else {
+                        str += "Доска " + pull_String("//div[3]/" + name_path, false) + " не содержит задач.\n";
                     }
-                } else { str += "Доска " + pull_String("//div[3]/" + name_path, false) + " не содержит задач.\n"; }
-            } else { str += "Отсутствует 3-я доска.\n"; }
-        } else { str += "Отсутсвует project, либо он закрыт.\n"; }
-        return str;
+                } else {
+                    str += "Отсутствует 3-я доска.\n";
+                }
+            } else {
+                str += "Отсутсвует project, либо он закрыт.\n";
+            }
+            return str;
+        }
+        return "Неверное имя project\n";
     }
 
     public String Check_Labels(){
@@ -478,6 +498,9 @@ public class Selenium {
         }
     }
 
+
+
+
     public void test() {
         if (Var_Repository != null) {
             if (!empty){
@@ -492,13 +515,13 @@ public class Selenium {
                 final int Var_projects = pull_INT("//nav/a[@class='js-selected-navigation-item reponav-item' and 1]/span[@class='Counter' and 1]");
                 Change_Tab(0);
 
-                //result += Check_Readme(); //Done
-                //result += Check_Labels(); //Done
-                //result += Check_Milestone(); //Done
-                //result += Check_Project(Good_projects,Var_projects); //Реализовать проверку проекта In progress
-                //result += Check_PullRequests(Good_pull_request,Var_pull_request); //Done
-                //result += Check_Issues(Good_issues,Var_issues); //Done
-                //result += Check_Branches(Good_branches,Var_branches); //Done
+                result += Check_Readme(); //Done
+                result += Check_Labels(); //Done
+                result += Check_Milestone(); //Done
+                result += Check_Project(Good_projects,Var_projects); //Реализовать проверку проекта In progress
+                result += Check_PullRequests(Good_pull_request,Var_pull_request); //Done
+                result += Check_Issues(Good_issues,Var_issues); //Done
+                result += Check_Branches(Good_branches,Var_branches); //Done
                 result += Check_Wiki(); //In progress
 
                 if ("".equals(result)) {itog_ozenka = "1";}
