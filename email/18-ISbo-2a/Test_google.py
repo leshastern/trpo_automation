@@ -9,21 +9,22 @@ from config import CREDENTIALS_FILE
 from config import SPREAD_SHEET_ID_INIT
 
 class Test_google(unittest.TestCase):
+    def setUp(self):    
+        Decode.Decode_files(['Example.json'])      
 
+    def tearDown(self):
+        Decode.Finish(['Example.json.bak'])
+        
     def test_add_mark(self):
 
         from APIgoogle import add_mark_in_table
-        
-        Decode.Decode_files(['Example.json'])        
+                  
         add_mark_in_table('List1', 'A1', '1')
-
         credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive'])
         httpAuth = credentials.authorize(httplib2.Http())
         service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
-        Decode.Finish(['Example.json.bak'])
-        
-        ranges = 'List1!A1'
 
+        ranges = 'List1!A1'
         request = service.spreadsheets().values().get(spreadsheetId = SPREAD_SHEET_ID, range = ranges)
         response = request.execute();
         new_one = response['values'][0][0]
@@ -32,13 +33,11 @@ class Test_google(unittest.TestCase):
     def test_search_group(self):
         from APIgoogle import search_group
 
-        Decode.Decode_files(['Example.json'])
-        set_group = search_group('Самореализация')
+        set_group = search_group('sanyabl.atchtozah.inya@gmail.com')
 
         credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets',  'https://www.googleapis.com/auth/drive'])
         httpAuth = credentials.authorize(httplib2.Http())
         service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
-        Decode.Finish(['Example.json.bak'])
         spreadsheetId = SPREAD_SHEET_ID_INIT
 
         ranges='List1!B1:B5'
@@ -49,8 +48,6 @@ class Test_google(unittest.TestCase):
         values_finish=table1.get('values')[0]
         tuple(values_finish)
         self.assertEqual(set_group,values_finish)
-
-
 
     def test_cleaning_email(self):
 
@@ -72,15 +69,12 @@ class Test_google(unittest.TestCase):
 
     def test_get_service(self):
 
-        from APIgoogle import get_service
-        Decode.Decode_files(['Example.json'])        
+        from APIgoogle import get_service       
         service = get_service();
 
         credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive'])
-
         httpAuth = credentials.authorize(httplib2.Http())
         service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
-        Decode.Finish(['Example.json.bak'])
 
         service.spreadsheets().values().batchUpdate(spreadsheetId = SPREAD_SHEET_ID, body = {
             "valueInputOption": "USER_ENTERED",
@@ -96,16 +90,15 @@ class Test_google(unittest.TestCase):
         response = request.execute();
         new_one = response['values'][0][0]
         self.assertEqual(new_one, '2')
-
+        
     def test_get_message(self):
-
+        
         from APIgoogle import get_message
         from APIgoogle import get_service
-        Decode.Decode_files(['Example.json']) 
+
         service = get_service()
         user_id = 'sanyabl.atchtozah.inya@gmail.com'
         message_info = get_message(service, user_id)
-        Decode.Finish(['Example.json.bak'])
         
         search_id = service.users().messages().list(userId=user_id, labelIds = ['INBOX']).execute()
         message_id = search_id['messages']
@@ -150,7 +143,6 @@ class Test_google(unittest.TestCase):
         from APIgoogle import send_message
         from APIgoogle import get_service
         from APIgoogle import get_message
-        Decode.Decode_files(['Example.json']) 
 
         service = get_service()
 
@@ -169,7 +161,6 @@ class Test_google(unittest.TestCase):
 
         send_message(service, user_id, email_of_student, name_of_student, number_of_templates, validation_dictionary)
         message_info = get_message(service, 'sanyabl.atchtozah.inya@gmail.com')
-        Decode.Finish(['Example.json.bak'])
 
         search_id = service.users().messages().list(userId=user_id, labelIds = ['INBOX']).execute()
         message_id = search_id['messages']
@@ -188,6 +179,6 @@ class Test_google(unittest.TestCase):
             }
         
         self.assertEqual(message_info, our_info)
-
+        
 if __name__ == '__main__':
     unittest.main()
