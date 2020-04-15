@@ -8,11 +8,11 @@ from oauth2client.service_account import ServiceAccountCredentials
 class Test_google(unittest.TestCase):
 
     def setUp(self):
-        Decode.Decode_config('config.py', ['SPREAD_SHEET_ID', 'SPREAD_SHEET_ID_INIT', 'CREDENTIALS_FILE', 'CREDENTIALS_FILE_SERVICE'])
-        Decode.Decode_files(['Example.json', 'credentials.json'])
+        Decode.Decode_config('config.py', ['SPREAD_SHEET_ID', 'SPREAD_SHEET_ID_INIT', 'CREDENTIALS_FILE'])
+        Decode.Decode_files(['Example.json'])
 
     def tearDown(self):
-        Decode.Finish(['config.py.bak', 'Example.json.bak', 'credentials.json.bak'])
+        Decode.Finish(['config.py.bak', 'Example.json.bak'])
 
     def test_add_mark(self):
         from config import SPREAD_SHEET_ID
