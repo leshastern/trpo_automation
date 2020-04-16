@@ -16,6 +16,8 @@ TcpServer::TcpServer(QObject *parent)
     } else {
         qDebug() << "Server is started";
     }
+
+   // sendToClient(1,"");
 }
 
 /**
@@ -42,19 +44,32 @@ void TcpServer::slotClientDisconnected()
 }
 
 /**
- * @brief Метод отправляет 1 или 0 клиенту
- * @param int answer - ответ, отправляемый клиенту(1 или 0)
+ * @brief Метод отправляет клиенту строку в формате
+ * @param unsigned char grade - оценка за лабораторную работу
+ * @param QString comment - описание системной ошибки, либо комментарий сдающему лабораторную
  * @return void
  */
-void TcpServer::sendToClient(bool answer)
+void TcpServer::sendToClient(unsigned char grade, QString comment)
 {
-   if (answer) {
-       mTcpSocket->readAll();
-       mTcpSocket->write("1");
-   } else {
-       mTcpSocket->readAll();
-       mTcpSocket->write("0");
-   }
+
+    QJsonObject json;
+
+    if (comment != NULL) {
+        json ["massageType"] = 2;
+        json ["grade"] = grade;
+        json ["comment"] = comment;
+    }
+    else {
+        json ["massageType"] = 2;
+        json ["grade"] = grade;
+    }
+
+    QJsonDocument jsonDoc(json);
+    QString jsonString = QString::fromLatin1(jsonDoc.toJson());
+  //  qDebug() << jsonString;
+
+    mTcpSocket->readAll();
+    mTcpSocket->write(jsonString.toLatin1());
 }
 
 /**

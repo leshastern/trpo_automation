@@ -24,7 +24,7 @@ private:
 
 public:
     explicit TcpServer(QObject *parent = nullptr);
-    void sendToClient(bool answer);
+    void sendToClient(unsigned char grade, QString comment);
 
 private:
     bool parsingJson(QJsonDocument, QString*, int*, QList<QString>);
