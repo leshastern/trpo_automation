@@ -6,7 +6,9 @@
 TestTcp::TestTcp()
 {
     client = new QTcpSocket(this);
+
 };
+
 
 /**
  * @brief Тестовая функция, которая подключается к серверу
@@ -21,17 +23,17 @@ void TestTcp::testConnection()
  * @brief Тестовая функция отправляет строку заданного вида для дальнейшей обработки на сервере
  * @return void
  */
-void TestTcp::testSendInfo()
+void TestTcp::testSendJson()
 {
-    const char* info = "{\"data"":\"content\", \"labNumber\": 7}";
-    client->write(info);
+    const char* Json = "{\"data"":\"content\", \"labNumber\": 7}";
+    client->write(Json);
     QCOMPARE(client->waitForBytesWritten(500),true);
 };
 /**
  * @brief Тестовая функция ожидает ответа от сервера после всех обработок
  * @return void
  */
-void TestTcp::testGetInfo()
+void TestTcp::testGetAnswer()
 {
     client->readAll();
     QCOMPARE(client->waitForReadyRead(),true);

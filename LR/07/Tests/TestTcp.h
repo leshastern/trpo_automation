@@ -5,7 +5,6 @@
 #include <QTest>
 #include <QTcpSocket>
 #include <QTcpServer>
-#include "../src/tcpserver.h"
 /**
  * @brief Класс для тестирования методов TCP сервера
  */
@@ -19,8 +18,8 @@ private:
     bool isOff;
 private slots:
     void testConnection();
-    void testSendInfo();
-    void testGetInfo();
+    void testSendJson();
+    void testGetAnswer();
     void testDisconnection();
 };
 
