@@ -20,9 +20,9 @@ class ValidationMail():
             return '02'
         variant = subject[-2:]
         if variant.isdigit() is not True:
-	    variant = variant[1]
-	    if variant.isdigit() is not True:
-                return '02'
+            variant = variant[1]
+        if variant.isdigit() is not True:
+            return '02'
         index = subject.find("вар", 0, 30)
         if index == -1:
             return '02'
@@ -87,8 +87,8 @@ class ValidationMail():
         if self.success is True:
             subject = subject.lower()
             var = subject[-2:]
-	    if var.isdigit() is not True:
-	        var = var[1]
+            if var.isdigit() is not True:
+                var = var[1]
             index = subject.find("лр", 0, 10)
             number_work = subject[index + 2:index + 5]
             if (number_work[0].isdigit() and number_work[1].isdigit()) or number_work[0].isdigit():
@@ -106,5 +106,3 @@ class ValidationMail():
             return number_work, var
         else:
             return None
-
-

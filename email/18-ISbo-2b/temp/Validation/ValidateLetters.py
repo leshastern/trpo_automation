@@ -1,4 +1,4 @@
-from mail.Google.Validation.main import ValidationMail as Val
+from google_validateRules import ValidationMail as Val
 import re
 
 
