@@ -76,8 +76,8 @@ void TcpServer::slotReadingDataJson()
 
         if (docJsonError.errorString().toInt() == QJsonParseError::NoError) {
             try {
-                if (parsingJson(docJson, &labLink, &labNumber, pureCode)) {
-                    // TODO нужен массив строчек из сервиса получения листинга с Github из labLink
+                if (parsingJson(docJson, &labLink, &labNumber, &pureCode)) {
+                    githubManager = new Functional(labLink);
                 }
 
                 lab = new StrategyLab(labNumber);
@@ -93,6 +93,7 @@ void TcpServer::slotReadingDataJson()
             }
 
             delete lab;
+            delete githubManager;
         } else {
             mistakeDescription = "Ошибка парсинга Json: " + docJsonError.errorString();
         }
@@ -109,18 +110,27 @@ void TcpServer::slotReadingDataJson()
  * @param pureData - массив строчек (каждая строчка - класс решения с телами методов)
  * @return bool - Если в поле data пришла ссылка на репозиторий Github - то true, иначе false
  */
-bool TcpServer::parsingJson(QJsonDocument docJson, QString *labLink, int *labNumber, QList<QString> pureData)
+bool TcpServer::parsingJson(QJsonDocument docJson, QString *labLink, int *labNumber, QList<QString> *pureData)
 {
     QJsonValue link;
     QJsonObject jsonObj;
+    bool needToAccessGithub = true;
 
     jsonObj = docJson.object();
 
-    link = jsonObj.take("data");
-    (*labLink) = link.toString();
+    link = jsonObj.take("link");
+    if (!link.isUndefined()) {
+        (*labLink) = link.toString();
+    } else {
+        needToAccessGithub = false;
+        link = jsonObj.take("code");
+        foreach (QJsonValue item, link.toArray()) {
+            (*pureData).append(item.toString());
+        }
+    }
 
-    link = jsonObj.take("labNumber");
+    link = jsonObj.take("variant");
     (*labNumber) = link.toInt();
 
-    return true;
+    return needToAccessGithub;
 }
