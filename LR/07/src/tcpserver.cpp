@@ -16,8 +16,6 @@ TcpServer::TcpServer(QObject *parent)
     } else {
         qDebug() << "Server is started";
     }
-
-   // sendToClient(1,"");
 }
 
 /**
@@ -51,11 +49,11 @@ void TcpServer::slotClientDisconnected()
  */
 void TcpServer::sendToClient(unsigned char grade, QString comment)
 {
-
+    const unsigned char MESSAGE_TYPE = 2;
     QJsonObject json;
 
     if (comment != NULL) {
-        json ["massageType"] = 2;
+        json ["massageType"] = MESSAGE_TYPE;
         json ["grade"] = grade;
         json ["comment"] = comment;
     }
@@ -66,7 +64,6 @@ void TcpServer::sendToClient(unsigned char grade, QString comment)
 
     QJsonDocument jsonDoc(json);
     QString jsonString = QString::fromLatin1(jsonDoc.toJson());
-  //  qDebug() << jsonString;
 
     mTcpSocket->readAll();
     mTcpSocket->write(jsonString.toLatin1());
