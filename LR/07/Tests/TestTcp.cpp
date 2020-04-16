@@ -1,56 +1,54 @@
-#include "test_tcp.h"
-
+#include "TestTcp.h"
 /**
  * @brief Конструктор класса, в котором создается объект класса QTcpSocket
  * он выполняет фукнцию клиента
  */
-test_tcp::test_tcp()
+TestTcp::TestTcp()
 {
-    Client = new QTcpSocket(this);
+    client = new QTcpSocket(this);
 };
 
 /**
  * @brief Тестовая функция, которая подключается к серверу
  * @return void
  */
-void test_tcp::test_connection()
+void TestTcp::testConnection()
 {
-    Client ->connectToHost("127.0.0.1", 10000);
-    QCOMPARE(Client->waitForConnected(500),true);
+    client ->connectToHost("127.0.0.1", 10000);
+    QCOMPARE(client->waitForConnected(500),true);
 };
 /**
  * @brief Тестовая функция отправляет строку заданного вида для дальнейшей обработки на сервере
  * @return void
  */
-void test_tcp::test_sendinfo()
+void TestTcp::testSendInfo()
 {
-    const char* Info = "{\"сode"":\"content\"}";
-    Client->write(Info);
-    QCOMPARE(Client->waitForBytesWritten(1000),1);
-    // тест-кейсы test_sendinfo() и test_getinfo() нуждаются в доработке после непосредственной реализаций всех функций на сервере
+    const char* info = "{\"data"":\"content\", \"labNumber\": 7}";
+    client->write(info);
+    QCOMPARE(client->waitForBytesWritten(500),true);
 };
 /**
  * @brief Тестовая функция ожидает ответа от сервера после всех обработок
  * @return void
  */
-void test_tcp::test_getinfo()
+void TestTcp::testGetInfo()
 {
-    Client->readAll();
-    QCOMPARE(Client->waitForReadyRead(),1);
+    client->readAll();
+    QCOMPARE(client->waitForReadyRead(),true);
 };
 /**
  * @brief Тестовая функция выполняет отключение от сервера
  * @return void
  */
-void test_tcp::test_disconnetion()
+void TestTcp::testDisconnection()
 {
-    Client->disconnectFromHost();
-    if (Client->state() == QAbstractSocket::UnconnectedState
-        || Client->waitForDisconnected(1000))
+    client->disconnectFromHost();
+    if (client->state() == QAbstractSocket::UnconnectedState
+        || client->waitForDisconnected(1000))
     {
             isOff = true;
     }
     QCOMPARE(isOff,true);
 };
 
-QTEST_MAIN(test_tcp);
+QTEST_MAIN(TestTcp);

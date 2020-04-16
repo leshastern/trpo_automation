@@ -1,10 +1,17 @@
 QT += testlib
 QT -= gui
 QT += network
-
-
-SOURCES +=  \
-    test_tcp.cpp
+QT += xml
+SOURCES += \
+    ../src/functional.cpp \
+    ../src/strategylab.cpp \
+    ../src/tcpserver.cpp \
+    TestTcp.cpp
 
 HEADERS += \
-    test_tcp.h
+    ../src/functional.h \
+    ../src/strategylab.h \
+    ../src/tcpserver.h \
+    TestTcp.h
+
+
