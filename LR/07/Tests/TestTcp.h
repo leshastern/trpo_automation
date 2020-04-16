@@ -11,11 +11,14 @@
 class TestTcp : public QObject
 {
     Q_OBJECT
+
 public:
     TestTcp();
+
 private:
     QTcpSocket* client;
     bool isOff;
+
 private slots:
     void testConnection();
     void testSendJson();
