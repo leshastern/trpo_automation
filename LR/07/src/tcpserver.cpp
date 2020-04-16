@@ -52,14 +52,11 @@ void TcpServer::sendToClient(unsigned char grade, QString comment)
     const unsigned char MESSAGE_TYPE = 2;
     QJsonObject json;
 
+    json ["massageType"] = MESSAGE_TYPE;
+    json ["grade"] = grade;
+
     if (comment != NULL) {
-        json ["massageType"] = MESSAGE_TYPE;
-        json ["grade"] = grade;
         json ["comment"] = comment;
-    }
-    else {
-        json ["massageType"] = 2;
-        json ["grade"] = grade;
     }
 
     QJsonDocument jsonDoc(json);
