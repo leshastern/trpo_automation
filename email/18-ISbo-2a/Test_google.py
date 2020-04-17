@@ -18,16 +18,16 @@ class Test_google(unittest.TestCase):
         from config import SPREAD_SHEET_ID
         from config import CREDENTIALS_FILE
         from APIgoogle import add_mark_in_table
-        add_mark_in_table('List1', 'A1', '1')
+        add_mark_in_table('(ТРПО) 18-ИСбо-2а', 'M8', '2')
         credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive'])
         httpAuth = credentials.authorize(httplib2.Http())
         service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
 
-        ranges = 'List1!A1'
+        ranges = '(ТРПО) 18-ИСбо-2а!M8'
         request = service.spreadsheets().values().get(spreadsheetId = SPREAD_SHEET_ID, range = ranges)
         response = request.execute();
         new_one = response['values'][0][0]
-        self.assertEqual(new_one, '1')
+        self.assertEqual(new_one, '2')
 
     def test_search_group(self):
         from config import SPREAD_SHEET_ID_INIT
@@ -83,17 +83,17 @@ class Test_google(unittest.TestCase):
         service.spreadsheets().values().batchUpdate(spreadsheetId = SPREAD_SHEET_ID, body = {
             "valueInputOption": "USER_ENTERED",
             "data": [
-                {"range": 'List1!A2',
+                {"range": '(ТРПО) 18-ИСбо-2а!P8',
                  "majorDimension": "ROWS",     
-                 "values": [ ['2'] ]
+                 "values": [ ['4'] ]
                 }
             ]
         }).execute()
 
-        request = service.spreadsheets().values().get(spreadsheetId = SPREAD_SHEET_ID, range = 'List1!A2')
+        request = service.spreadsheets().values().get(spreadsheetId = SPREAD_SHEET_ID, range = '(ТРПО) 18-ИСбо-2а!P8')
         response = request.execute();
         new_one = response['values'][0][0]
-        self.assertEqual(new_one, '2')
+        self.assertEqual(new_one, '4')
 
     def test_get_message(self):
         
