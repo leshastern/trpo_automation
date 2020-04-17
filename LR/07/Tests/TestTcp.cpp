@@ -29,7 +29,8 @@ void TestTcp::testSendJson()
     QCOMPARE(client->waitForBytesWritten(1000), true);
 };
 /**
- * @brief Тестовая функция ожидает ответа от сервера после всех обработок
+ * @brief Тестовая функция принимает ответ от сервера после всех обработок
+ * и сравнивает с ожидаемым
  * @return void
  */
 void TestTcp::testGetAnswer()
