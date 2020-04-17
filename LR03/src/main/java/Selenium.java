@@ -1,4 +1,5 @@
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.apache.commons.lang3.ObjectUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -42,7 +43,7 @@ public class Selenium {
         options.addArguments("--disable-browser-side-navigation");
         options.addArguments("--disable-gpu");
         driver = new ChromeDriver(options);
-        driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         Get_GoodReposotory();
         driver.get(Var_Repository);
         Add_Tab();
@@ -61,7 +62,7 @@ public class Selenium {
             NodeList NodeList = doc.getElementsByTagName("variant");
 
             for (int i = 0; i < NodeList.getLength(); i++) {
-                // Вывoдиm инфopmaцию пo kaждomy из нaйдeнных элemeнтoв                
+                // Вывoдиm инфopmaцию пo kaждomy из нaйдeнных элemeнтoв
                 Node node = NodeList.item(i);
                 if (Node.ELEMENT_NODE == node.getNodeType()) {
                     Element element = (Element) node;
@@ -121,14 +122,14 @@ public class Selenium {
                         for (int i = 1; i < Good_File_Size.size(); i++) { //начинать с 1!!
                             driver.get(Var_Repository + "/blob/master/" + Good_File_Str_Mas[i]);
                             driver.findElement(By.xpath("//a[@id='raw-url']")).click();
-                            Good_branches_Name = driver.findElement(By.cssSelector("body")).getAttribute("textContent");
+                            Good_branches_Name = driver.findElement(By.cssSelector("body")).getAttribute("textContent").replaceAll(" ", "").replaceAll("\n", "").toLowerCase();
                             Change_Tab(1);
                             driver.get(Repository + "/blob/master/" + Var_File_Str_Mas[i]);
                             if (driver.findElements(By.xpath("//a[@id='raw-url']")).size()!=0) {
                                 driver.findElement(By.xpath("//a[@id='raw-url']")).click();
                             }
                             else { return "В ветке master неверный тип файла/файлов\n"; }
-                            Var_branches_Name = driver.findElement(By.cssSelector("body")).getAttribute("textContent");
+                            Var_branches_Name = driver.findElement(By.cssSelector("body")).getAttribute("textContent").replaceAll(" ", "").replaceAll("\n", "").toLowerCase();
                             Change_Tab(0);
                             if (!Good_branches_Name.equals(Var_branches_Name)) {
                                 correct_file = false;
@@ -161,14 +162,14 @@ public class Selenium {
                                     for (int i = 1; i < Good_File_Size.size(); i++) { //начинать с 1!!
                                         driver.get(Var_Repository + "/blob/" + good_name + "/" + Good_File_Str_Mas[i]);
                                         driver.findElement(By.xpath("//a[@id='raw-url']")).click();
-                                        Good_branches_Name = driver.findElement(By.cssSelector("body")).getAttribute("textContent");
+                                        Good_branches_Name = driver.findElement(By.cssSelector("body")).getAttribute("textContent").replaceAll(" ", "").replaceAll("\n", "").toLowerCase();
                                         Change_Tab(1);
                                         driver.get(Repository + "/blob/" + good_name + "/" + Var_File_Str_Mas[i]);
                                         if (driver.findElements(By.xpath("//a[@id='raw-url']")).size()!=0) {
                                             driver.findElement(By.xpath("//a[@id='raw-url']")).click();
                                         }
                                         else { return "В ветке "+good_name+" неверный тип файла/файлов\n"; }
-                                        Var_branches_Name = driver.findElement(By.cssSelector("body")).getAttribute("textContent");
+                                        Var_branches_Name = driver.findElement(By.cssSelector("body")).getAttribute("textContent").replaceAll(" ", "").replaceAll("\n", "").toLowerCase();
                                         Change_Tab(0);
                                         if (!Good_branches_Name.equals(Var_branches_Name)) {
                                             correct_file = false;
@@ -219,29 +220,29 @@ public class Selenium {
                 Arrays.sort(Good_Issues_Str_Mas);
                 boolean ok=true;
                 for (int i=0;i<Var_Issues_Open.size();i++){
-                        if (!Var_Issues_Str_Mas[i].equals(Good_Issues_Str_Mas[i])){
-                            ok=false;break;
-                        }
-                }
-                    if (ok){
-                        driver.get(Var_Repository+"/issues?q=is%3Aissue+is%3Aclosed");
-                        Good_issues_str=pull_String("//div[@class='flex-auto min-width-0 lh-condensed p-2 pr-3 pr-md-2']",true).toLowerCase();
-                        for (String retval : Good_issues_str.split("#", 2)) {
-                            Good_issues_str=retval;break;
-                        }
-                        Change_Tab(1);
-                        driver.get(Repository+"/issues?q=is%3Aissue+is%3Aclosed");
-                        Var_issues_str=pull_String("//div[@class='flex-auto min-width-0 lh-condensed p-2 pr-3 pr-md-2']",true).toLowerCase();
-                        for (String retval : Var_issues_str.split("#", 2)) {
-                            Var_issues_str=retval;break;
-                        }
-                        Change_Tab(0);
-                        if (Good_issues_str.equals(Var_issues_str)){
-                            return "";
-                        }
-                        else { return "Имя закрытого issues неверно\n"; }
+                    if (!Var_Issues_Str_Mas[i].equals(Good_Issues_Str_Mas[i])){
+                        ok=false;break;
                     }
-                    else { return "Неверное имя открытого issue/issues\n"; }
+                }
+                if (ok){
+                    driver.get(Var_Repository+"/issues?q=is%3Aissue+is%3Aclosed");
+                    Good_issues_str=pull_String("//div[@class='flex-auto min-width-0 lh-condensed p-2 pr-3 pr-md-2']",true).toLowerCase();
+                    for (String retval : Good_issues_str.split("#", 2)) {
+                        Good_issues_str=retval;break;
+                    }
+                    Change_Tab(1);
+                    driver.get(Repository+"/issues?q=is%3Aissue+is%3Aclosed");
+                    Var_issues_str=pull_String("//div[@class='flex-auto min-width-0 lh-condensed p-2 pr-3 pr-md-2']",true).toLowerCase();
+                    for (String retval : Var_issues_str.split("#", 2)) {
+                        Var_issues_str=retval;break;
+                    }
+                    Change_Tab(0);
+                    if (Good_issues_str.equals(Var_issues_str)){
+                        return "";
+                    }
+                    else { return "Имя закрытого issues неверно\n"; }
+                }
+                else { return "Неверное имя открытого issue/issues\n"; }
             }
             else {return "Ошибка в issues. Должно быть 2 открытых, 1 закрытый\n"; }
         }
@@ -296,13 +297,13 @@ public class Selenium {
         String str="";
         driver.get(Var_Repository + "/wiki");
         if (driver.findElements(By.xpath("//div[@class='markdown-body']/p[1]")).size() != 0) {
-        String Var_Wiki = pull_String("//li[2]/strong[1]/a[@class='d-block' and 1]",true);
-        String Var_String = pull_String("//div[@class='markdown-body']/p[1]",false);
-        Change_Tab(1);
-        driver.get(Repository + "/wiki");
-        String Good_Wiki = pull_String("//li[2]/strong[1]/a[@class='d-block' and 1]",true);
-        String Good_String = pull_String("//div[@class='markdown-body']/p[1]",false);
-        Change_Tab(0);
+            String Var_Wiki = pull_String("//li[2]/strong[1]/a[@class='d-block' and 1]",true);
+            String Var_String = pull_String("//div[@class='markdown-body']/p[1]",false);
+            Change_Tab(1);
+            driver.get(Repository + "/wiki");
+            String Good_Wiki = pull_String("//li[2]/strong[1]/a[@class='d-block' and 1]",true);
+            String Good_String = pull_String("//div[@class='markdown-body']/p[1]",false);
+            Change_Tab(0);
             if(!Var_String.equals(Good_String)){
                 str+="Надпись на странице Home: '"+Var_String+"'\nа должно быть: '"+Good_String+"'\n";}
             if(Good_Wiki.equals(Var_Wiki)) {
@@ -313,7 +314,7 @@ public class Selenium {
                 Good_String = pull_String("//div[@class='markdown-body']/p[1]",false);
                 Change_Tab(0);
                 if(!Good_String.equals(Var_String))
-                    { str+="Надпись на странице варианта: '"+Var_String+"'\nа должно быть: '"+Good_String+"'\n"; }
+                { str+="Надпись на странице варианта: '"+Var_String+"'\nа должно быть: '"+Good_String+"'\n"; }
             } else { str += "Вторая страница Wiki названа неверно\n";}
         } else { str += "Wiki не заполнена вообще.\n"; }
         return str;
@@ -333,56 +334,54 @@ public class Selenium {
                 driver.get(Var_Repository + "/projects/1");
                 Change_Tab(1);
                 driver.get(Repository + "/projects/1");
-                Change_Tab(0);
                 String count_path = "div[@class='clearfix js-details-container details-container Details js-add-note-container' and 1]/div[@class='hide-sm position-relative p-sm-2' and 1]/span[1]";
                 String name_path = "div[@class='clearfix js-details-container details-container Details js-add-note-container' and 1]/div[@class='hide-sm position-relative p-sm-2' and 1]/h3[1]/span[@class='js-project-column-name' and 1]";
-                if (driver.findElements(By.xpath("//div[1]/div[1]/div/span")).size() != 0) {
-                    if (pull_INT("//div[1]/" + count_path) >= 1) {
-                        Var_issue = pull_String("//div[1]/div/article[1]/div/div/div/a", false);
-                        Change_Tab(1);
-                        Good_issue = pull_String("//div[1]/div/article[1]/div/div/div/a", false);
-                        Change_Tab(0);
-                        if (!Good_issue.equals(Var_issue)) {
-                            str += "Доска " + pull_String("//div[1]/" + name_path, false) + " не содержит задачи: " + Good_issue + "\n";
+                    if (driver.findElements(By.xpath("//div[1]/div[1]/div/span")).size() != 0) {
+                        if (pull_INT("//div[1]/" + count_path) >= 1) {
+                            Var_issue = pull_String("//div[1]/div/article[1]/div/div/div/a", false);
+                            Change_Tab(0);
+                            Good_issue = pull_String("//div[1]/div/article[1]/div/div/div/a", false);
+                            if (!Good_issue.equals(Var_issue)) {
+                                str += "Доска " + pull_String("//div[1]/" + name_path, false) + " не содержит задачи: " + Good_issue + "\n";
+                            }
+                        } else {
+                            str += "Доска " + pull_String("//div[1]/" + name_path, false) + " не содержит задач.\n";
                         }
                     } else {
-                        str += "Доска " + pull_String("//div[1]/" + name_path, false) + " не содержит задач.\n";
+                        str += "Отсутствует 1-я доска.\n";
                     }
-                } else {
-                    str += "Отсутствует 1-я доска.\n";
-                }
 
-                if (driver.findElements(By.xpath("//div[2]/div[1]/div/span")).size() != 0) {
-                    if (pull_INT("//div[2]/" + count_path) >= 1) {
-                        Var_issue = pull_String("//div[2]/div/article[1]/div/div/div/a", false);
-                        Change_Tab(1);
-                        Good_issue = pull_String("//div[2]/div/article[1]/div/div/div/a", false);
-                        Change_Tab(0);
-                        if (!Good_issue.equals(Var_issue)) {
-                            str += "Доска " + pull_String("//div[2]/" + name_path, false) + " не содержит задачи: " + Good_issue + "\n";
+                    if (driver.findElements(By.xpath("//div[2]/div[1]/div/span")).size() != 0) {
+                        if (pull_INT("//div[2]/" + count_path) >= 1) {
+                            Change_Tab(1);
+                            Var_issue = pull_String("//div[2]/div/article[1]/div/div/div/a", false);
+                            Change_Tab(0);
+                            Good_issue = pull_String("//div[2]/div/article[1]/div/div/div/a", false);
+                            if (!Good_issue.equals(Var_issue)) {
+                                str += "Доска " + pull_String("//div[2]/" + name_path, false) + " не содержит задачи: " + Good_issue + "\n";
+                            }
+                        } else {
+                            str += "Доска " + pull_String("//div[2]/" + name_path, false) + " не содержит задач.\n";
                         }
                     } else {
-                        str += "Доска " + pull_String("//div[2]/" + name_path, false) + " не содержит задач.\n";
+                        str += "Отсутствует 2-я доска.\n";
                     }
-                } else {
-                    str += "Отсутствует 2-я доска.\n";
-                }
 
-                if (driver.findElements(By.xpath("//div[3]/div[1]/div/span")).size() != 0) {
-                    if (pull_INT("//div[3]/" + count_path) >= 1) {
-                        Var_issue = pull_String("//div[3]/div/article[1]/div/div/div/a", false);
-                        Change_Tab(1);
-                        Good_issue = pull_String("//div[3]/div/article[1]/div/div/div/a", false);
-                        Change_Tab(0);
-                        if (!Good_issue.equals(Var_issue)) {
-                            str += "Доска " + pull_String("//div[3]/" + name_path, false) + " не содержит задачи: " + Good_issue + "\n";
+                    if (driver.findElements(By.xpath("//div[3]/div[1]/div/span")).size() != 0) {
+                        if (pull_INT("//div[3]/" + count_path) >= 1) {
+                            Change_Tab(1);
+                            Var_issue = pull_String("//div[3]/div/article[1]/div/div/div/a", false);
+                            Change_Tab(0);
+                            Good_issue = pull_String("//div[3]/div/article[1]/div/div/div/a", false);
+                            if (!Good_issue.equals(Var_issue)) {
+                                str += "Доска " + pull_String("//div[3]/" + name_path, false) + " не содержит задачи: " + Good_issue + "\n";
+                            }
+                        } else {
+                            str += "Доска " + pull_String("//div[3]/" + name_path, false) + " не содержит задач.\n";
                         }
                     } else {
-                        str += "Доска " + pull_String("//div[3]/" + name_path, false) + " не содержит задач.\n";
+                        str += "Отсутствует 3-я доска.\n";
                     }
-                } else {
-                    str += "Отсутствует 3-я доска.\n";
-                }
             } else {
                 str += "Отсутсвует project, либо он закрыт.\n";
             }
