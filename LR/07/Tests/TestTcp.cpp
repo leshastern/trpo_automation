@@ -16,7 +16,7 @@ TestTcp::TestTcp()
 void TestTcp::testConnection()
 {
     client ->connectToHost("127.0.0.1", 10000);
-    QCOMPARE(client->waitForConnected(1000),true);
+    QCOMPARE(client->waitForConnected(1000), true);
 };
 /**
  * @brief Тестовая функция отправляет строку заданного вида для дальнейшей обработки на сервере
@@ -26,7 +26,7 @@ void TestTcp::testSendJson()
 {
     const char* json = "{\"data"":\"content\", \"labNumber\": 7}";
     client->write(json);
-    QCOMPARE(client->waitForBytesWritten(1000),true);
+    QCOMPARE(client->waitForBytesWritten(1000), true);
 };
 /**
  * @brief Тестовая функция ожидает ответа от сервера после всех обработок
@@ -39,7 +39,7 @@ void TestTcp::testGetAnswer()
       client->skip(15);
       QByteArray actAnswer = client->readAll();
       QString exAnswer = "\{\n    \"comment\": \"hey\",\n    \"grade\": 1,\n    \"messageType\": 2\n}\n";
-      QCOMPARE(actAnswer,exAnswer);
+      QCOMPARE(actAnswer, exAnswer);
   }
 };
 
@@ -55,7 +55,7 @@ void TestTcp::testDisconnection()
     {
             isOff = true;
     }
-    QCOMPARE(isOff,true);
+    QCOMPARE(isOff, true);
 };
 
 QTEST_MAIN(TestTcp);
