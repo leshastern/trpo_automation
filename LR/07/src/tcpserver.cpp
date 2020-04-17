@@ -42,19 +42,28 @@ void TcpServer::slotClientDisconnected()
 }
 
 /**
- * @brief Метод отправляет 1 или 0 клиенту
- * @param int answer - ответ, отправляемый клиенту(1 или 0)
+ * @brief Метод отправляет клиенту строку в формате
+ * @param unsigned char grade - оценка за лабораторную работу
+ * @param QString comment - описание системной ошибки, либо комментарий сдающему лабораторную
  * @return void
  */
-void TcpServer::sendToClient(bool answer)
+void TcpServer::sendToClient(unsigned char grade, QString comment)
 {
-   if (answer) {
-       mTcpSocket->readAll();
-       mTcpSocket->write("1");
-   } else {
-       mTcpSocket->readAll();
-       mTcpSocket->write("0");
-   }
+    const unsigned char MESSAGE_TYPE = 2;
+    QJsonObject json;
+
+    json ["messageType"] = MESSAGE_TYPE;
+    json ["grade"] = grade;
+
+    if (comment != NULL) {
+        json ["comment"] = comment;
+    }
+
+    QJsonDocument jsonDoc(json);
+    QString jsonString = QString::fromLatin1(jsonDoc.toJson());
+
+    mTcpSocket->readAll();
+    mTcpSocket->write(jsonString.toLatin1());
 }
 
 /**
