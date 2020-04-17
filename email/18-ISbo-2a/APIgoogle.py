@@ -300,6 +300,7 @@ def error_in_work(some_errors):
 		i+=1
 	return error
 
+@log_method.log_method_info
 def search_group(email):
     credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets',  'https://www.googleapis.com/auth/drive'])
     httpAuth = credentials.authorize(httplib2.Http())
@@ -319,6 +320,7 @@ def search_group(email):
     values_finish=table1.get('values')[0]
     return tuple(values_finish)
 
+@log_method.log_method_info
 def search_tablic(group,laba, surname):
     group1='(ТРПО) '+group
     c=2
