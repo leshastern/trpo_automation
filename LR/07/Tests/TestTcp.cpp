@@ -18,19 +18,21 @@ void TestTcp::testConnection()
     client ->connectToHost("127.0.0.1", 10000);
     QCOMPARE(client->waitForConnected(1000), true);
 };
+
 /**
  * @brief Тестовая функция отправляет строку заданного вида для дальнейшей обработки на сервере
  * @return void
  */
 void TestTcp::testSendJson()
 {
-    const char* json = "{\"data"":\"content\", \"labNumber\": 7}";
+    const char* json = "{\"messageType"": 1, \"lab\": 7, \"variant\": 7, \"link\": \"https://github.com\"}";
     client->write(json);
     QCOMPARE(client->waitForBytesWritten(1000), true);
 };
+
 /**
  * @brief Тестовая функция принимает ответ от сервера после всех обработок
- * и сравнивает с ожидаемым
+ * и сравнивает с ожидаемым результатом
  * @return void
  */
 void TestTcp::testGetAnswer()
