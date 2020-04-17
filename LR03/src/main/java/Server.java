@@ -11,8 +11,8 @@ public class Server {
 
 
     public static void main(String[] args) {
-        Selenium Check=new Selenium("https://github.com/vvtatyana/Sovunya","7");
-        Check.test();
+        Selenium Check=new Selenium("https://github.com/vvtatyana/Barash","4");
+        Check.Check_Issues(2,2);
         System.out.println(Check.Get_Ozenka());
         System.out.println(Check.Get_Result());
     }
