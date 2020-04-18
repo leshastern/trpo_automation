@@ -55,7 +55,7 @@ class Test_validation(unittest.TestCase):
         validation_dictionary={ 
             'Number':'1',
             'URL': None,
-            'Errors': []
+            "errorDescription": []
             }
 
         answer = validation(head_of_msg, body_of_msg)
@@ -71,12 +71,12 @@ class Test_validation(unittest.TestCase):
         Errors_list = []
         Errors_list.append('неверно указано название предмета')
         Errors_list.append('неверно указан номер ЛР')
-        Errors_list.append('отсутсвует приветствие')
-        Errors_list.append('отсутсвует подпись')
+        Errors_list.append('отсутствует приветствие')
+        Errors_list.append('отсутствует подпись')
         validation_dictionary={ 
             'Number':None,
             'URL': None,
-            'Errors': Errors_list
+            "errorDescription": Errors_list
             }
 
         answer = validation(head_of_msg, body_of_msg)
@@ -90,12 +90,12 @@ class Test_validation(unittest.TestCase):
         head_of_msg = 'ТРПО ЛР№8'
         body_of_msg = 'Салют! Вот ссылка на гитхаб - http://github.com.'
         Errors_list = []
-        Errors_list.append('отсутсвует приветствие')
-        Errors_list.append('отсутсвует подпись')
+        Errors_list.append('отсутствует приветствие')
+        Errors_list.append('отсутствует подпись')
         validation_dictionary={ 
             'Number':'8',
             'URL': 'http://github.com',
-            'Errors': Errors_list
+            "errorDescription": Errors_list
             }
 
         answer = validation(head_of_msg, body_of_msg)

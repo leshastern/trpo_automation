@@ -2,6 +2,7 @@
 from config import SPREAD_SHEET_ID
 from config import CREDENTIALS_FILE
 from config import SPREAD_SHEET_ID_INIT
+from config import CREDENTIALS_FILE_SERVICE
 import pickle
 import os.path
 from googleapiclient.discovery import build
@@ -34,14 +35,13 @@ def get_service():
 		if creds and creds.expired and creds.refresh_token:
 			creds.refresh(Request())
 		else:
-			flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, SCOPES)
+			flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE_SERVICE, SCOPES)
 			creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
 		with open('token.pickle', 'wb') as token:
 			pickle.dump(creds, token)
 
 	service = build('gmail', 'v1', credentials=creds)
-	print(service)
 	return service
 
 service = get_service()
@@ -306,7 +306,7 @@ def search_group(email):
     httpAuth = credentials.authorize(httplib2.Http())
     service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
     spreadsheetId = SPREAD_SHEET_ID_INIT
-    range_name ='Ответы на форму (1)!B1:B1000'
+    range_name ='List1!B1:B1000'
     table = service.spreadsheets().values().get(spreadsheetId=spreadsheetId, range=range_name).execute()
     values_table = table.get('values')
     c = 1
@@ -315,7 +315,7 @@ def search_group(email):
             c += 1
         else:
             break
-    nomer = f'Ответы на форму (1)!F{c}:G{c}'
+    nomer = f'List1!F{c}:G{c}'
     table1 = service.spreadsheets().values().get(spreadsheetId=spreadsheetId, range=nomer).execute()
     values_finish=table1.get('values')[0]
     return tuple(values_finish)
