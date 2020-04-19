@@ -10,7 +10,7 @@ def WorkWithLetters(letters):
     отправка их на проверку, принятие результатов и их передача дальше
     """
 
-    letters = LettersConvertToString(letters)
+    LettersConvertToString(letters)
 
     jsonDates = FormJSONDates(letters)
 
@@ -32,10 +32,11 @@ def LettersConvertToString(letters):
     - Для некоторых писем нужно вытаскивать данные, для какой-то достаточно ссылки. Предусмотреть проверку на это
     в соответствии со спецификацией по JSON
     """
-    for tmp in letters:
-        html = get_html(tmp.Body)
-        tmp.Body = finding_files(html, tmp.Student.NameOfStudent)
-    return letters
+    with open(cfg.filename, "a") as file: file.write("\nGetting clear date from links...")
+    for i in letters:
+        i.Body = "Needly dates"
+    sleep(1)
+    with open(cfg.filename, "a") as file: file.write("Dates gets!")
 
 
 def FormJSONDates(letters):
@@ -52,21 +53,12 @@ def FormJSONDates(letters):
     - Продумать момент обработки списка писем
     """
     with open(cfg.filename, "a") as file: file.write("\nForming jsons...")
-    jsonDates = []
+    jsons = []
     for i in range(len(letters)):
-        if letters[i].CodeStatus == "20":
-            json1 = {
-                "labNumber" : letters[i].VariantOfLab,
-                "link" : None,
-                "code" : letters[i].Body
-                }
-            mystr = json.dumps(json1)
-            jsonDates.append(mystr)
+        jsons.append("my_json" + str(i))
+    sleep(1)
     with open(cfg.filename, "a") as file: file.write("Jsons forms!")
-    
-    return jsonDates
-
-
+    return jsons
 
 def SendJSONForCheck(jsonDates, letters):
     """
@@ -85,9 +77,9 @@ def SendJSONForCheck(jsonDates, letters):
     отправить json1 ->
     получить ответ на json1 ->
     Заполнить нужные поля в result1 ->
-    отправить json2 ->
-    получить ответ на json2 ->
-    Заполнить нужные поля в result2 ->
+    отправить json3 ->
+    получить ответ на json3 ->
+    Заполнить нужные поля в result3 ->
     отправить json3 ->
     получить ответ на json3 ->
     Заполнить нужные поля в result3 ->
@@ -96,90 +88,6 @@ def SendJSONForCheck(jsonDates, letters):
     - Предусмотеть таймаут ожидания, чтобы система не зависала на бесконечное время при ошибках в модулях проверки
     В этом случае заполнять не только поле IsOK но и поле Code
     """
-    with open(cfg.filename, "a") as file: file.write("\nSending jsons...")
-    for i in range(len(jsonDates)):
-        with open(cfg.filename, "a") as file: file.write("\nSend json " + str(i))
-    with open(cfg.filename, "a") as file: file.write("\nJsons sends!")
-
-    with open(cfg.filename, "a") as file: file.write("\nForming letter results...")
-    new_letters = []
-    for i in letters:
-        user = i.Student
-        letter = LetterResult(user)
-        letter.IsOK = True
-        new_letters.append(letter)
-
-    sleep(1)
-    with open(cfg.filename, "a") as file: file.write("Letter results forms!")
-    return new_letters
-
-
-def get_html(url):
-    """Достаю html с введённой ссылки и возвращаю в виде текста"""
-    r = requests.get(url)    # Получим метод Response
-    r.encoding = 'utf8'
-    return r.text   # Вернем данные объекта text
-
-
-def csv_read(data):
-    """Принятые данные принимает, проверяя: являются ли они строковыми данными
-    Если да, записываю их в файл, в конце делаю перенос строки"""
-    if isinstance(data, str):
-        with open("data.txt", 'a') as file:
-            file.write(data+'\n')
-            return data
-
-
-def get_link(html):
-    """Построчно ищу поля таблицы с id = LC1,LC2 и т.д., затем передаю их на запись в метод csv
-    Если больше нет полей таблицы( то есть кода или текстовых данных), тогда метод закончит работу"""
-    soup = BeautifulSoup(html, 'lxml')
-    head = soup.find('strong', class_="final-path")
-    data = ""
-    if head != None:
-        csv_read("\nFile Title: "+head.getText()+"\n")
-    i = 1
-    flag = True
-    while flag:
-        head = soup.find('td', id="LC"+i.__str__())
-        if head is None:
-            flag = False
-        else:
-            data += csv_read(head.getText())
-            i += 1
-    return data
-
-
-def finding_files(html, name):
-    """Метод отвечает за поиск и открытие файлов или папок в репозитории Git'a;
-    если ссылка, которую мы открыли не имеет ссылок на другие объекты(файлы или папки),
-    мы предполагаем, что это открытый файл и передаём его на парсинг файла в get_link"""
-    main_data = ""
-    soup = BeautifulSoup(html, 'lxml')
-    table = soup.find_all('td', class_ = "content")
-    date = finding_links(table)
-    if len(date) == 0:
-        data = get_link(html)
-        return data
-    for item in date:
-        title = item.get('title')
-        if title == name or title.split(".")[0] == name:
-            item = item.get('href')
-            if item != None:
-                main_data += finding_files(get_html("https://github.com"+item), name)
-    return main_data
-
-
-
-def finding_links(table):
-    """Ищет ссылки, на которые можно перейти, то есть проверяет есть ли файлы или папки
-    на этой странице или же это уже страница самого файла"""
-    date = []
-    for item in table:
-        date.append(item.find('a', class_="js-navigation-open"))
-        if date[len(date) - 1] == None:
-            date = date[:len(date) - 1]
-    return date
 
     "Список новых писем"
     new_letters = []
@@ -199,31 +107,38 @@ def finding_links(table):
         config = open("configServ.txt", "r")
         HOST = config.readline()
         HOST = HOST.replace("\n", '')
-        if i.CodeStatus != "20":
+        if i.CodeStatus == "20":
             continue
 
         """Подключение и отправка JSON на порт"""
         sock.connect((HOST, port))
         sock.send(jsonDates[count].encode())
         count += 1
+        IsOk = False
 
         """Ожидание ответа сервера 10 секунд"""
         ready = select.select([sock], [], [], 10)
         if ready[0]:
             otv_serv = sock.recv(1024)
             otvetServ = json.loads(otv_serv.decode())
+            if otvetServ["messageType"] == 2:
+                if otvetServ["grade"] == 1:
+                    IsOk = True
+                letter.Comment = otvetServ["comment"]
+                letter.CodeStatus = "30"
+                letter.Comment = ""
 
-            """Оценка лабораторной работы по ответу сервера"""
-            if otvetServ["mark"] == "1":
-                IsOk = True
-            else:
-                IsOk = False
-            letter.Comment = otvetServ["comment"]
-            letter.CodeStatus = "30"
-            letter.CodeStatusComment = ""
+            elif otvetServ["messageType"] == 3:
+                letter.CodeStatus = "06"
+                letter.CodeStatusComment = ""
+                letter.Comment = otv_serv.decode()
+
+            elif otvetServ["messageType"] == 4:
+                letter.CodeStatus = "07"
+                letter.CodeStatusComment = ""
+                letter.Comment = otv_serv.decode()
         else:
             sock.close()
-            IsOk = False
             letter.CodeStatus = "06"
             letter.CodeStatusComment = "ERROR. Длительное ожидание ответа от сервера"
 
@@ -233,11 +148,11 @@ def finding_links(table):
         letter.IsOK = IsOk
         letter.VariantOfLab = i.VariantOfLab
         letter.NumberOfLab = i.NumberOfLab
-        letter.CodeStatusComment = ""
 
         """Добавление нового письма"""
         new_letters.append(letter)
         sock.close()
+
     return new_letters
 
 
