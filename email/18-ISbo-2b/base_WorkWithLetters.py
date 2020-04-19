@@ -62,7 +62,7 @@ def FormJSONDates(letters):
                 "messageType" : 1,
                 "lab" : letters[i].NumberOfLab,
                 "variant" : letters[i].VariantOfLab,
-                "link" : "https://github.com/*",
+                "link" : None,
                 "code" : letters[i].Body
                 }
             mystr = json.dumps(json1)
