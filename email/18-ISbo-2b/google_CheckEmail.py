@@ -5,7 +5,7 @@ from email import *
 from global_Letter import Letter
 from global_User import User
 from base_WorkWithLetters import WorkWithLetters
-from google_validateRules import ValidationMail as Val
+from google_ValidateRules import ValidationMail as Val
 import config as cfg
 import re
 
