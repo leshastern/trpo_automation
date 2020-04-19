@@ -1,4 +1,4 @@
-# coding=utf-8
+﻿# coding=utf-8
 import socket
 import global_LetterResult
 import json
@@ -129,12 +129,12 @@ def SendJSONForCheck(jsonDates, letters):
                 letter.Comment = ""
 
             elif otvetServ["messageType"] == 3:
-                letter.CodeStatus = "06"
+                letter.CodeStatus = "07"
                 letter.CodeStatusComment = ""
                 letter.Comment = otv_serv.decode()
 
             elif otvetServ["messageType"] == 4:
-                letter.CodeStatus = "07"
+                letter.CodeStatus = "06"
                 letter.CodeStatusComment = ""
                 letter.Comment = otv_serv.decode()
         else:
