@@ -59,8 +59,10 @@ def FormJSONDates(letters):
     for i in range(len(letters)):
         if letters[i].CodeStatus == "20":
             json1 = {
-                "labNumber" : letters[i].VariantOfLab,
-                "link" : None,
+                "messageType" : 1,
+                "lab" : letters[i].NumberOfLab,
+                "variant" : letters[i].VariantOfLab,
+                "link" : "https://github.com/*",
                 "code" : letters[i].Body
                 }
             mystr = json.dumps(json1)
