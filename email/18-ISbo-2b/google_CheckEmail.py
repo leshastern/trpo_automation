@@ -1,11 +1,15 @@
 # coding=utf-8
 from time import sleep
 from datetime import datetime
-
+from email import *
 from global_Letter import Letter
 from global_User import User
 from base_WorkWithLetters import WorkWithLetters
+from google_validateRules import ValidationMail as Val
 import config as cfg
+import re
+
+
 
 def CheckEmail():
     """
@@ -18,7 +22,6 @@ def CheckEmail():
     cfg.timer.SetTimer()
 
     cfg.reserve_dates.GetReserveDate()
-
 
     letters = FormListWithLetters(letters)
 
@@ -48,6 +51,7 @@ def GetLetters():
     sleep(1)
     with open(cfg.filename, "a") as file: file.write("Letters gets!")
     return letters
+
 
 def FormListWithLetters(letters):
     """
@@ -93,30 +97,30 @@ def CheckUsers(letters):
     Участвующие внешние типы переменных
     - None
     """
-    with open(cfg.filename, "a") as file: file.write ("\nChecking users...")
+    with open(cfg.filename, "a") as file: file.write("\nChecking users...")
     for i in letters:
         i.Student.IsRegistered = True
     sleep(1)
     with open(cfg.filename, "a") as file: file.write("Users cheks!")
 
+
 def ValidateLetters(letters):
-    """
-    Функционал:
-    - Провалидировать каждое письмо по правилам валидации
-    На входе:
-    - Список писем
-    На выходе:
-    - Расставленные поля 'Code' и 'CodeComment' в каждом письме
-    Что предусмотреть:
-    - Просле проверки вытащить ссылки на ресурсы и поместить их в поле 'Body' каждого письма
-    - Проверку выполнять только если поле 'Code' ещё не заполнено
-    - Поле 'CodeComment' заполнять сокращённой информацией по результатам проверки как угодно.
-    Участвующие внешние типы переменных
-    - None
-    """
-    with open(cfg.filename, "a") as file: file.write("\nValidating letters...")
-    for i in letters:
-        i.CodeStatus = 20
-        i.CodeStatusComment = "All is good"
-    sleep(1)
-    with open(cfg.filename, "a") as file: file.write("Letters validates!")
+    for let in letters:
+        if let.CodeStatus is None:
+            val = Val(let.ThemeOfLetter, let.Body)
+            let.CodeStatus = val.validation(val.subject, val.body)
+            if let.CodeStatus == '02':
+                let.CodeStatusComment = 'Структура письма не соответствует требованиям к оформлению'
+            elif let.CodeStatus == '03':
+                let.CodeStatusComment = 'Номер варианта меньше 1 или больше 15 или не число'
+            else:
+                num, var = val.get_num_and_var(val.subject)
+                if int(num) < 1 or int(num) > 15 or int(var) == 0:
+                    let.CodeStatus = '03'
+                    let.CodeStatusComment = 'Номер лабораторной не существует'
+                else:
+                    let.Number = var
+                    let.Variant = num
+            if let.CodeStatus == '20':
+                let.Body = re.findall(r'http[^ \n]*', let.Body)
+                let.CodeStatusComment = 'Работа отправлена на проверку'
