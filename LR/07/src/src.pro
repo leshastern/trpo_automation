@@ -18,6 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         functional.cpp \
+        gateway.cpp \
         main.cpp \
         strategylab.cpp \
         tcpserver.cpp
@@ -29,8 +30,12 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     functional.h \
+    gateway.h \
     strategylab.h \
     tcpserver.h
 
 win32:CONFIG += console
 win32:TARGET  = ../XmlDOMRead
+
+RESOURCES += \
+    resources.qrc
