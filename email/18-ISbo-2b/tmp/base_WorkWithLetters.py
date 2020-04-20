@@ -3,7 +3,7 @@ from time import sleep
 from datetime import datetime
 
 from global_LetterResult import LetterResult
-from send_SetResults import SetResults
+#from send_SetResults import SetResults
 import config as cfg
 
 def WorkWithLetters(letters):
@@ -19,7 +19,7 @@ def WorkWithLetters(letters):
     letterResults = SendJSONForCheck(jsonDates, letters)
 
     # SetResults - Передать данные следующему модулю в формате списка экземпляров класса EmailResults
-    SetResults(letterResults)
+    #SetResults(letterResults)
 
 def LettersConvertToString(letters):
     """
@@ -89,12 +89,12 @@ def SendJSONForCheck(jsonDates, letters):
     - Предусмотеть таймаут ожидания, чтобы система не зависала на бесконечное время при ошибках в модулях проверки
     В этом случае заполнять не только поле IsOK но и поле Code
     """
-    with open(cfg.filename, "a") as file: file.write("\nSending jsons...")
+    """with open(cfg.filename, "a") as file: file.write("\nSending jsons...")
     for i in range(len(jsonDates)):
         with open(cfg.filename, "a") as file: file.write("\nSend json " + str(i))
     with open(cfg.filename, "a") as file: file.write("\nJsons sends!")
 
-    with open(cfg.filename, "a") as file: file.write("\nForming letter results...")
+    with open(cfg.filename, "a") as file: file.write("\nForming letter results...")"""
     new_letters = []
     for i in letters:
         user = i.Student
@@ -103,7 +103,7 @@ def SendJSONForCheck(jsonDates, letters):
         new_letters.append(letter)
 
     sleep(1)
-    with open(cfg.filename, "a") as file: file.write("Letter results forms!")
+    """with open(cfg.filename, "a") as file: file.write("Letter results forms!")"""
     return new_letters
 
 

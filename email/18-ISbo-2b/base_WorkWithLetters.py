@@ -17,7 +17,7 @@ def WorkWithLetters(letters):
     letterResults = SendJSONForCheck(jsonDates, letters)
 
     # SetResults - Передать данные следующему модулю в формате списка экземпляров класса EmailResults
-    SetResults(letterResults)
+    #SetResults(letterResults)
 
 def LettersConvertToString(letters):
     """

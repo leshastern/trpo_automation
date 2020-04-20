@@ -82,7 +82,7 @@ def finding_links(table):
     return date
 
 
-student = User.User("МаксимРасторгуев", "18-ИСбо-2", None, None)
+student = User.User("Максим Расторгуев", "18-ИСбо-2", None, None)
 student1 = User.User("СантьягоЦеместес", "18-ИСбо-2", None, None)
 letters = []
 letter = Letter.Letter(student, "ЛР01", "https://github.com/Progoger/TasksForStudents/tree/master/18-ИСбо-2/ЛР01", None)
