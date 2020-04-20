@@ -86,7 +86,7 @@ void TcpServer::slotReadingDataJson()
         if (docJsonError.errorString().toInt() == QJsonParseError::NoError) {
             try {
                 if (parsingJson(docJson, &labLink, &labNumber, &pureCode)) {
-                    githubManager = new Functional(labLink);
+                    githubManager = new Functional();
                 }
 
                 lab = new StrategyLab(labNumber);

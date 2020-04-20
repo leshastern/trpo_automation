@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>config/authorizarionCredentials.xml</file>
+        <file>config/answerStructure.xml</file>
     </qresource>
 </RCC>

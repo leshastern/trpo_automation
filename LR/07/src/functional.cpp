@@ -1,57 +1,13 @@
 #include "functional.h"
 
 /**
- * @brief Авторизация на Guthub и доступ к Github API осуществляется
- * через Basic Authorization. Для этого в заголовках к каждому запросу
- * наобходимо дабовалять соответствующую информацию. Пример GET запроса:
- *      QNetworkRequest request = QNetworkRequest(QUrl("http://192.168.1.10/getinfo"));
- *      request.setRawHeader("Authorization", headerData.toLocal8Bit());
- *      networkAccessManager->get(request);
+ * @brief Конструктор
  * @param parent - родитель этого класса, базовый QObject
  */
 Functional::Functional(QObject *parent)
     : QObject(parent)
 {
     manager = new QNetworkAccessManager();
-
-    QString userName, token;
-    getCredentials("/config/authorizarionCredentials.xml", &userName, &token);
-    setAuthorizationHeaderData(userName, token);
-}
-
-/**
- * @brief Получает из xml конфига данные для Basic-авторизации
- * @param fileName - имя файла конфига
- * @param userName - имя пользователя
- * @param personalToken - персональный токен пользователя
- */
-void Functional::getCredentials(QString fileName, QString *userName, QString *personalToken)
-{
-    QDomDocument domDoc;
-    QFile file(":" + fileName);
-
-    if (file.open(QIODevice::ReadOnly)) {
-        if (domDoc.setContent(&file)) {
-            QDomElement base = domDoc.documentElement();
-            if (base.tagName() == "credentials") {
-                (*userName) = base.attribute("username", "");
-                (*personalToken) = base.attribute("token", "");
-            }
-        }
-        file.close();
-    }
-}
-
-/**
- * @brief Устанавливает в заголовки данные для Basic-авторизации
- * @param userName
- * @param personalToken
- */
-void Functional::setAuthorizationHeaderData(QString userName, QString personalToken)
-{
-    QString secretData = userName + ":" + personalToken;
-    QByteArray encodedData = secretData.toLocal8Bit().toBase64();
-    headerData = "Basic " + encodedData;
 }
 
 /**
