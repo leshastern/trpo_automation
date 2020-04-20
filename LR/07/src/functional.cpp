@@ -1,51 +1,57 @@
 #include "functional.h"
 
 /**
- * @brief Конструктор
- * @param parent
- * @param QString
+ * @brief Авторизация на Guthub и доступ к Github API осуществляется
+ * через Basic Authorization. Для этого в заголовках к каждому запросу
+ * наобходимо дабовалять соответствующую информацию. Пример GET запроса:
+ *      QNetworkRequest request = QNetworkRequest(QUrl("http://192.168.1.10/getinfo"));
+ *      request.setRawHeader("Authorization", headerData.toLocal8Bit());
+ *      networkAccessManager->get(request);
+ * @param parent - родитель этого класса, базовый QObject
  */
-Functional::Functional(QString linkFromServer, QObject *parent) : QObject(parent)
+Functional::Functional(QObject *parent)
+    : QObject(parent)
 {
     manager = new QNetworkAccessManager();
-    link = linkFromServer;
 
-    this->secretToken = this->authorize();
+    QString userName, token;
+    getCredentials("/config/authorizarionCredentials.xml", &userName, &token);
+    setAuthorizationHeaderData(userName, token);
 }
 
-QString Functional::authorize()
+/**
+ * @brief Получает из xml конфига данные для Basic-авторизации
+ * @param fileName - имя файла конфига
+ * @param userName - имя пользователя
+ * @param personalToken - персональный токен пользователя
+ */
+void Functional::getCredentials(QString fileName, QString *userName, QString *personalToken)
 {
-    QObject::connect(
-                    manager,
-                    &QNetworkAccessManager::finished,
-                    [=](QNetworkReply *reply)
-    {
+    QDomDocument domDoc;
+    QFile file(":" + fileName);
 
-        if (reply->error()) {
-            QString error = QString("Error %1").arg(reply->errorString());
-            qDebug() << error;
+    if (file.open(QIODevice::ReadOnly)) {
+        if (domDoc.setContent(&file)) {
+            QDomElement base = domDoc.documentElement();
+            if (base.tagName() == "credentials") {
+                (*userName) = base.attribute("username", "");
+                (*personalToken) = base.attribute("token", "");
+            }
         }
+        file.close();
+    }
+}
 
-        for (auto &i:reply->rawHeaderPairs()) {
-            QString str;
-            qDebug() << str.sprintf(
-                            "%40s: %s",
-                            i.first.data(),
-                            i.second.data());
-        }
-
-        qDebug() << reply->header(QNetworkRequest::ContentTypeHeader).toString();
-
-        QByteArray responseData = reply->readAll();
-        qDebug() << QJsonDocument::fromJson(responseData);
-
-        reply->deleteLater();
-        manager->deleteLater();
-        return;
-    });
-
-    manager->get(QNetworkRequest(QUrl("https://github.com/None-stopCoding/oauth/authorize")));
-    return QString("success");
+/**
+ * @brief Устанавливает в заголовки данные для Basic-авторизации
+ * @param userName
+ * @param personalToken
+ */
+void Functional::setAuthorizationHeaderData(QString userName, QString personalToken)
+{
+    QString secretData = userName + ":" + personalToken;
+    QByteArray encodedData = secretData.toLocal8Bit().toBase64();
+    headerData = "Basic " + encodedData;
 }
 
 /**
@@ -83,4 +89,12 @@ void Functional::getLinkToFile()
 void Functional::dataProcessing()
 {
     //Разделение кода на классы
+}
+
+/**
+ * @brief Подчищаем за собой
+ */
+Functional::~Functional()
+{
+    delete manager;
 }

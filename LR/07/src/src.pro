@@ -34,3 +34,6 @@ HEADERS += \
 
 win32:CONFIG += console
 win32:TARGET  = ../XmlDOMRead
+
+RESOURCES += \
+    resources.qrc

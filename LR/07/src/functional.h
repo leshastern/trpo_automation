@@ -7,6 +7,9 @@
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QUrl>
+#include <QFile>
+#include <QDomDocument>
 
 /**
  * @brief Класс для получения листинга кода с GitHub
@@ -20,17 +23,18 @@ public:
 
 private:
     QNetworkAccessManager *manager;
-    QString link;
-    QString secretToken;
+    QString headerData;
 
 public:
-    explicit Functional(QString linkFromServer, QObject *parent = nullptr);
+    explicit Functional(QObject *parent = nullptr);
+    ~Functional();
     void getContentFromGithub();
     void dataProcessing();
     void getLinkToFile();
 
 private:
-    QString authorize();
+    void setAuthorizationHeaderData(QString, QString);
+    void getCredentials(QString, QString*, QString*);
 };
 
 #endif // FUNCTIONAL_H
