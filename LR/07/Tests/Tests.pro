@@ -1,10 +1,10 @@
 QT += testlib
 QT -= gui
 QT += network
-
-
-SOURCES +=  \
-    test_tcp.cpp
+SOURCES += \
+    TestTcp.cpp\
 
 HEADERS += \
-    test_tcp.h
+    TestTcp.h \
+
+

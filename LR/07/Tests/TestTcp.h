@@ -5,24 +5,25 @@
 #include <QTest>
 #include <QTcpSocket>
 #include <QTcpServer>
-
 /**
  * @brief Класс для тестирования методов TCP сервера
  */
-class test_tcp : public QObject
+class TestTcp : public QObject
 {
     Q_OBJECT
-public:
-    test_tcp();
-private:
-    QTcpSocket* Client;
-    bool isOff;
-private slots:
-    void test_connection();
-    void test_sendinfo();
-    void test_getinfo();
-    void test_disconnetion();
 
+public:
+    TestTcp();
+
+private:
+    QTcpSocket* client;
+    bool isOff;
+
+private slots:
+    void testConnection();
+    void testSendJson();
+    void testGetAnswer();
+    void testDisconnection();
 };
 
 #endif // TEST_TCP_H
