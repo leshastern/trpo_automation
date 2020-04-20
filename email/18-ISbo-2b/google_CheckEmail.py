@@ -6,14 +6,21 @@ from global_Letter import Letter
 from global_User import User
 from base_WorkWithLetters import WorkWithLetters
 import config as cfg
+import smtplib
+from email.message import EmailMessage
+import config_email
+import imaplib
+import email
+import base64
 
 def CheckEmail():
     """
     Точка входа в работу модуля.
     Чтение писем, их парсинг и валидация.
     """
-
-    letters = GetLetters()
+    smtp_obj = smtp_login()
+    letters = GetLetters(smtp_obj)
+    quit_email_smtp(smtp_obj)
 
     cfg.timer.SetTimer()
 
@@ -29,7 +36,7 @@ def CheckEmail():
     WorkWithLetters(letters)
 
 
-def GetLetters():
+def GetLetters(mail):
     """
    Функционал:
    - Прочитать письма на почте
@@ -43,12 +50,25 @@ def GetLetters():
    Участвующие внешние типы переменных
    - None
    """
-    with open(cfg.filename, "a") as file: file.write("\nGetting letters...")
-    letters = ["letter1", "letter2", "letter3"]
-    sleep(1)
-    with open(cfg.filename, "a") as file: file.write("Letters gets!")
-    return letters
-
+    count = count_unseen_mess(mail)
+    if count > 0:
+        letters = []
+        result, data = mail.uid('search', None, "unseen")  # Выполняет поиск и возвращает UID писем.
+        print(count)
+        for i in range(count):
+            latest_email_uid = data[0].split()[i]
+            result, date = mail.uid('fetch', latest_email_uid, '(RFC822)')
+            raw_email = date[0][1]
+            letters.append(raw_email)
+        with open(cfg.filename, "a") as file:
+            file.write("\nGetting letters...")
+        letters = ["letter1", "letter2", "letter3"]
+        sleep(1)
+        with open(cfg.filename, "a") as file:
+            file.write("Letters gets!")
+        return letters
+    else:
+        print("Отсутствие новых сообщений.")
 def FormListWithLetters(letters):
     """
     Функционал:
@@ -120,3 +140,34 @@ def ValidateLetters(letters):
         i.CodeStatusComment = "All is good"
     sleep(1)
     with open(cfg.filename, "a") as file: file.write("Letters validates!")
+
+def smtp_login():
+    """
+    Авторизация в Gmail аккаунте.
+    Функция возвращает SMTP объект.
+    :return:
+    """
+    smtpObj = smtplib.SMTP('smtp.gmail.com:587')
+    smtpObj.ehlo()
+    smtpObj.starttls()
+    smtpObj.ehlo()
+    smtpObj.login(config_email.EMAIL_ADDRESS, config_email.EMAIL_PASSWORD)
+    return smtpObj
+
+def quit_email_smtp(smtpObj):
+    """
+    Закрытие SMTP объекта.
+    Функция должна быть вызвана после завершения рыботы с SMTP объектом.
+    :param smtpObj:
+    :return:
+    """
+    smtpObj.close()
+
+def count_unseen_mess(mail):
+    """
+    Возвращает кол-во непрочитанных сообщений
+    :param mail:
+    :return:
+    """
+    result, data = mail.uid('search', None, "unseen")
+    return len(data[0].split())
