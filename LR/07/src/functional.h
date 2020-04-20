@@ -7,9 +7,6 @@
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QUrl>
-#include <QFile>
-#include <QDomDocument>
 
 /**
  * @brief Класс для получения листинга кода с GitHub
@@ -31,10 +28,6 @@ public:
     void getContentFromGithub();
     void dataProcessing();
     void getLinkToFile();
-
-private:
-    void setAuthorizationHeaderData(QString, QString);
-    void getCredentials(QString, QString*, QString*);
 };
 
 #endif // FUNCTIONAL_H
