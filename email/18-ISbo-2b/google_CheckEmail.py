@@ -6,7 +6,6 @@ from global_Letter import Letter
 from global_User import User
 from base_WorkWithLetters import WorkWithLetters
 import config as cfg
-import smtplib
 from email.message import EmailMessage
 import config_email
 import imaplib
@@ -18,9 +17,9 @@ def CheckEmail():
     Точка входа в работу модуля.
     Чтение писем, их парсинг и валидация.
     """
-    smtp_obj = smtp_login()
-    letters = GetLetters(smtp_obj)
-    quit_email_smtp(smtp_obj)
+    imap_obj = imap_login()
+    letters = GetLetters(imap_obj)
+    quit_email_imap(imap_obj)
 
     cfg.timer.SetTimer()
 
@@ -141,27 +140,25 @@ def ValidateLetters(letters):
     sleep(1)
     with open(cfg.filename, "a") as file: file.write("Letters validates!")
 
-def smtp_login():
+def imap_login():
     """
     Авторизация в Gmail аккаунте.
     Функция возвращает SMTP объект.
     :return:
     """
-    smtpObj = smtplib.SMTP('smtp.gmail.com:587')
-    smtpObj.ehlo()
-    smtpObj.starttls()
-    smtpObj.ehlo()
-    smtpObj.login(config_email.EMAIL_ADDRESS, config_email.EMAIL_PASSWORD)
-    return smtpObj
+    imap = imaplib.IMAP4_SSL("imap.gmail.com")
+    imap.login(config_email.EMAIL_ADDRESS, config_email.EMAIL_PASSWORD)
+    imap.select('inbox')
+    return imap
 
-def quit_email_smtp(smtpObj):
+def quit_email_imap(imapObj):
     """
     Закрытие SMTP объекта.
     Функция должна быть вызвана после завершения рыботы с SMTP объектом.
     :param smtpObj:
     :return:
     """
-    smtpObj.close()
+    imapObj.close()
 
 def count_unseen_mess(mail):
     """
