@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QDomElement>
 #include <QFile>
 
@@ -22,11 +23,15 @@ public:
     explicit Gateway(QObject *parent = nullptr);
     QJsonDocument validateData(QByteArray);
 
-signals:
-    void sendToClient(QJsonObject);
-
 private:
     void wrongRequestFormat(QString, QString);
+
+signals:
+    void sendToClient(QJsonObject);
+    void systemError(QString);
+
+private slots:
+    void processSystemError(QString);
 };
 
 #endif // GATEWAY_H

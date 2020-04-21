@@ -3,6 +3,8 @@
 Gateway::Gateway(QObject *parent)
     : QObject(parent)
 {
+    connect(this, SIGNAL(systemError(QString)), this, SLOT(processSystemError(QString)));
+
     // Чтение конфига для валидации запросов клиента
     QDomDocument config;
     QFile file(":/config/jsonSpecificationForClientRequest.xml");
@@ -19,16 +21,36 @@ Gateway::Gateway(QObject *parent)
 QJsonDocument Gateway::validateData(QByteArray data)
 {
     QJsonParseError docJsonError;
+    QJsonObject jsonObj;
+    QJsonValue value;
     QJsonDocument jsonData = QJsonDocument::fromJson(data, &docJsonError);
+    const QList<QString> dataTypes({"Null", "Bool", "Double", "String", "Array", "Object"});
 
     if (docJsonError.error == QJsonParseError::NoError) {
-        for (QDomElement jsonKey = rootConfigForClientRequest.firstChild().toElement();
-             !jsonKey.isNull(); jsonKey = jsonKey.nextSibling().toElement())
+        for (QDomElement key = rootConfigForClientRequest.firstChild().toElement();
+             !key.isNull(); key = key.nextSibling().toElement())
         {
-            qDebug() << jsonKey.tagName();
+            jsonObj = jsonData.object();
+            QString keyTagName = key.tagName();
+
+            // Проверка на наличие нужного ключа
+            value = jsonObj.take(key.tagName());
+            if (value.isUndefined() && QVariant(key.attribute("required")).toBool()) {
+                wrongRequestFormat(keyTagName, QString("Required key does not exist"));
+            }
+
+            // Проверка на тип ключа
+            if (value.type() != dataTypes.indexOf(key.attribute("type"))) {
+                wrongRequestFormat(keyTagName, QString("Wrong key type: '") + key.attribute("type") + QString("' expected"));
+            }
+
+            // TODO Проверка на принимаемые значения ключа
+
         }
+
+        // Проверка на отсутствие ключей, которых нет в спецификации
     } else {
-        wrongRequestFormat(QString(""), QString("Неверный json объект") + docJsonError.errorString());
+        wrongRequestFormat(QString(""), QString("Wrong json object: ") + docJsonError.errorString());
     }
 
     return jsonData;
@@ -43,4 +65,16 @@ void Gateway::wrongRequestFormat(QString jsonKey, QString text)
     jsonObj["text"] = text;
 
     emit sendToClient(jsonObj);
+    throw QString("Client - ") + text;
+}
+
+void Gateway::processSystemError(QString errorMsg)
+{
+    const unsigned char MESSAGE_TYPE = 4;
+    QJsonObject jsonObj;
+    jsonObj["messageType"] = MESSAGE_TYPE;
+    jsonObj["errorMessage"] = errorMsg;
+
+    emit sendToClient(jsonObj);
+    throw QString("Internal - ") + errorMsg;
 }

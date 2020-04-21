@@ -84,32 +84,25 @@ void TcpServer::slotReadingDataJson()
         mTcpSocket->waitForConnected(500);
         data = mTcpSocket->readAll();
 
-        QJsonDocument docJson = gateWay->validateData(data);
-        parsingJson(docJson, &labLink, &labNumber, &pureCode);
+        try {
+            QJsonDocument docJson = gateWay->validateData(data);
+            if (parsingJson(docJson, &labLink, &labNumber, &pureCode)) {
+                githubManager = new Functional(labLink);
+            }
 
-//        if (docJsonError.errorString().toInt() == QJsonParseError::NoError) {
-//            try {
-//                githubManager = new Functional(labLink);
+            lab = new StrategyLab(labNumber);
+            grade = lab->check(pureCode);
+            if (lab->hasComments()) {
+                errorSystem = false;
+                qDebug() << lab->getComments();
+                mistakeDescription += "\n\nОшибки в решении:\n" + lab->getComments();
+            }
+        } catch (QString errorMsg) {
+            qCritical() << errorMsg;
+        }
 
-//                lab = new StrategyLab(labNumber);
-//                grade = lab->check(pureCode);
-//                if (lab->hasComments()) {
-//                    errorSystem = false;
-//                    qDebug() << lab->getComments();
-//                    mistakeDescription += "\n\nОшибки в решении:\n" + lab->getComments();
-//                }
-//            } catch (QString errorMsg) {
-//                qDebug() << errorMsg;
-//                mistakeDescription = errorMsg;
-//            }
-
-//            delete lab;
-//            delete githubManager;
-//        } else {
-//            mistakeDescription = "Ошибка парсинга Json: " + docJsonError.errorString();
-//        }
-
-        // TODO  sendToClient (grade + errorSystem + mistakeDiscription)
+        delete lab;
+        delete githubManager;
     }
 }
 
