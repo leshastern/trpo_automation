@@ -33,7 +33,7 @@ def LettersConvertToString(letters):
     в соответствии со спецификацией по JSON
     """
     for tmp in letters:
-        html = get_html(tmp.Body)
+        html = get_html(tmp.Body) 
         tmp.Body = finding_files(html, tmp.Student.NameOfStudent)
     return letters
 
