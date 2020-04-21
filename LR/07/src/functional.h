@@ -20,17 +20,14 @@ public:
 
 private:
     QNetworkAccessManager *manager;
-    QString link;
-    QString secretToken;
+    QString headerData;
 
 public:
-    explicit Functional(QString linkFromServer, QObject *parent = nullptr);
+    explicit Functional(QObject *parent = nullptr);
+    ~Functional();
     void getContentFromGithub();
     void dataProcessing();
     void getLinkToFile();
-
-private:
-    QString authorize();
 };
 
 #endif // FUNCTIONAL_H
