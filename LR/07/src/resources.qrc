@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>config/answerStructure.xml</file>
+    </qresource>
+</RCC>

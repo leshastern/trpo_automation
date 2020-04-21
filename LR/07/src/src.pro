@@ -1,6 +1,5 @@
 QT -= gui
-QT += network
-QT += xml
+QT += network xml
 
 CONFIG += c++11 console
 CONFIG -= app_bundle
@@ -34,3 +33,6 @@ HEADERS += \
 
 win32:CONFIG += console
 win32:TARGET  = ../XmlDOMRead
+
+RESOURCES += \
+    resources.qrc

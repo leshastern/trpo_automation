@@ -2,50 +2,12 @@
 
 /**
  * @brief Конструктор
- * @param parent
- * @param QString
+ * @param parent - родитель этого класса, базовый QObject
  */
-Functional::Functional(QString linkFromServer, QObject *parent) : QObject(parent)
+Functional::Functional(QObject *parent)
+    : QObject(parent)
 {
     manager = new QNetworkAccessManager();
-    link = linkFromServer;
-
-    this->secretToken = this->authorize();
-}
-
-QString Functional::authorize()
-{
-    QObject::connect(
-                    manager,
-                    &QNetworkAccessManager::finished,
-                    [=](QNetworkReply *reply)
-    {
-
-        if (reply->error()) {
-            QString error = QString("Error %1").arg(reply->errorString());
-            qDebug() << error;
-        }
-
-        for (auto &i:reply->rawHeaderPairs()) {
-            QString str;
-            qDebug() << str.sprintf(
-                            "%40s: %s",
-                            i.first.data(),
-                            i.second.data());
-        }
-
-        qDebug() << reply->header(QNetworkRequest::ContentTypeHeader).toString();
-
-        QByteArray responseData = reply->readAll();
-        qDebug() << QJsonDocument::fromJson(responseData);
-
-        reply->deleteLater();
-        manager->deleteLater();
-        return;
-    });
-
-    manager->get(QNetworkRequest(QUrl("https://github.com/None-stopCoding/oauth/authorize")));
-    return QString("success");
 }
 
 /**
@@ -83,4 +45,12 @@ void Functional::getLinkToFile()
 void Functional::dataProcessing()
 {
     //Разделение кода на классы
+}
+
+/**
+ * @brief Подчищаем за собой
+ */
+Functional::~Functional()
+{
+    delete manager;
 }
