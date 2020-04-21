@@ -12,8 +12,8 @@ Gateway::Gateway(QObject *parent)
     // Чтение конфига для валидации запросов клиента
     QDomDocument config;
     QFile file(":/config/jsonSpecificationForClientRequest.xml");
-    if(file.open(QIODevice::ReadOnly)) {
-        if(config.setContent(&file)) {
+    if (file.open(QIODevice::ReadOnly)) {
+        if (config.setContent(&file)) {
             rootConfigForClientRequest = config.documentElement();
         }
         file.close();
@@ -57,7 +57,7 @@ QJsonDocument Gateway::validateData(QByteArray data)
 
         }
 
-        // Проверка на отсутствие ключей, которых нет в спецификации
+        // TODO Проверка на отсутствие ключей, которых нет в спецификации
     } else {
         wrongRequestFormat(QString(""), QString("Wrong json object: ") + docJsonError.errorString());
     }
@@ -72,11 +72,11 @@ QJsonDocument Gateway::validateData(QByteArray data)
  */
 void Gateway::wrongRequestFormat(QString jsonKey, QString text)
 {
-    const unsigned char MESSAGE_TYPE = 3;
-    QJsonObject jsonObj;
-    jsonObj["messageType"] = MESSAGE_TYPE;
-    jsonObj["key"] = jsonKey;
-    jsonObj["text"] = text;
+    QJsonObject jsonObj {
+        {"messageType", messageType::WRONG_REQUEST},
+        {"key", jsonKey},
+        {"text", text}
+    };
 
     emit sendToClient(jsonObj);
     throw QString("Client - ") + text;
@@ -88,10 +88,10 @@ void Gateway::wrongRequestFormat(QString jsonKey, QString text)
  */
 void Gateway::processSystemError(QString errorMsg)
 {
-    const unsigned char MESSAGE_TYPE = 4;
-    QJsonObject jsonObj;
-    jsonObj["messageType"] = MESSAGE_TYPE;
-    jsonObj["errorMessage"] = errorMsg;
+    QJsonObject jsonObj {
+        {"messageType", messageType::SYSTEM_ERROR},
+        {"errorMessage", errorMsg}
+    };
 
     emit sendToClient(jsonObj);
     throw QString("Internal - ") + errorMsg;
