@@ -1,5 +1,9 @@
 #include "gateway.h"
 
+/**
+ * @brief Читаем конфиги, соединеям сигналы со слотами
+ * @param parent
+ */
 Gateway::Gateway(QObject *parent)
     : QObject(parent)
 {
@@ -18,6 +22,11 @@ Gateway::Gateway(QObject *parent)
     // TODO connect config with reject codes
 }
 
+/**
+ * @brief Метод валидации данных, с клиента
+ * @param data - сырые данные с клиента
+ * @return
+ */
 QJsonDocument Gateway::validateData(QByteArray data)
 {
     QJsonParseError docJsonError;
@@ -56,6 +65,11 @@ QJsonDocument Gateway::validateData(QByteArray data)
     return jsonData;
 }
 
+/**
+ * @brief Слот формирования json-ответа при неверном формате запроса клиента
+ * @param jsonKey - ключ, где обнаружена ошибка
+ * @param text - текст ошибки
+ */
 void Gateway::wrongRequestFormat(QString jsonKey, QString text)
 {
     const unsigned char MESSAGE_TYPE = 3;
@@ -68,6 +82,10 @@ void Gateway::wrongRequestFormat(QString jsonKey, QString text)
     throw QString("Client - ") + text;
 }
 
+/**
+ * @brief Слот формирования json-ответа при возникновении системной ошибки на сервере
+ * @param errorMsg - текст ошибки
+ */
 void Gateway::processSystemError(QString errorMsg)
 {
     const unsigned char MESSAGE_TYPE = 4;
